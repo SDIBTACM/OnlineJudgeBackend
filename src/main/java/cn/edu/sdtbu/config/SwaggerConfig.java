@@ -11,11 +11,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
- * TODO
- *
+ * swagger(generator online judge document) config
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午9:26
+ * @date 2020-4-6 21:26
  */
 
 @Configuration

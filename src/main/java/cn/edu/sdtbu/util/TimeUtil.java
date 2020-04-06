@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * time util
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午8:27
+ * @date 2020-4-6 20:27
  */
 
 public class TimeUtil {

@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Spring Boot Stater
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午8:17
+ * @date 2020-4-6 20:17
  */
 @SpringBootApplication
 public class Application {

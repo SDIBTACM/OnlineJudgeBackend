@@ -5,9 +5,10 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 /**
+ * default exception template
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午8:53
+ * @date 2020-4-6 20:53
  */
 public abstract class BaseException extends RuntimeException {
     /**

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
  * something not found
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午8:54
+ * @date 2020-4-6 20:54
  */
 public class NotFoundException extends BaseException {
     public NotFoundException(String message) {

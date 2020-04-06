@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * user entity
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午8:40
+ * @date 2020-4-6 20:40
  */
 @Data
 @Entity
@@ -26,7 +26,7 @@ public class UserEntity extends BaseEntity{
     String userName;
 
     @Column(length = 64, nullable = false)
-    String nickName;
+    String nickname;
 
     @Column(nullable = false)
     String password;
@@ -43,6 +43,9 @@ public class UserEntity extends BaseEntity{
     @Column
     UserStatus status = UserStatus.BAN;
 
+    /**
+     * used UUID
+     */
     @Column(length = 36)
     String rememberToken;
 }

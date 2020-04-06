@@ -9,9 +9,6 @@
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <jdbc.url>jdbc:mysql://127.0.0.1:3306/bbs_lite?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=UTF-8</jdbc.url>
-        <jdbc.user>bestsort</jdbc.user>
-        <jdbc.passwd>ce8YChPDJ5GRFOUE</jdbc.passwd>
     </properties>
 
     <groupId>cn.edu.sdtbu</groupId>
@@ -29,17 +26,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-            <version>3.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -65,7 +51,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -93,21 +78,6 @@
             <scope>true</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>maven-ali</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public//</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -121,30 +91,12 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>6.0.1</version>
-                <configuration>
-                    <url>${jdbc.url}</url>
-                    <user>${jdbc.user}</user>
-                    <password>${jdbc.passwd}</password>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>8.0.17</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <!--热部署配置-->
+                <!--Hot Deployment Config-->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <!--fork:如果没有该项配置,整个devtools不会起作用-->
+                    <!--won't take effect where there is false-->
                     <fork>true</fork>
                 </configuration>
             </plugin>

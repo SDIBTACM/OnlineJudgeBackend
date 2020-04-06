@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 包括一些通用方法（增改删查）
+ * include some default method(curd and etc...)
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午8:49
+ * @date 2020-4-6 20:49
  */
 
 public interface BaseService <DOMAIN, ID> {

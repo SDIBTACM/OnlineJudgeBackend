@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * @author bestsort
  * @version 1.0
- * @date 2020/4/6 下午9:08
+ * @date 2020-4-6 21:08
  */
 
 @RunWith(SpringRunner.class)
@@ -26,7 +26,7 @@ public class UserRepositoryTest {
     public void insertTest(){
         UserEntity userEntity = new UserEntity();
         userEntity.setEmail("email");
-        userEntity.setNickName("nickName");
+        userEntity.setNickname("nickName");
         userEntity.setPassword("password");
         userEntity.setRememberToken("12312312321");
         userEntity.setRole("role");
