@@ -1,2 +1,4 @@
 # Project exclude paths
 /target/
+/LOG_PATH_IS_UNDEFINED/
+/.idea/
