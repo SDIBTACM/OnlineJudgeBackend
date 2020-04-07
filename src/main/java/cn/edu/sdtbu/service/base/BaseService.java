@@ -19,7 +19,7 @@ import java.util.Optional;
  * @date 2020-4-6 20:49
  */
 
-public interface BaseService <DOMAIN, ID> {
+public interface BaseService<DOMAIN, ID> {
     /**
      * List All
      *

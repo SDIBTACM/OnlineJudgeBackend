@@ -10,5 +10,4 @@ import cn.edu.sdtbu.repository.base.BaseRepository;
  * @date 2020-4-6 20:56
  */
 public interface UserRepository extends BaseRepository<UserEntity, Integer> {
-
 }

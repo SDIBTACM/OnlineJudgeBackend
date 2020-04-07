@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
  * @version 1.0
  * @date 2020-4-6 20:54
  */
-public class NotFoundException extends BaseException {
+public class NotFoundException extends BaseException  {
     public NotFoundException(String message) {
         super(message);
     }

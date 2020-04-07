@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.config;
 
+import cn.edu.sdtbu.model.properties.Const;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +33,9 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("Online Judge Doc")
+            .title("Online Judge Document")
             .description("为前端提供接口参考")
-            .version("1.0")
+            .version(Const.ONLINE_JUDGE_VERSION)
             .build();
     }
 }

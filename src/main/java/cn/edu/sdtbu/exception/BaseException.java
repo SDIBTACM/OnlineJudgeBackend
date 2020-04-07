@@ -43,4 +43,6 @@ public abstract class BaseException extends RuntimeException {
         this.errorData = errorData;
         return this;
     }
+
+
 }

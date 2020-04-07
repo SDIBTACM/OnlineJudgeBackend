@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.model.entity;
 
+import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.enums.UserStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @Table(name = "user") //TODO create index
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class UserEntity extends BaseEntity{
+public class UserEntity extends BaseEntity {
 
     @Column(length = 64, nullable = false)
     String userName;
@@ -38,14 +39,22 @@ public class UserEntity extends BaseEntity{
     String email;
 
     @Column(length = 64, nullable = false)
-    String role;
+    UserRole role;
 
     @Column
-    UserStatus status = UserStatus.BAN;
+    UserStatus status;
 
     /**
      * used UUID
      */
     @Column(length = 36)
     String rememberToken;
+
+    public static UserEntity getUserEntityWithDefault() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setRole(UserRole.STUDENT);
+        userEntity.setStatus(UserStatus.NORMAL);
+        userEntity.setRememberToken("");
+        return userEntity;
+    }
 }

@@ -34,20 +34,20 @@ public class BaseEntity {
     @Column
     private Timestamp deleteAt;
     @PrePersist
-    protected void prePersist(){
+    protected void prePersist() {
         Timestamp now = TimeUtil.now();
-        if (createAt == null){
+        if (createAt == null) {
             createAt = now;
         }
-        if (updateAt == null){
+        if (updateAt == null) {
             updateAt = now;
         }
-        if (deleteAt == null){
+        if (deleteAt == null) {
             deleteAt = Const.TIME_ZERO;
         }
     }
     @PreUpdate
-    protected  void preUpdate(){
+    protected  void preUpdate() {
         updateAt = TimeUtil.now();
     }
 }
