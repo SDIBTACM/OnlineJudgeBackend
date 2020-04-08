@@ -1,5 +1,9 @@
 # Project exclude paths
-/target/
-/LOG_PATH_IS_UNDEFINED/
-/.idea/
-/config/application.yml
+target/
+LOG_PATH_IS_UNDEFINED/
+
+# IDE Files
+.idea/
+
+# Runtime config
+config/application.yml
