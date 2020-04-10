@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @ToString
 @EqualsAndHashCode
 @MappedSuperclass
-public class BaseEntity {
+public class BaseEntityWithDeleteTs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

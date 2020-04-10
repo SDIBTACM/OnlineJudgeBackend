@@ -18,3 +18,6 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update
+
+  proxy:
+    trusts: "127.0.0.1/8,::1/128"

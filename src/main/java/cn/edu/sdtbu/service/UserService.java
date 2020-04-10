@@ -18,7 +18,7 @@ public interface UserService {
 
     /**
      * update user info
-     * @param userEntity user entiry
+     * @param userEntity user entity
      * @return           is updated
      */
     boolean updateUser(UserEntity userEntity);
@@ -30,7 +30,28 @@ public interface UserService {
      */
     UserEntity queryUserById(Long userId);
 
-    UserEntity login(String userName, String password);
+    /**
+     * use email or username as identify and login with password
+     * @param identify username or email
+     * @param password string
+     * @param requestIp where user login from
+     * @return  user info
+     */
+    UserEntity login(String identify, String password, String requestIp);
 
-    UserEntity login(String rememberToken);
+    /**
+     * login by remember token
+     * @param rememberToken a jwt string to verify user identify
+     * @param requestIp where user login from
+     * @return user info
+     */
+    UserEntity login(String rememberToken, String requestIp);
+
+    /**
+     * login by remember token
+     * @param entity user info
+     * @param requestIp where user login from
+     * @return jwt type string
+     */
+    String generateRememberToken(UserEntity entity, String requestIp);
 }

@@ -4,14 +4,15 @@ import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
+import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -40,30 +41,34 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@NotBlank @RequestParam String userName,
+    public ResponseEntity<String> login(@NotBlank @RequestParam String username,
                                         @NotBlank @RequestParam String password,
+                                        @RequestParam boolean remember,
+                                        HttpServletRequest request,
                                         @ApiIgnore HttpSession session,
-                                        @ApiIgnore HttpServletResponse response){
-        UserEntity userEntity = userService.login(userName, password);
+                                        @ApiIgnore HttpServletResponse response) {
+        UserEntity userEntity = userService.login(username, password);
         log.debug("{} is login", userEntity);
         session.setAttribute(Const.USER_SESSION_INFO, userEntity);
-        response.addCookie(new Cookie(Const.ACCOUNT_TOKEN, userEntity.getRememberToken()));
+        if (remember) {
+            response.addCookie(new Cookie(Const.REMEMBER_TOKEN, userService.generateRememberToken(userEntity, RequestIpUtil.getClientIp(request))));
+        }
         return ResponseEntity.ok("success");
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@ApiIgnore HttpSession session,
-                                         @ApiIgnore HttpServletResponse response){
+                                         @ApiIgnore HttpServletResponse response) {
         log.debug("{} is logout", session.getAttribute(Const.USER_SESSION_INFO));
         session.removeAttribute(Const.USER_SESSION_INFO);
-        response.addCookie(Const.EMPTY_ACCOUNT_COOKIE);
+        response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
         return ResponseEntity.ok("success");
     }
 
     @PutMapping
-    public ResponseEntity<String> register(@RequestBody @Valid UserRegisterParam registerAO) {
-        log.debug("registered: {}", registerAO.toString());
-        userService.addUser(registerAO);
+    public ResponseEntity<String> register(@RequestBody @Valid UserRegisterParam registerAo) {
+        log.debug("registered: {}", registerAo.toString());
+        userService.addUser(registerAo);
         return ResponseEntity.ok("registered");
     }
 

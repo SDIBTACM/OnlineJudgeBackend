@@ -1,20 +1,30 @@
 package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.ExistException;
-import cn.edu.sdtbu.exception.NotAcceptableException;
+import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.EncryptionUtil;
 import cn.edu.sdtbu.util.SpringBeanUtil;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Date;
+
+import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
+
 
 /**
  * @author bestsort
@@ -42,10 +52,11 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public boolean addUser(UserRegisterParam ao) {
-        ao.setPassword(EncryptionUtil.sha256(ao.getPassword(), ao.getUserName()));
-        if (userRepository.countByUserNameOrEmail(ao.getUserName(), ao.getEmail()) != 0) {
+        if (userRepository.countByUsernameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
             throw new ExistException("user name or email is registered");
         }
+        // Use BCrypt for other language service
+        ao.setPassword(BCrypt.hashpw(ao.getPassword(), BCrypt.gensalt()));
         userRepository.saveAndFlush(
             ao.transformToEntity(UserEntity.getUserEntityWithDefault())
         );
@@ -69,16 +80,53 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity login(String userName, String password) {
-        Optional<UserEntity> optional= userRepository.findByUserNameAndPassword(userName, EncryptionUtil.sha256(password, userName));
-        UserEntity entity = optional.orElseThrow(() -> new NotAcceptableException("account or password error"));
-        entity.setRememberToken(UUID.randomUUID().toString());
-        userRepository.saveAndFlush(entity);
+    public UserEntity login(String identify, String password, String requestIp) {
+        Optional<UserEntity> optional;
+        if (EmailValidator.getInstance(true, false).isValid(identify)) {
+            optional = userRepository.findByEmail(identify);
+        } else {
+            optional = userRepository.findByUsername(identify);
+        }
+
+        UserEntity entity = optional.orElseThrow(() -> new ForbiddenException("identify or password error"));
+        if (!BCrypt.checkpw(password, entity.getPassword())) {
+            throw new ForbiddenException("identify or password error");
+        }
+
         return entity;
     }
 
     @Override
-    public UserEntity login(String rememberToken) {
-        return userRepository.findByRememberToken(rememberToken).orElseThrow(()->new NotFoundException("not found such user"));
+    public UserEntity login(String rememberToken, String requestIp) {
+        DecodedJWT jwtUnVerify = JWT.decode(rememberToken);
+        Optional<UserEntity> optional = userRepository.findByUsername(jwtUnVerify.getClaim("username").asString());
+        UserEntity entity = optional.orElseThrow(() -> new NotFoundException("who are you"));
+
+        Algorithm algorithm = Algorithm.HMAC256(entity.getPassword() + entity.getRememberToken());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        try {
+            verifier.verify(rememberToken);
+        } catch (Exception e) {
+            log.warn("well, someone try to act as " + entity.getUsername());
+            throw new ForbiddenException("not found such user");
+        }
+        return entity;
+    }
+
+
+    @Override
+    public String generateRememberToken(UserEntity entity, String requestIp) {
+        // 使用用户的密码 hash + remember token 作为 remember token jwt 的加密密钥
+        // 如果用户修改了密码，则 token 会全部失效
+        Algorithm algorithm = Algorithm.HMAC256(entity.getPassword() + entity.getRememberToken());
+
+        return JWT.create()
+            .withClaim("username", entity.getUsername())
+            .withClaim("ip when sign", requestIp)
+            .withSubject("oh, it's you")
+            .withIssuer("cn.edu.sdtbu.acm.userService")
+            .withIssuedAt(new Date(System.currentTimeMillis()))
+            .withExpiresAt(new Date(System.currentTimeMillis() + REMEMBER_TOKEN_EXPRESS_TIME))
+            .sign(algorithm);
     }
 }

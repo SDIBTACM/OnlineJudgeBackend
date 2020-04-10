@@ -21,12 +21,12 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class UserRegisterParam {
     @NotBlank
-    private String userName;
+    private String username;
 
     @NotBlank
     private String nickname;
 
-    @Size(min = 6, max = 16)
+    @Size(min = 7)
     private String password;
 
     @NotBlank

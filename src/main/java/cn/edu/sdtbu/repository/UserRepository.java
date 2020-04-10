@@ -14,19 +14,25 @@ import java.util.Optional;
 public interface UserRepository extends BaseRepository<UserEntity, Long> {
     /**
      * count by user name or email
-     * @param userName user name
+     * @param username user name
      * @param email    email
      * @return         result
      */
-    int countByUserNameOrEmail(String userName, String email);
+    int countByUsernameOrEmail(String username, String email);
 
     /**
      * find user info by user name and password
-     * @param userName name
-     * @param password password
+     * @param username name
      * @return         user info
      */
-    Optional<UserEntity> findByUserNameAndPassword(String userName, String password);
+    Optional<UserEntity> findByUsername(String username);
+
+    /**
+     * find user info by user name and password
+     * @param email name
+     * @return         user info
+     */
+    Optional<UserEntity> findByEmail(String email);
 
     /**
      * find by token

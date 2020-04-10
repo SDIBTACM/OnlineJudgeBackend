@@ -19,11 +19,16 @@ public class Const {
 
     public static final String USER_SESSION_INFO = "user_session_info";
     public static final String ACCOUNT_TOKEN = "account_token";
-    public static final Cookie EMPTY_ACCOUNT_COOKIE = new Cookie(ACCOUNT_TOKEN, "");
+    public static final String REMEMBER_TOKEN = "rememberToken";
+    public static final Cookie EMPTY_REMEMBER_TOKEN = new Cookie(ACCOUNT_TOKEN, "");
+
+
+    @SuppressWarnings({"NumericOverflow", "AlibabaCommentsMustBeJavadocFormat"})
+    public static final long REMEMBER_TOKEN_EXPRESS_TIME = 30 * 24 * 60 * 60 * 1000;
 
     // init
     static {
-        EMPTY_ACCOUNT_COOKIE.setMaxAge(0);
-        EMPTY_ACCOUNT_COOKIE.setPath("/");
+        EMPTY_REMEMBER_TOKEN.setMaxAge(0);
+        EMPTY_REMEMBER_TOKEN.setPath("/");
     }
 }

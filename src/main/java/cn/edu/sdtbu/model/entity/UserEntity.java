@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import java.util.UUID;
 
 /**
  * user entity
@@ -20,17 +21,16 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "user", indexes = {
-        @Index(name = "uk_user_name", columnList = "user_name", unique = true),
-        @Index(name = "uk_email", columnList = "email", unique = true),
+        @Index(name = "uk_username_delete", columnList = "username", unique = true),
+        @Index(name = "uk_email_delete", columnList = "email", unique = true),
         @Index(name = "uk_remember_token", columnList = "remember_token", unique = true),
-        @Index(name = "idx_nickname", columnList = "nickname")
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class UserEntity extends BaseEntity {
+public class UserEntity extends BaseEntityWithDeleteTs {
 
-    @Column(name = "user_name", length = 64, nullable = false)
-    String userName;
+    @Column(name = "username", length = 64, nullable = false)
+    String username;
 
     @Column(name = "nickname", length = 64, nullable = false)
     String nickname;
@@ -60,7 +60,7 @@ public class UserEntity extends BaseEntity {
         UserEntity userEntity = new UserEntity();
         userEntity.setRole(UserRole.STUDENT);
         userEntity.setStatus(UserStatus.NORMAL);
-        userEntity.setRememberToken("EMPTY");
+        userEntity.setRememberToken(UUID.randomUUID().toString());
         return userEntity;
     }
 }

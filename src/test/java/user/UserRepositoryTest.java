@@ -5,7 +5,6 @@ import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.EncryptionUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +34,11 @@ public class UserRepositoryTest {
     @Test
     public void transformToEntityTest(){
         UserRegisterParam userRegisterParam = new UserRegisterParam();
-        userRegisterParam.setUserName("123");
+        userRegisterParam.setUsername("123");
         userRegisterParam.setEmail("123");
         userRegisterParam.setNickname("123");
         UserEntity userEntity = userRegisterParam.transformToEntity();
-        assert userEntity.getUserName().equals(userRegisterParam.getUserName());
+        assert userEntity.getUsername().equals(userRegisterParam.getUsername());
         assert userEntity.getEmail().equals(userRegisterParam.getEmail());
         assert userEntity.getNickname().equals(userRegisterParam.getNickname());
     }
@@ -50,7 +49,7 @@ public class UserRepositoryTest {
         userEntity.setNickname("nickName");
         userEntity.setPassword("password");
         userEntity.setSchool("school");
-        userEntity.setUserName("name");
+        userEntity.setUsername("name");
         userEntity =  repository.saveAndFlush(userEntity);
         assert userEntity.getId() != null;
         return userEntity;

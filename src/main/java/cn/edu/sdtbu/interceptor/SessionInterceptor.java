@@ -4,6 +4,7 @@ import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
+import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,19 +26,20 @@ public class SessionInterceptor implements HandlerInterceptor {
     UserService userService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         UserEntity userEntity = (UserEntity) request.getSession().getAttribute(Const.USER_SESSION_INFO);
-        if (userEntity == null && request.getCookies() != null){
-            for (Cookie cookie : request.getCookies()){
-                if (Const.ACCOUNT_TOKEN.equals(cookie.getName())){
+        if (userEntity == null && request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (Const.REMEMBER_TOKEN.equals(cookie.getName())) {
                     try {
-                        userEntity = userService.login(cookie.getValue());
+                        userEntity = userService.login(cookie.getValue(), RequestIpUtil.getClientIp(request));
                         request.setAttribute(Const.USER_SESSION_INFO, userEntity);
+                        log.debug("user {} login by cookie", userEntity.getUsername());
                     } catch (NotFoundException ignore) {}
                 }
             }
         }
-        log.debug("user {} login by cookie", userEntity);
+
         return true;
     }
 
