@@ -1,11 +1,13 @@
 package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.model.ao.UserAO;
+import cn.edu.sdtbu.model.ao.UserRegisterAO;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
+import cn.edu.sdtbu.util.EncryptionUtil;
 import cn.edu.sdtbu.util.SpringBeanUtil;
+import com.google.common.primitives.UnsignedLong;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public UserEntity findById(int userId) {
+    public UserEntity findById(Long userId) {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         return userEntity.orElseThrow(() ->
             new NotFoundException(
@@ -39,9 +41,10 @@ public class UserServiceImpl implements UserService {
         );
     }
     @Override
-    public boolean addUser(UserAO userAO) {
+    public boolean addUser(UserRegisterAO ao) {
+        ao.setPassword(EncryptionUtil.sha256(ao.getPassword(), ao.getUserName()));
         userRepository.saveAndFlush(
-            userAO.transformToEntity(UserEntity.getUserEntityWithDefault())
+            ao.transformToEntity(UserEntity.getUserEntityWithDefault())
         );
         return true;
     }
@@ -57,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity queryUserById(int userId) {
+    public UserEntity queryUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
             new NotFoundException("not found this user witch id is " + userId)
         );

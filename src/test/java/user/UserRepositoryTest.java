@@ -1,7 +1,7 @@
 package user;
 
 import cn.edu.sdtbu.Application;
-import cn.edu.sdtbu.model.ao.UserAO;
+import cn.edu.sdtbu.model.ao.UserRegisterAO;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
@@ -33,14 +33,14 @@ public class UserRepositoryTest {
 
     @Test
     public void transformToEntityTest(){
-        UserAO userAO = new UserAO();
-        userAO.setUserName("123");
-        userAO.setEmail("123");
-        userAO.setNickname("123");
-        UserEntity userEntity = userAO.transformToEntity();
-        assert userEntity.getUserName().equals(userAO.getUserName());
-        assert userEntity.getEmail().equals(userAO.getEmail());
-        assert userEntity.getNickname().equals(userAO.getNickname());
+        UserRegisterAO userRegisterAO = new UserRegisterAO();
+        userRegisterAO.setUserName("123");
+        userRegisterAO.setEmail("123");
+        userRegisterAO.setNickname("123");
+        UserEntity userEntity = userRegisterAO.transformToEntity();
+        assert userEntity.getUserName().equals(userRegisterAO.getUserName());
+        assert userEntity.getEmail().equals(userRegisterAO.getEmail());
+        assert userEntity.getNickname().equals(userRegisterAO.getNickname());
     }
 
     UserEntity insertUserEntityTest(){
@@ -66,7 +66,7 @@ public class UserRepositoryTest {
         assert after.getRememberToken().equals("afterUpdate");
     }
 
-    UserEntity queryUserEntityById(int userId){
+    UserEntity queryUserEntityById(Long userId){
         return userService.queryUserById(userId);
     }
 

@@ -116,12 +116,12 @@
     </logger>
 
     <!-- 默认 spring boot 导入 hibernate 很多的依赖包，启动的时候，会有 hibernate 相关的内容，直接去除 -->
-    <logger name="org.hibernate.validator" additivity="false">
-        <level value="ERROR"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="errorAppender"/>
-    </logger>
-    <root level="INFO">
+<!--    <logger name="org.hibernate.validator" additivity="true">-->
+<!--        <level value="ERROR"/>-->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--        <appender-ref ref="errorAppender"/>-->
+<!--    </logger>-->
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
 
         <!--

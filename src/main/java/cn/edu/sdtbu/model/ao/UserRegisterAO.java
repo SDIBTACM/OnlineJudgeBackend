@@ -1,8 +1,14 @@
 package cn.edu.sdtbu.model.ao;
 
 import cn.edu.sdtbu.model.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * user register model
@@ -11,11 +17,23 @@ import org.springframework.beans.BeanUtils;
  * @date 2020-04-07 15:30
  */
 @Data
-public class UserAO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserRegisterAO {
+    @NotBlank
     private String userName;
+
+    @NotBlank
     private String nickname;
+
+    @Size(min = 6, max = 16)
     private String password;
+
+    @NotBlank
     private String school;
+
+    @Email
+    @NotBlank
     private String email;
 
     public UserEntity transformToEntity() {

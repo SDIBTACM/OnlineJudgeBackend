@@ -1,7 +1,8 @@
 package cn.edu.sdtbu.service;
 
-import cn.edu.sdtbu.model.ao.UserAO;
+import cn.edu.sdtbu.model.ao.UserRegisterAO;
 import cn.edu.sdtbu.model.entity.UserEntity;
+import com.google.common.primitives.UnsignedLong;
 
 /**
  * @author bestsort
@@ -11,10 +12,10 @@ import cn.edu.sdtbu.model.entity.UserEntity;
 public interface UserService {
     /**
      * insert user info
-     * @param userAO    user entity info
+     * @param userRegisterAO    user entity info
      * @return          is inserted
      */
-    boolean addUser(UserAO userAO);
+    boolean addUser(UserRegisterAO userRegisterAO);
 
     /**
      * update user info
@@ -28,5 +29,5 @@ public interface UserService {
      * @param userId    user id
      * @return          user info
      */
-    UserEntity queryUserById(int userId);
+    UserEntity queryUserById(Long userId);
 }

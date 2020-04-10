@@ -54,7 +54,7 @@ public class UserEntity extends BaseEntity {
         UserEntity userEntity = new UserEntity();
         userEntity.setRole(UserRole.STUDENT);
         userEntity.setStatus(UserStatus.NORMAL);
-        userEntity.setRememberToken("");
+        userEntity.setRememberToken("EMPTY");
         return userEntity;
     }
 }
