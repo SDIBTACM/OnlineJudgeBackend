@@ -2,7 +2,6 @@ package cn.edu.sdtbu.model.entity;
 
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.util.TimeUtil;
-import com.google.common.primitives.UnsignedLong;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

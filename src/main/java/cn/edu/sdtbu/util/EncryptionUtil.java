@@ -11,10 +11,10 @@ import java.security.NoSuchAlgorithmException;
  * @date 2020-04-10 18:26
  */
 public class EncryptionUtil {
-    public static String sha256(String source, String salt){
+    public static String sha256(String source, String salt) {
         return sha256(source + salt);
     }
-    public static String sha256(String source, long ){
+    public static String sha256(String source) {
         MessageDigest messageDigest;
         String encodeStr = "";
         try {
@@ -29,7 +29,7 @@ public class EncryptionUtil {
     /**
      * byte to hex
      */
-    private static String byte2Hex(byte[] bytes){
+    private static String byte2Hex(byte[] bytes) {
         StringBuilder stringBuffer = new StringBuilder();
         String temp;
         for (byte byt : bytes) {

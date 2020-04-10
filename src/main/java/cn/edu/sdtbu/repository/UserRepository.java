@@ -2,7 +2,6 @@ package cn.edu.sdtbu.repository;
 
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
-import com.google.common.primitives.UnsignedLong;
 
 /**
  * user repository
@@ -11,4 +10,12 @@ import com.google.common.primitives.UnsignedLong;
  * @date 2020-4-6 20:56
  */
 public interface UserRepository extends BaseRepository<UserEntity, Long> {
+    /**
+     * count by user name or email
+     * @param userName user name
+     * @param email    email
+     * @return         result
+     */
+    int countByUserNameOrEmail(String userName, String email);
+
 }

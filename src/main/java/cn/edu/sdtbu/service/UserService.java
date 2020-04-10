@@ -2,7 +2,6 @@ package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.model.ao.UserRegisterAO;
 import cn.edu.sdtbu.model.entity.UserEntity;
-import com.google.common.primitives.UnsignedLong;
 
 /**
  * @author bestsort

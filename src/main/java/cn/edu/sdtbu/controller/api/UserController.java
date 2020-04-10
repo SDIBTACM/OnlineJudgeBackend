@@ -3,14 +3,12 @@ package cn.edu.sdtbu.controller.api;
 import cn.edu.sdtbu.model.ao.UserRegisterAO;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.service.UserService;
-import com.google.common.primitives.UnsignedLong;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.*;
-import java.util.Set;
+import javax.validation.Valid;
 
 /**
  * @author bestsort

@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.ao.UserRegisterAO;
 import cn.edu.sdtbu.model.entity.UserEntity;
@@ -7,7 +8,6 @@ import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.EncryptionUtil;
 import cn.edu.sdtbu.util.SpringBeanUtil;
-import com.google.common.primitives.UnsignedLong;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * TODO
- *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 21:02
@@ -43,6 +41,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean addUser(UserRegisterAO ao) {
         ao.setPassword(EncryptionUtil.sha256(ao.getPassword(), ao.getUserName()));
+        if (userRepository.countByUserNameOrEmail(ao.getUserName(), ao.getEmail()) != 0) {
+            throw new ExistException("user name or email is registered");
+        }
         userRepository.saveAndFlush(
             ao.transformToEntity(UserEntity.getUserEntityWithDefault())
         );

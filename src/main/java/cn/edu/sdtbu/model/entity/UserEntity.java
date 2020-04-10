@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -18,15 +19,19 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "user") //TODO create index
+@Table(name = "user", indexes = {
+        @Index(name = "uk_user_name", columnList = "user_name", unique = true),
+        @Index(name = "uk_email", columnList = "email", unique = true),
+        @Index(name = "idx_nickname", columnList = "nickname")
+})
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntity {
 
-    @Column(length = 64, nullable = false)
+    @Column(name = "user_name", length = 64, nullable = false)
     String userName;
 
-    @Column(length = 64, nullable = false)
+    @Column(name = "nickname", length = 64, nullable = false)
     String nickname;
 
     @Column(nullable = false)
@@ -35,7 +40,7 @@ public class UserEntity extends BaseEntity {
     @Column(length = 32, nullable = false)
     String school;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     String email;
 
     @Column(length = 64, nullable = false)
