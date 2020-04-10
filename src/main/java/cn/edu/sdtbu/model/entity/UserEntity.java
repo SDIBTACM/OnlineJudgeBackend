@@ -22,6 +22,7 @@ import javax.persistence.Table;
 @Table(name = "user", indexes = {
         @Index(name = "uk_user_name", columnList = "user_name", unique = true),
         @Index(name = "uk_email", columnList = "email", unique = true),
+        @Index(name = "uk_remember_token", columnList = "remember_token", unique = true),
         @Index(name = "idx_nickname", columnList = "nickname")
 })
 @ToString
@@ -52,7 +53,7 @@ public class UserEntity extends BaseEntity {
     /**
      * used UUID
      */
-    @Column(length = 36)
+    @Column(name = "remember_token", length = 36)
     String rememberToken;
 
     public static UserEntity getUserEntityWithDefault() {

@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.ao;
+package cn.edu.sdtbu.model.param;
 
 import cn.edu.sdtbu.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisterAO {
+public class UserRegisterParam {
     @NotBlank
     private String userName;
 

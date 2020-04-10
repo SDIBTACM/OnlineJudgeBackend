@@ -3,6 +3,8 @@ package cn.edu.sdtbu.repository;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 
+import java.util.Optional;
+
 /**
  * user repository
  * @author bestsort
@@ -18,4 +20,18 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
      */
     int countByUserNameOrEmail(String userName, String email);
 
+    /**
+     * find user info by user name and password
+     * @param userName name
+     * @param password password
+     * @return         user info
+     */
+    Optional<UserEntity> findByUserNameAndPassword(String userName, String password);
+
+    /**
+     * find by token
+     * @param token token
+     * @return      token
+     */
+    Optional<UserEntity> findByRememberToken(String token);
 }

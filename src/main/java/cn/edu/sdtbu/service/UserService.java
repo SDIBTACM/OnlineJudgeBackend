@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service;
 
-import cn.edu.sdtbu.model.ao.UserRegisterAO;
+import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
 
 /**
@@ -11,10 +11,10 @@ import cn.edu.sdtbu.model.entity.UserEntity;
 public interface UserService {
     /**
      * insert user info
-     * @param userRegisterAO    user entity info
+     * @param userRegisterParam    user entity info
      * @return          is inserted
      */
-    boolean addUser(UserRegisterAO userRegisterAO);
+    boolean addUser(UserRegisterParam userRegisterParam);
 
     /**
      * update user info
@@ -29,4 +29,8 @@ public interface UserService {
      * @return          user info
      */
     UserEntity queryUserById(Long userId);
+
+    UserEntity login(String userName, String password);
+
+    UserEntity login(String rememberToken);
 }

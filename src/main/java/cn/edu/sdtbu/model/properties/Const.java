@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.model.properties;
 
+import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 
 /**
@@ -15,4 +16,14 @@ public class Const {
     public static final Timestamp TIME_ZERO = Timestamp.valueOf("1900-1-1 00:00:00");
 
     public static final String ONLINE_JUDGE_VERSION = "1.0";
+
+    public static final String USER_SESSION_INFO = "user_session_info";
+    public static final String ACCOUNT_TOKEN = "account_token";
+    public static final Cookie EMPTY_ACCOUNT_COOKIE = new Cookie(ACCOUNT_TOKEN, "");
+
+    // init
+    static {
+        EMPTY_ACCOUNT_COOKIE.setMaxAge(0);
+        EMPTY_ACCOUNT_COOKIE.setPath("/");
+    }
 }

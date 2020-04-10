@@ -1,10 +1,11 @@
 package user;
 
 import cn.edu.sdtbu.Application;
-import cn.edu.sdtbu.model.ao.UserRegisterAO;
+import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
+import cn.edu.sdtbu.util.EncryptionUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,14 @@ public class UserRepositoryTest {
 
     @Test
     public void transformToEntityTest(){
-        UserRegisterAO userRegisterAO = new UserRegisterAO();
-        userRegisterAO.setUserName("123");
-        userRegisterAO.setEmail("123");
-        userRegisterAO.setNickname("123");
-        UserEntity userEntity = userRegisterAO.transformToEntity();
-        assert userEntity.getUserName().equals(userRegisterAO.getUserName());
-        assert userEntity.getEmail().equals(userRegisterAO.getEmail());
-        assert userEntity.getNickname().equals(userRegisterAO.getNickname());
+        UserRegisterParam userRegisterParam = new UserRegisterParam();
+        userRegisterParam.setUserName("123");
+        userRegisterParam.setEmail("123");
+        userRegisterParam.setNickname("123");
+        UserEntity userEntity = userRegisterParam.transformToEntity();
+        assert userEntity.getUserName().equals(userRegisterParam.getUserName());
+        assert userEntity.getEmail().equals(userRegisterParam.getEmail());
+        assert userEntity.getNickname().equals(userRegisterParam.getNickname());
     }
 
     UserEntity insertUserEntityTest(){
