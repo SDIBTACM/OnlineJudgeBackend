@@ -1,15 +1,19 @@
 package user;
 
 import cn.edu.sdtbu.Application;
-import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.repository.UserRepository;
-import cn.edu.sdtbu.service.UserService;
+import cn.edu.sdtbu.service.impl.UserServiceImpl;
+import cn.edu.sdtbu.util.TimeUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author bestsort
@@ -24,12 +28,19 @@ public class UserRepositoryTest {
     UserRepository repository;
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
     @Test
-    public void userEntityCrudTest(){
+    public void userEntityCrudTest() throws Exception{
         UserEntity entity = insertUserEntityTest();
         updateUserEntityTest(entity);
+        insertUserEntityTest();
+        assert 1 == countUserEntityTest(entity);
+        try {
+            insertUserEntityTest();
+            fail();
+        } catch (DataIntegrityViolationException ignore){ }
     }
+
 
     @Test
     public void transformToEntityTest(){
@@ -43,6 +54,9 @@ public class UserRepositoryTest {
         assert userEntity.getNickname().equals(userRegisterParam.getNickname());
     }
 
+    int countUserEntityTest(UserEntity entity){
+        return userService.countByUserNameOrEmail(entity.getUsername(), entity.getEmail());
+    }
     UserEntity insertUserEntityTest(){
         UserEntity userEntity = UserEntity.getUserEntityWithDefault();
         userEntity.setEmail("email");
@@ -59,6 +73,7 @@ public class UserRepositoryTest {
         UserEntity after = new UserEntity();
         after.setRememberToken("afterUpdate");
         after.setId(before.getId());
+        after.setDeleteAt(TimeUtil.now());
         userService.updateUser(after);
         after = userService.queryUserById(before.getId());
         assert before.getNickname().equals(after.getNickname());

@@ -5,6 +5,7 @@ import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserRegisterParam;
+import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.SpringBeanUtil;
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public boolean addUser(UserRegisterParam ao) {
-        if (userRepository.countByUsernameAndIsDeleteFalseOrEmailAndIsDeleteFalse(ao.getUsername(), ao.getEmail()) != 0) {
+        if (countByUserNameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
             throw new ExistException("user name or email is registered");
         }
         // Use BCrypt for other language service
@@ -80,9 +81,9 @@ public class UserServiceImpl implements UserService {
     public UserEntity login(String identify, String password, String requestIp) {
         Optional<UserEntity> optional;
         if (EmailValidator.getInstance(true, false).isValid(identify)) {
-            optional = userRepository.findByEmailAndIsDeleteFalse(identify);
+            optional = userRepository.findByEmailAndDeleteAtEquals(identify, Const.TIME_ZERO);
         } else {
-            optional = userRepository.findByUsername(identify);
+            optional = userRepository.findByUsernameAndDeleteAtEquals(identify, Const.TIME_ZERO);
         }
         if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
             throw new ForbiddenException("identify or password error");
@@ -93,7 +94,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity login(String rememberToken, String requestIp) {
         DecodedJWT jwtUnVerify = JWT.decode(rememberToken);
-        Optional<UserEntity> optional = userRepository.findByUsername(jwtUnVerify.getClaim("username").asString());
+        Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
+                jwtUnVerify.getClaim("username").asString(), Const.TIME_ZERO);
         UserEntity entity = optional.orElseThrow(() -> new NotFoundException("who are you"));
 
         Algorithm algorithm = Algorithm.HMAC256(entity.getPassword() + entity.getRememberToken());
@@ -106,7 +108,6 @@ public class UserServiceImpl implements UserService {
         }
         return entity;
     }
-
 
     @Override
     public String generateRememberToken(UserEntity entity, String requestIp) {
@@ -122,5 +123,9 @@ public class UserServiceImpl implements UserService {
             .withIssuedAt(new Date(System.currentTimeMillis()))
             .withExpiresAt(new Date(System.currentTimeMillis() + REMEMBER_TOKEN_EXPRESS_TIME))
             .sign(algorithm);
+    }
+
+    public int countByUserNameOrEmail(String name, String email){
+        return userRepository.countByUserNameOrEmail(name, email, Const.TIME_ZERO);
     }
 }

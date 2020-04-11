@@ -2,7 +2,9 @@ package cn.edu.sdtbu.repository;
 
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
 /**
@@ -16,27 +18,32 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
      * count by user name or email
      * @param username user name
      * @param email    email
+     * @param deleteAt deleted time
      * @return         result
      */
-    int countByUsernameAndIsDeleteFalseOrEmailAndIsDeleteFalse(String username, String email);
-
+    @Query(value = "select count(*) from user u where " +
+            "(u.username=?1 and u.delete_at=?3) or (u.email=?2 and u.delete_at=?3)",nativeQuery=true)
+    int countByUserNameOrEmail(String username, String email, Timestamp deleteAt);
     /**
-     * find user info by user name and password
+     * find user info by user name
      * @param username name
-     * @return         user info
+     * @param deleteAt deleted time
+     * @return user info
      */
-    Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByUsernameAndDeleteAtEquals(String username, Timestamp deleteAt);
     /**
      * find user info by user name and password
      * @param email name
-     * @return         user info
+     * @param deleteAt deleted time
+     * @return user info
      */
-    Optional<UserEntity> findByEmailAndIsDeleteFalse(String email);
+    Optional<UserEntity> findByEmailAndDeleteAtEquals(String email, Timestamp deleteAt);
 
     /**
      * find by token
-     * @param token token
-     * @return      token
+     * @param token not null
+     * @param deleteAt deleted time
+     * @return token
      */
-    Optional<UserEntity> findByRememberTokenAndIsDeleteFalse(String token);
+    Optional<UserEntity> findByRememberTokenAndDeleteAtEquals(String token, Timestamp deleteAt);
 }

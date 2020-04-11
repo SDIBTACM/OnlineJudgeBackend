@@ -19,9 +19,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "user",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "deleted"}),
-                @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "deleted"}),
-                @UniqueConstraint(name = "uk_token_delete", columnNames = {"remember_token", "deleted"})
+                @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "delete_at"}),
+                @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "delete_at"}),
+                @UniqueConstraint(name = "uk_token_delete", columnNames = {"remember_token", "delete_at"})
         })
 @ToString
 @EqualsAndHashCode(callSuper = true)
