@@ -7,6 +7,7 @@ import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.repository.UserRepository;
+import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.SpringBeanUtil;
 import com.auth0.jwt.JWT;
@@ -34,9 +35,10 @@ import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
-
+    private final LoginLogService loginLogService;
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(LoginLogService loginLogService, UserRepository userRepository) {
+        this.loginLogService = loginLogService;
         this.userRepository = userRepository;
     }
 
@@ -88,6 +90,7 @@ public class UserServiceImpl implements UserService {
         if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
             throw new ForbiddenException("identify or password error");
         }
+        userLogin(optional.get(), requestIp);
         return optional.get();
     }
 
@@ -97,6 +100,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
                 jwtUnVerify.getClaim("username").asString(), Const.TIME_ZERO);
         UserEntity entity = optional.orElseThrow(() -> new NotFoundException("who are you"));
+        userLogin(entity, requestIp);
 
         Algorithm algorithm = Algorithm.HMAC256(entity.getPassword() + entity.getRememberToken());
         JWTVerifier verifier = JWT.require(algorithm).build();
@@ -127,5 +131,10 @@ public class UserServiceImpl implements UserService {
 
     public int countByUserNameOrEmail(String name, String email) {
         return userRepository.countByUserNameOrEmail(name, email, Const.TIME_ZERO);
+    }
+
+    private void userLogin(UserEntity user, String requestIp) {
+        log.info("user [{}] login from [{}]", user.getUsername(), requestIp);
+        loginLogService.login(user.getId(), requestIp);
     }
 }

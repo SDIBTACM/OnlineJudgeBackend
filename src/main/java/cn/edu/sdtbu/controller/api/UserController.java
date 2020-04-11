@@ -1,11 +1,16 @@
 package cn.edu.sdtbu.controller.api;
 
-import cn.edu.sdtbu.model.param.UserRegisterParam;
+import cn.edu.sdtbu.model.entity.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -17,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 /**
  * @author bestsort
@@ -30,7 +37,16 @@ import javax.validation.constraints.NotBlank;
 public class UserController {
     @Resource
     UserService userService;
+    @Resource
+    LoginLogService logService;
 
+    @GetMapping("/loginLog/{userId}")
+    public Page<LoginLogEntity> loginLog(@PathVariable Long userId,
+                                         @PageableDefault(sort = "updateTime", direction = DESC) Pageable pageable,
+                                         @ApiIgnore HttpSession session) {
+        //TODO authentication
+        return logService.select(userId, pageable);
+    }
     @PostMapping("/{userId}")
     public ResponseEntity<String> updateUserById(
             @RequestBody UserEntity userEntity,

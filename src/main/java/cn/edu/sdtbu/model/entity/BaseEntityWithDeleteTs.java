@@ -1,12 +1,13 @@
 package cn.edu.sdtbu.model.entity;
 
 import cn.edu.sdtbu.model.properties.Const;
-import cn.edu.sdtbu.util.TimeUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 import java.sql.Timestamp;
 
 /**
@@ -18,36 +19,16 @@ import java.sql.Timestamp;
 
 @Data
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
-public class BaseEntityWithDeleteTs {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column
-    private Timestamp createAt;
-
-    @Column
-    private Timestamp updateAt;
-
+public class BaseEntityWithDeleteTs extends BaseEntity {
     @Column(name = "delete_at")
     private Timestamp deleteAt;
+
     @PrePersist
-    protected void prePersist() {
-        Timestamp now = TimeUtil.now();
-        if (createAt == null) {
-            createAt = now;
-        }
-        if (updateAt == null) {
-            updateAt = now;
-        }
+    protected void prePersistDelete() {
         if (deleteAt == null) {
             deleteAt = Const.TIME_ZERO;
         }
-    }
-    @PreUpdate
-    protected  void preUpdate() {
-        updateAt = TimeUtil.now();
     }
 }

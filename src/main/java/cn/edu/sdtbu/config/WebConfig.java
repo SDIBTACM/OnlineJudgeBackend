@@ -21,7 +21,7 @@ import java.util.List;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
     CookieInterceptor cookieInterceptor;
-    public WebConfig(CookieInterceptor cookieInterceptor){
+    public WebConfig(CookieInterceptor cookieInterceptor) {
         this.cookieInterceptor = cookieInterceptor;
     }
 
@@ -35,7 +35,7 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("classpath:/public/");
     }
     @Override
-    public void addInterceptors(InterceptorRegistry registry){
+    public void addInterceptors(InterceptorRegistry registry) {
         List<String> exclude = new ArrayList<>(8);
         exclude.add("/js/**");
         exclude.add("/css/**");
