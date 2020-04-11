@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         try {
             verifier.verify(rememberToken);
         } catch (Exception e) {
-            log.warn("well, someone try to act as " + entity.getUsername());
+            log.info("well, someone try to act as " + entity.getUsername());
             throw new ForbiddenException("not found such user");
         }
         return entity;
@@ -117,13 +117,13 @@ public class UserServiceImpl implements UserService {
     public String generateRememberToken(UserEntity entity, String requestIp) {
         // 使用用户的密码 hash + remember token 作为 remember token jwt 的加密密钥
         // 如果用户修改了密码，则 token 会全部失效
-        Algorithm algorithm = Algorithm.HMAC256(entity.getPassword() + entity.getRememberToken());
+        Algorithm algorithm = Algorithm.HMAC512(entity.getPassword() + entity.getRememberToken());
 
         return JWT.create()
             .withClaim("username", entity.getUsername())
             .withClaim("ip when sign", requestIp)
             .withSubject("oh, it's you")
-            .withIssuer("cn.edu.sdtbu.acm.userService")
+            .withIssuer("cn.edu.sdtbu.acm.UserService.remember")
             .withIssuedAt(new Date(System.currentTimeMillis()))
             .withExpiresAt(new Date(System.currentTimeMillis() + REMEMBER_TOKEN_EXPRESS_TIME))
             .sign(algorithm);

@@ -23,7 +23,7 @@ public class Const {
     public static final String USER_SESSION_INFO = "user_session_info";
     public static final String ACCOUNT_TOKEN = "account_token";
     public static final String REMEMBER_TOKEN = "rememberToken";
-    public static final Cookie EMPTY_REMEMBER_TOKEN = new Cookie(ACCOUNT_TOKEN, "");
+    public static final Cookie EMPTY_REMEMBER_TOKEN = new Cookie(REMEMBER_TOKEN, "");
     public static final long REMEMBER_TOKEN_EXPRESS_TIME = TimeUtil.time2Mill(30, TimeUnit.DAYS);
 
     // init
