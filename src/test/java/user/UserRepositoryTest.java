@@ -30,7 +30,7 @@ public class UserRepositoryTest {
     @Autowired
     UserServiceImpl userService;
     @Test
-    public void userEntityCrudTest() throws Exception{
+    public void userEntityCrudTest(){
         UserEntity entity = insertUserEntityTest();
         updateUserEntityTest(entity);
         insertUserEntityTest();

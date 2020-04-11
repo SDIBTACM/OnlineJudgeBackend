@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
             .sign(algorithm);
     }
 
-    public int countByUserNameOrEmail(String name, String email){
+    public int countByUserNameOrEmail(String name, String email) {
         return userRepository.countByUserNameOrEmail(name, email, Const.TIME_ZERO);
     }
 }

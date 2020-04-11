@@ -16,7 +16,6 @@ public class TimeUtil {
     private static final long SECOND_TO_MINUTE = 60;
     private static final long MINUTE_TO_HOUR = 60;
     private static final long HOUR_TO_DAY = 24;
-
     public static Timestamp now() {
         return Timestamp.valueOf(LocalDateTime.now());
     }
@@ -30,7 +29,7 @@ public class TimeUtil {
      * @param timeUnit  unit
      * @return          millisecond
      */
-    private static long time2Mill(long times, TimeUnit timeUnit) {
+    public static long time2Mill(long times, TimeUnit timeUnit) {
 
         //really don't have 'break' keyword...
         switch (timeUnit) {

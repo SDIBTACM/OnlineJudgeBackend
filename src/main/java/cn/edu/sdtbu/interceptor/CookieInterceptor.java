@@ -6,6 +6,7 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,7 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 @Slf4j
-public class SessionInterceptor implements HandlerInterceptor {
+@Component
+public class CookieInterceptor implements HandlerInterceptor {
     @Resource
     UserService userService;
 
@@ -40,7 +42,6 @@ public class SessionInterceptor implements HandlerInterceptor {
                 }
             }
         }
-
         return true;
     }
 
