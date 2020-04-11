@@ -1,5 +1,4 @@
 spring:
-
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/onlinejudge?useUnicode=true&characterEncoding=UTF-8
     username: root
@@ -13,6 +12,7 @@ spring:
           db-type: mysql
           log-slow-sql: true
           slow-sql-millis: 2000
+
   jpa:
     database: mysql
     show-sql: false
