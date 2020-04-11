@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 /**
@@ -20,11 +17,12 @@ import java.util.UUID;
  */
 @Data
 @Entity
-@Table(name = "user", indexes = {
-        @Index(name = "uk_username_delete", columnList = "username", unique = true),
-        @Index(name = "uk_email_delete", columnList = "email", unique = true),
-        @Index(name = "uk_remember_token", columnList = "remember_token", unique = true),
-})
+@Table(name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "deleted"}),
+                @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "deleted"}),
+                @UniqueConstraint(name = "uk_token_delete", columnNames = {"remember_token", "deleted"})
+        })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntityWithDeleteTs {
@@ -41,7 +39,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(length = 32, nullable = false)
     String school;
 
-    @Column(name = "email", nullable = false)
+    @Column(length = 64, name = "email", nullable = false)
     String email;
 
     @Column(length = 64, nullable = false)

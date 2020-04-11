@@ -3,8 +3,8 @@ package cn.edu.sdtbu.service.impl;
 import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.SpringBeanUtil;
@@ -18,10 +18,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import java.util.Optional;
 import java.util.Date;
+import java.util.Optional;
 
 import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 
@@ -37,7 +35,6 @@ import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -52,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public boolean addUser(UserRegisterParam ao) {
-        if (userRepository.countByUsernameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
+        if (userRepository.countByUsernameAndIsDeleteFalseOrEmailAndIsDeleteFalse(ao.getUsername(), ao.getEmail()) != 0) {
             throw new ExistException("user name or email is registered");
         }
         // Use BCrypt for other language service
@@ -83,17 +80,14 @@ public class UserServiceImpl implements UserService {
     public UserEntity login(String identify, String password, String requestIp) {
         Optional<UserEntity> optional;
         if (EmailValidator.getInstance(true, false).isValid(identify)) {
-            optional = userRepository.findByEmail(identify);
+            optional = userRepository.findByEmailAndIsDeleteFalse(identify);
         } else {
             optional = userRepository.findByUsername(identify);
         }
-
-        UserEntity entity = optional.orElseThrow(() -> new ForbiddenException("identify or password error"));
-        if (!BCrypt.checkpw(password, entity.getPassword())) {
+        if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
             throw new ForbiddenException("identify or password error");
         }
-
-        return entity;
+        return optional.get();
     }
 
     @Override

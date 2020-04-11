@@ -18,7 +18,7 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
      * @param email    email
      * @return         result
      */
-    int countByUsernameOrEmail(String username, String email);
+    int countByUsernameAndIsDeleteFalseOrEmailAndIsDeleteFalse(String username, String email);
 
     /**
      * find user info by user name and password
@@ -26,18 +26,17 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
      * @return         user info
      */
     Optional<UserEntity> findByUsername(String username);
-
     /**
      * find user info by user name and password
      * @param email name
      * @return         user info
      */
-    Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findByEmailAndIsDeleteFalse(String email);
 
     /**
      * find by token
      * @param token token
      * @return      token
      */
-    Optional<UserEntity> findByRememberToken(String token);
+    Optional<UserEntity> findByRememberTokenAndIsDeleteFalse(String token);
 }

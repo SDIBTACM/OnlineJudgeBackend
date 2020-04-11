@@ -17,7 +17,6 @@ public class IpUtil {
 
     static final String IP_CUT = "/";
     static final int BYTE_SIZE = 8;
-
     /**
      * Checks if an IPv4 or IPv6 address is contained in the list of given IPs or subnets.
      * @param ip string
@@ -40,7 +39,7 @@ public class IpUtil {
      * @return bool
      */
     static public boolean isIpInSubnet(String ip, String subnet) {
-        if ( !isIp(ip) ) {
+        if (!isIp(ip)) {
             return false;
         }
 
@@ -67,7 +66,7 @@ public class IpUtil {
      * @return bool
      */
     static public boolean isIp(String ip) {
-         return isIpv4(ip) || isIpv6(ip);
+        return InetAddressValidator.getInstance().isValid(ip);
     }
 
     /**
@@ -76,7 +75,7 @@ public class IpUtil {
      * @return bool
      */
     static public boolean isIpv4(String ip) {
-        return new InetAddressValidator().isValidInet4Address(ip);
+        return InetAddressValidator.getInstance().isValidInet4Address(ip);
     }
 
     /**
@@ -85,7 +84,7 @@ public class IpUtil {
      * @return bool
      */
     static public boolean isIpv6(String ip) {
-        return new InetAddressValidator().isValidInet6Address(ip);
+        return InetAddressValidator.getInstance().isValidInet6Address(ip);
     }
 
     static private boolean isIpMatchSubnetWithMask(String ip, String subnet, int mask) {

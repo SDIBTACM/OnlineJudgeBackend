@@ -33,6 +33,9 @@ public class BaseEntityWithDeleteTs {
 
     @Column
     private Timestamp deleteAt;
+
+    @Column(name = "deleted")
+    private Boolean isDelete;
     @PrePersist
     protected void prePersist() {
         Timestamp now = TimeUtil.now();
@@ -45,6 +48,7 @@ public class BaseEntityWithDeleteTs {
         if (deleteAt == null) {
             deleteAt = Const.TIME_ZERO;
         }
+        isDelete = false;
     }
     @PreUpdate
     protected  void preUpdate() {

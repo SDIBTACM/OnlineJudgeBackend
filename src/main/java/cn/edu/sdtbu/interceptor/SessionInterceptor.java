@@ -35,7 +35,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                         userEntity = userService.login(cookie.getValue(), RequestIpUtil.getClientIp(request));
                         request.setAttribute(Const.USER_SESSION_INFO, userEntity);
                         log.debug("user {} login by cookie", userEntity.getUsername());
-                    } catch (NotFoundException ignore) {}
+                    } catch (NotFoundException ignore) {
+                    }
                 }
             }
         }
