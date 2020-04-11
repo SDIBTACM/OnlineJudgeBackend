@@ -21,3 +21,16 @@ spring:
 
   proxy:
     trusts: "127.0.0.1/8,::1/128"
+
+logging:
+  path:
+
+mail:
+  type:
+  host:
+  port:
+  from:
+  user:
+  passwd:
+  encryption:
+

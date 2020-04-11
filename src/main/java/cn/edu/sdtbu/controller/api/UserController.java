@@ -58,12 +58,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@NotBlank @RequestParam String username,
+    public ResponseEntity<String> login(@NotBlank @RequestParam String identify,
                                         @NotBlank @RequestParam String password,
                                         @RequestParam(defaultValue = "true") boolean remember,
                                         @ApiIgnore HttpServletRequest request,
                                         @ApiIgnore HttpServletResponse response) {
-        UserEntity userEntity = userService.login(username, password);
+        UserEntity userEntity = userService.login(identify, password, RequestIpUtil.getClientIp(request));
         log.debug("{} is login", userEntity);
         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
         if (remember) {

@@ -100,16 +100,16 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
                 jwtUnVerify.getClaim("username").asString(), Const.TIME_ZERO);
         UserEntity entity = optional.orElseThrow(() -> new NotFoundException("who are you"));
-        userLogin(entity, requestIp);
 
-        Algorithm algorithm = Algorithm.HMAC256(entity.getPassword() + entity.getRememberToken());
+        Algorithm algorithm = Algorithm.HMAC512(entity.getPassword() + entity.getRememberToken());
         JWTVerifier verifier = JWT.require(algorithm).build();
         try {
             verifier.verify(rememberToken);
         } catch (Exception e) {
             log.info("well, someone try to act as " + entity.getUsername());
-            throw new ForbiddenException("not found such user");
+            throw new ForbiddenException("not found user");
         }
+        userLogin(entity, requestIp);
         return entity;
     }
 

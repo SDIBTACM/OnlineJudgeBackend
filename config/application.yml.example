@@ -21,3 +21,17 @@ spring:
 
   proxy:
     trusts: "127.0.0.1/8,::1/128"
+
+logging:
+  path:
+
+# Simple STMP, you can add you self config for other mail drive
+mail:
+  type:
+  host:
+  port:
+  from:
+  user:
+  passwd:
+  encryption:
+
