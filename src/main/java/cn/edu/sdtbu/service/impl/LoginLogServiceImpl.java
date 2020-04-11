@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 public class LoginLogServiceImpl implements LoginLogService {
     @Resource
     LoginLogRepository repository;
+
     @Override
     public void login(Long userId, String ip) {
         LoginLogEntity entity = new LoginLogEntity();
@@ -28,6 +29,6 @@ public class LoginLogServiceImpl implements LoginLogService {
 
     @Override
     public Page<LoginLogEntity> select(Long userId, Pageable pageable) {
-        return null;
+        return repository.findAllByUserId(userId, pageable);
     }
 }

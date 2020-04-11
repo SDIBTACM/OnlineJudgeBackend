@@ -5,6 +5,7 @@ import cn.edu.sdtbu.model.enums.UserStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -27,7 +28,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntityWithDeleteTs {
 
-    @Column(name = "username", length = 64, nullable = false)
+    @Column(name = "username", length = 128, nullable = false)
     String username;
 
     @Column(name = "nickname", length = 64, nullable = false)
@@ -39,7 +40,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(length = 32, nullable = false)
     String school;
 
-    @Column(length = 64, name = "email", nullable = false)
+    @Column(length = 128, name = "email", nullable = false)
     String email;
 
     @Column(length = 64, nullable = false)
@@ -54,11 +55,14 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(name = "remember_token", length = 36)
     String rememberToken;
 
+    public String getRememberToken(){
+        return StringUtils.isEmpty(rememberToken) ? UUID.randomUUID().toString() : rememberToken;
+    }
+
     public static UserEntity getUserEntityWithDefault() {
         UserEntity userEntity = new UserEntity();
         userEntity.setRole(UserRole.STUDENT);
         userEntity.setStatus(UserStatus.NORMAL);
-        userEntity.setRememberToken(UUID.randomUUID().toString());
         return userEntity;
     }
 }
