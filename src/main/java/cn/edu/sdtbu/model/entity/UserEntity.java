@@ -55,7 +55,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(name = "remember_token", length = 36)
     String rememberToken;
 
-    public String getRememberToken(){
+    public String getRememberToken() {
         return StringUtils.isEmpty(rememberToken) ? UUID.randomUUID().toString() : rememberToken;
     }
 
