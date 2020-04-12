@@ -21,19 +21,23 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class UserRegisterParam {
     @NotBlank
+    @Size(max = 64)
     private String username;
 
     @NotBlank
+    @Size(max = 64)
     private String nickname;
 
-    @Size(min = 7)
+    @Size(min = 7, max = 255)
     private String password;
 
     @NotBlank
+    @Size(max = 32)
     private String school;
 
     @Email
     @NotBlank
+    @Size(max = 128)
     private String email;
 
     public UserEntity transformToEntity() {

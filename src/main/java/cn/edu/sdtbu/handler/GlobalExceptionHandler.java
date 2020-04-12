@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.handler;
 
 import cn.edu.sdtbu.exception.BaseException;
+import cn.edu.sdtbu.model.vo.ErrorResponseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +30,29 @@ public class GlobalExceptionHandler {
      * @return response
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponseVO> handleValidationExceptions(MethodArgumentNotValidException e) {
         List<ObjectError> errorList = e.getBindingResult().getAllErrors();
         Map<String, String> errors = new HashMap<>(errorList.size());
         errorList.forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
         log.debug("bad request: {}", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+
+        return ResponseEntity.badRequest().body(
+                ErrorResponseVO.builder()
+                        .errors(errors)
+                        .code(HttpStatus.BAD_REQUEST.value())
+                        .message("parameter cannot pass the check")
+                        .build()
+        );
     }
 
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<String> handleCustomExceptions(BaseException e) {
+    public ResponseEntity<ErrorResponseVO> handleCustomExceptions(BaseException e) {
         log.debug("exception type: {}, http status: {}, message: {}", e.getClass(), e.getStatus(),e.getErrorData());
-        return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        return ResponseEntity.status(e.getStatus())
+                .body(ErrorResponseVO.builder()
+                    .errors(e.getMessage())
+                    .code(e.getStatus().value())
+                    .build()
+        );
     }
 }

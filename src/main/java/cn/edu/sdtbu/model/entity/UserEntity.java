@@ -42,7 +42,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(length = 128, name = "email", nullable = false)
     String email;
 
-    @Column(length = 64, nullable = false)
+    @Column(nullable = false)
     UserRole role;
 
     @Column

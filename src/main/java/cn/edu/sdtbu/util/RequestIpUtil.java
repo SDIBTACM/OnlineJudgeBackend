@@ -19,7 +19,7 @@ public class RequestIpUtil {
 
     static private String[] TrustProxiesIps;
 
-    @Value("${spring.proxy.trust-ips}")
+    @Value("${spring.proxy.trust-ips:}")
     public void setTrustProxiesIpStr(String ipStr) {
         TrustProxiesIps = ipStr.trim().split(" *, *");
     }
