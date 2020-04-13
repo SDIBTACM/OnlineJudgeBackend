@@ -2,6 +2,7 @@ package controller;
 
 import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.model.param.UserRegisterParam;
+import cn.edu.sdtbu.model.vo.ResponseVO;
 import com.alibaba.fastjson.JSON;
 import jdk.jfr.ContentType;
 import org.junit.Before;
@@ -12,6 +13,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.JUnit4;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -66,7 +68,7 @@ public class UserControllerTest {
                 // assert http status is 200
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 // assert is registered
-                .andExpect(MockMvcResultMatchers.content().string("registered"))
+                .andExpect(MockMvcResultMatchers.content().json(ResponseVO.ok().toJSONString()))
                 // get result
                 .andReturn();
     }

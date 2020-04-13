@@ -38,7 +38,7 @@ public class SpringBeanUtil {
 
     public static <T> T registerBean(ConfigurableApplicationContext applicationContext, String name, Class<T> clazz,
                                      Object... args) {
-        if(applicationContext.containsBean(name)) {
+        if (applicationContext.containsBean(name)) {
             Object bean = applicationContext.getBean(name);
             if (bean.getClass().isAssignableFrom(clazz)) {
                 return (T) bean;

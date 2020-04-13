@@ -3,11 +3,7 @@ package cn.edu.sdtbu.model.properties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import java.nio.channels.Selector;
 
 /**
  * @author bestsort
@@ -21,7 +17,4 @@ import java.nio.channels.Selector;
 @ConfigurationProperties(prefix = "online-judge.debug")
 public class DebugProperties {
     private Boolean timeCost = false;
-    public Boolean getTimeCost(){
-        return timeCost;
-    }
 }
