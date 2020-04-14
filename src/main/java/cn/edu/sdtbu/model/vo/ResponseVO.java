@@ -11,16 +11,16 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public class ResponseVO {
-    private Integer code;
-    private Object type;
-    private Object errors;
-    private Object data;
-    private Object message;
+    private final Integer code;
+    private final Object type;
+    private final Object errors;
+    private final Object data;
+    private final Object message;
 
-    public String toJSONString(){
+    public String toJSONString() {
         return JSON.toJSONString(this);
     }
-    public static ResponseVO ok(){
+    public static ResponseVO ok() {
         return ResponseVO.builder()
                 .ok()
                 .build();
@@ -42,17 +42,17 @@ public class ResponseVO {
             this.code = code;
             return this;
         }
-        public ResponseBuilder message(final Object message){
+        public ResponseBuilder message(final Object message) {
             this.message = message;
             return this;
         }
 
-        public ResponseBuilder code(final HttpStatus status){
+        public ResponseBuilder code(final HttpStatus status) {
             this.code = status.value();
             return this;
         }
 
-        public ResponseBuilder ok(){
+        public ResponseBuilder ok() {
             this.code = HttpStatus.OK.value();
             this.message = "success";
             return this;

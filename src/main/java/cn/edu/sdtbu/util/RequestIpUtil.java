@@ -17,11 +17,11 @@ import java.util.Arrays;
 @Component
 public class RequestIpUtil {
 
-    static private String[] TrustProxiesIps;
+    static private String[] TRUST_PROXIES_IPS;
 
     @Value("${spring.proxy.trust-ips:}")
     public void setTrustProxiesIpStr(String ipStr) {
-        TrustProxiesIps = ipStr.trim().split(" *, *");
+        TRUST_PROXIES_IPS = ipStr.trim().split(" *, *");
     }
 
     /**
@@ -48,7 +48,7 @@ public class RequestIpUtil {
         ArrayList<String> ips = new ArrayList<>();
         int i = forwarded.size() - 1;
         for (; i >= 1; i--) {
-            if (!IpUtil.isIpInSubnets(forwarded.get(i), TrustProxiesIps)) {
+            if (!IpUtil.isIpInSubnets(forwarded.get(i), TRUST_PROXIES_IPS)) {
                 break;
             }
         }
