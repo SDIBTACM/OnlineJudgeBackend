@@ -3,11 +3,10 @@ package cn.edu.sdtbu.service.impl;
 import cn.edu.sdtbu.model.entity.LoginLogEntity;
 import cn.edu.sdtbu.repository.LoginLogRepository;
 import cn.edu.sdtbu.service.LoginLogService;
+import cn.edu.sdtbu.service.base.AbstractBaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * @author bestsort
@@ -15,9 +14,14 @@ import javax.annotation.Resource;
  * @date 2020-04-11 10:46
  */
 @Service
-public class LoginLogServiceImpl implements LoginLogService {
-    @Resource
-    LoginLogRepository repository;
+public class LoginLogServiceImpl extends AbstractBaseService<LoginLogEntity, Long> implements LoginLogService {
+
+    final LoginLogRepository repository;
+
+    public LoginLogServiceImpl(LoginLogRepository repository) {
+        super(repository);
+        this.repository = repository;
+    }
 
     @Override
     public void login(Long userId, String ip) {

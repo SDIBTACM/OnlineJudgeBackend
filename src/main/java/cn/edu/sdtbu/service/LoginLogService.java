@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.model.entity.LoginLogEntity;
+import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Pageable;
  * @version 1.0
  * @date 2020-04-11 10:43
  */
-public interface LoginLogService {
+public interface LoginLogService extends BaseService<LoginLogEntity, Long> {
     /**
      * record login ip
      * @param userId user

@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         // Use BCrypt for other language service
         ao.setPassword(BCrypt.hashpw(ao.getPassword(), BCrypt.gensalt()));
         userRepository.saveAndFlush(
-            ao.transformToEntity(UserEntity.getUserEntityWithDefault())
+            ao.transformToEntity(UserEntity.getDefaultValue())
         );
         return true;
     }

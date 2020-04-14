@@ -58,7 +58,7 @@ public class UserRepositoryTest {
         return userService.countByUserNameOrEmail(entity.getUsername(), entity.getEmail());
     }
     UserEntity insertUserEntityTest(){
-        UserEntity userEntity = UserEntity.getUserEntityWithDefault();
+        UserEntity userEntity = UserEntity.getDefaultValue();
         userEntity.setEmail("email");
         userEntity.setNickname("nickName");
         userEntity.setPassword("password");

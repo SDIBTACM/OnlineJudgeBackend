@@ -55,7 +55,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     String rememberToken;
 
 
-    public static UserEntity getUserEntityWithDefault() {
+    public static UserEntity getDefaultValue() {
         UserEntity userEntity = new UserEntity();
         userEntity.setRole(UserRole.STUDENT);
         userEntity.setStatus(UserStatus.NORMAL);
