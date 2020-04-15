@@ -144,7 +144,7 @@ public interface BaseService<DOMAIN, ID> {
      */
     @NonNull
     @Transactional
-    DOMAIN update(@NonNull DOMAIN domain);
+    DOMAIN update(@NonNull DOMAIN domain, ID id);
 
     /**
      * Flushes all pending changes to the database.

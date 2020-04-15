@@ -2,7 +2,7 @@ package user;
 
 import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.model.entity.UserEntity;
-import cn.edu.sdtbu.model.param.UserRegisterParam;
+import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.impl.UserServiceImpl;
 import cn.edu.sdtbu.util.TimeUtil;
@@ -44,7 +44,7 @@ public class UserRepositoryTest {
 
     @Test
     public void transformToEntityTest(){
-        UserRegisterParam userRegisterParam = new UserRegisterParam();
+        UserParam userRegisterParam = new UserParam();
         userRegisterParam.setUsername("123");
         userRegisterParam.setEmail("123");
         userRegisterParam.setNickname("123");
@@ -74,15 +74,15 @@ public class UserRepositoryTest {
         after.setRememberToken("afterUpdate");
         after.setId(before.getId());
         after.setDeleteAt(TimeUtil.now());
-        userService.updateUser(after);
-        after = userService.queryUserById(before.getId());
+        userService.update(after, after.getId());
+        after = userService.fetchById(before.getId()).get();
         assert before.getNickname().equals(after.getNickname());
         assert !before.getRememberToken().equals(after.getRememberToken());
         assert after.getRememberToken().equals("afterUpdate");
     }
 
     UserEntity queryUserEntityById(Long userId){
-        return userService.queryUserById(userId);
+        return userService.fetchById(userId).get();
     }
 
 

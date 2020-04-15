@@ -7,10 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * @author bestsort
+ */
 @JsonInclude(Include.NON_NULL)
 @Getter
 @AllArgsConstructor
-public class ResponseVO {
+public class ErrorResponse {
     private final Integer code;
     private final Object type;
     private final Object errors;
@@ -20,8 +23,8 @@ public class ResponseVO {
     public String toJSONString() {
         return JSON.toJSONString(this);
     }
-    public static ResponseVO ok() {
-        return ResponseVO.builder()
+    public static ErrorResponse ok() {
+        return ErrorResponse.builder()
                 .ok()
                 .build();
     }
@@ -73,8 +76,8 @@ public class ResponseVO {
             return this;
         }
 
-        public ResponseVO build() {
-            return new ResponseVO(this.code, this.type, this.errors, this.data, this.message);
+        public ErrorResponse build() {
+            return new ErrorResponse(this.code, this.type, this.errors, this.data, this.message);
         }
     }
 }

@@ -1,21 +1,23 @@
 package cn.edu.sdtbu.controller.api;
 
+import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.entity.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
-import cn.edu.sdtbu.model.param.UserRegisterParam;
-import cn.edu.sdtbu.model.vo.ResponseVO;
+import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -36,36 +38,34 @@ public class UserController {
     LoginLogService logService;
 
     @GetMapping("/loginLog/{userId}")
-    public ResponseVO loginLog(@PathVariable Long userId,
-                                         @PageableDefault(sort = "updateTime", direction = DESC) Pageable pageable,
-                                         @ApiIgnore HttpSession session) {
+    public ResponseEntity<Page<LoginLogEntity>> loginLog(@PathVariable Long userId,
+                                                         @PageableDefault(sort = "updateTime", direction = DESC) Pageable pageable,
+                                                         @ApiIgnore HttpSession session) {
         //TODO authentication
-        return ResponseVO.builder()
-                .data(logService.select(userId, pageable))
-                .code(HttpStatus.OK)
-                .build();
+        return ResponseEntity.ok(logService.select(userId, pageable));
     }
     @PostMapping("/{userId}")
-    public ResponseVO updateUserById(
-            @RequestBody UserEntity userEntity,
+    public ResponseEntity<UserEntity> updateUserById(
+            @RequestBody @Validated(UserParam.Update.class) UserParam userParam,
             @PathVariable Long userId) {
+
+        UserEntity userEntity = userParam.transformToEntity();
         userEntity.setId(userId);
-        userService.updateUser(userEntity);
-        return ResponseVO.ok();
+        return ResponseEntity.ok(userService.update(userEntity, userId));
     }
 
     @PutMapping
-    public ResponseVO register(@RequestBody @Valid UserRegisterParam registerAo) {
+    public ResponseEntity<String> register(@RequestBody @Validated(UserParam.Resister.class) UserParam registerAo) {
         log.debug("registered: {}", registerAo.toString());
         userService.addUser(registerAo);
-        return ResponseVO.ok();
+        return ResponseEntity.ok("success");
     }
 
     @GetMapping("/{userId}")
-    public ResponseVO queryUserById(@PathVariable Long userId) {
-        return ResponseVO.builder()
-                .code(HttpStatus.OK)
-                .data(userService.queryUserById(userId))
-                .build();
+    public ResponseEntity<UserEntity> queryUserById(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.fetchById(userId).orElseThrow(() ->
+            new NotFoundException(
+                String.format("user not found, id: [%d], please check it", userId)
+            )));
     }
 }

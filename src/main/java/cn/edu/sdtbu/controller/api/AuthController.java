@@ -2,11 +2,11 @@ package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.properties.Const;
-import cn.edu.sdtbu.model.vo.ResponseVO;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +34,7 @@ public class AuthController {
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseVO login(@NotBlank @RequestParam String identify,
+    public ResponseEntity<String> login(@NotBlank @RequestParam String identify,
                             @NotBlank @RequestParam String password,
                             @RequestParam(defaultValue = "true") boolean remember,
                             @ApiIgnore HttpServletRequest request,
@@ -46,15 +46,15 @@ public class AuthController {
             response.addCookie(new Cookie(Const.REMEMBER_TOKEN,
                     userService.generateRememberToken(userEntity, RequestIpUtil.getClientIp(request))));
         }
-        return ResponseVO.ok();
+        return ResponseEntity.ok("success");
     }
 
     @PostMapping("/logout")
-    public ResponseVO logout(@ApiIgnore HttpSession session,
-                                         @ApiIgnore HttpServletResponse response) {
+    public ResponseEntity<String> logout(@ApiIgnore HttpSession session,
+                                             @ApiIgnore HttpServletResponse response) {
         log.debug("{} is logout", session.getAttribute(Const.USER_SESSION_INFO));
         session.removeAttribute(Const.USER_SESSION_INFO);
         response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
-        return ResponseVO.ok();
+        return ResponseEntity.ok("success");
     }
 }

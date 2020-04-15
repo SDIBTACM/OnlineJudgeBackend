@@ -4,19 +4,18 @@ import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.UserEntity;
-import cn.edu.sdtbu.model.param.UserRegisterParam;
+import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.SpringBeanUtil;
+import cn.edu.sdtbu.service.base.AbstractBaseService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -34,24 +33,18 @@ import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> implements UserService {
     private final LoginLogService loginLogService;
     private final UserRepository userRepository;
+
     public UserServiceImpl(LoginLogService loginLogService, UserRepository userRepository) {
+        super(userRepository);
         this.loginLogService = loginLogService;
         this.userRepository = userRepository;
     }
 
-    public UserEntity findById(Long userId) {
-        Optional<UserEntity> userEntity = userRepository.findById(userId);
-        return userEntity.orElseThrow(() ->
-            new NotFoundException(
-                String.format("user not found, id: [%d], please check it", userId)
-            )
-        );
-    }
     @Override
-    public boolean addUser(UserRegisterParam ao) {
+    public boolean addUser(UserParam ao) {
         if (countByUserNameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
             throw new ExistException("user name or email is registered");
         }
@@ -61,22 +54,6 @@ public class UserServiceImpl implements UserService {
             ao.transformToEntity(UserEntity.getDefaultValue())
         );
         return true;
-    }
-
-    @Override
-    public boolean updateUser(UserEntity userEntity) {
-        UserEntity entity = userRepository.findById(
-                userEntity.getId()).orElseThrow(() -> new NotFoundException("not such user"));
-        BeanUtils.copyProperties(userEntity, entity, SpringBeanUtil.getNullPropertyNames(userEntity));
-        userRepository.saveAndFlush(entity);
-        return true;
-    }
-
-    @Override
-    public UserEntity queryUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() ->
-            new NotFoundException("not found this user witch id is " + userId)
-        );
     }
 
     @Override

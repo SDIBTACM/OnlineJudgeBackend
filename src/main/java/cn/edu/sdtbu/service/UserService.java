@@ -1,34 +1,21 @@
 package cn.edu.sdtbu.service;
 
-import cn.edu.sdtbu.model.param.UserRegisterParam;
 import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.service.base.BaseService;
 
 /**
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 21:01
  */
-public interface UserService {
+public interface UserService extends BaseService<UserEntity, Long> {
     /**
      * insert user info
      * @param userRegisterParam    user entity info
      * @return          is inserted
      */
-    boolean addUser(UserRegisterParam userRegisterParam);
-
-    /**
-     * update user info
-     * @param userEntity user entity
-     * @return           is updated
-     */
-    boolean updateUser(UserEntity userEntity);
-
-    /**
-     * query by id
-     * @param userId    user id
-     * @return          user info
-     */
-    UserEntity queryUserById(Long userId);
+    boolean addUser(UserParam userRegisterParam);
 
     /**
      * use email or username as identify and login with password

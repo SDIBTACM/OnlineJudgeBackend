@@ -2,7 +2,9 @@ package cn.edu.sdtbu.service.base;
 
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.repository.base.BaseRepository;
+import cn.edu.sdtbu.util.SpringBeanUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -213,10 +215,12 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
      * @return DOMAIN
      */
     @Override
-    public DOMAIN update(DOMAIN domain) {
+    public DOMAIN update(DOMAIN domain, ID id) {
         Assert.notNull(domain, domainName + " data must not be null");
-
-        return repository.saveAndFlush(domain);
+        Assert.notNull(id, id + " data must not be null");
+        Object entity  = repository.findById(id).orElseThrow(() -> new NotFoundException("not such entity"));
+        BeanUtils.copyProperties(domain, entity, SpringBeanUtil.getNullPropertyNames(domain));
+        return repository.saveAndFlush((DOMAIN)entity);
     }
 
     @Override

@@ -63,9 +63,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     }
 
     @PrePersist
-    @Override
     protected void prePersist() {
-        super.prePersist();
         rememberToken = UUID.randomUUID().toString();
     }
 }
