@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.interceptor;
 
+import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.properties.Const;
@@ -37,7 +38,7 @@ public class CookieInterceptor implements HandlerInterceptor {
                         userEntity = userService.login(cookie.getValue(), RequestIpUtil.getClientIp(request));
                         request.setAttribute(Const.USER_SESSION_INFO, userEntity);
                         log.debug("user {} login by cookie", userEntity.getUsername());
-                    } catch (NotFoundException ignore) {
+                    } catch (ForbiddenException ignore) {
                     }
                 }
             }

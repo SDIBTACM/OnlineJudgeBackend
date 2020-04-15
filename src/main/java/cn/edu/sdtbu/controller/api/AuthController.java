@@ -1,16 +1,15 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
@@ -28,21 +27,19 @@ import javax.validation.constraints.NotBlank;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/auth")
 public class AuthController {
     @Resource
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@NotBlank @RequestParam String identify,
-                            @NotBlank @RequestParam String password,
-                            @RequestParam(defaultValue = "true") boolean remember,
-                            @ApiIgnore HttpServletRequest request,
-                            @ApiIgnore HttpServletResponse response) {
-        UserEntity userEntity = userService.login(identify, password, RequestIpUtil.getClientIp(request));
+    public ResponseEntity<String> login(@RequestBody LoginParam loginParam,
+                                        @ApiIgnore HttpServletRequest request,
+                                        @ApiIgnore HttpServletResponse response) {
+        UserEntity userEntity = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestIpUtil.getClientIp(request));
         log.debug("{} is login", userEntity);
         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
-        if (remember) {
+        if (loginParam.getRemember()) {
             response.addCookie(new Cookie(Const.REMEMBER_TOKEN,
                     userService.generateRememberToken(userEntity, RequestIpUtil.getClientIp(request))));
         }

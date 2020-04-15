@@ -1,5 +1,7 @@
 package cn.edu.sdtbu.service;
 
+import cn.edu.sdtbu.exception.ForbiddenException;
+import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.service.base.BaseService;
@@ -32,7 +34,7 @@ public interface UserService extends BaseService<UserEntity, Long> {
      * @param requestIp where user login from
      * @return user info
      */
-    UserEntity login(String rememberToken, String requestIp);
+    UserEntity login(String rememberToken, String requestIp) throws ForbiddenException;
 
     /**
      * login by remember token
