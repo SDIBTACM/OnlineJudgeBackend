@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 /**
  * something exist
@@ -16,6 +17,8 @@ public class ExistException extends BaseException {
     public ExistException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    @NonNull
     @Override
     public HttpStatus getStatus() {
         return HttpStatus.CONFLICT;

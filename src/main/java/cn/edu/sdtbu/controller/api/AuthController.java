@@ -1,14 +1,13 @@
 package cn.edu.sdtbu.controller.api;
 
+import cn.edu.sdtbu.exception.TeapotException;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -17,7 +16,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.NotBlank;
 
 /**
  * login | logout | reset password
@@ -40,18 +38,25 @@ public class AuthController {
         log.debug("{} is login", userEntity);
         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
         if (loginParam.getRemember()) {
-            response.addCookie(new Cookie(Const.REMEMBER_TOKEN,
-                    userService.generateRememberToken(userEntity, RequestIpUtil.getClientIp(request))));
+            Cookie rememberTokenCookie = new Cookie(Const.REMEMBER_TOKEN,
+                userService.generateRememberToken(userEntity, RequestIpUtil.getClientIp(request)));
+            rememberTokenCookie.setPath("/");
+            response.addCookie(rememberTokenCookie);
         }
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok().body(null);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@ApiIgnore HttpSession session,
                                              @ApiIgnore HttpServletResponse response) {
-        log.debug("{} is logout", session.getAttribute(Const.USER_SESSION_INFO));
+        UserEntity user = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        if (user == null) {
+            throw new TeapotException();
+        }
+
+        log.debug("{} is logout", user);
         session.removeAttribute(Const.USER_SESSION_INFO);
         response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok().body(null);
     }
 }

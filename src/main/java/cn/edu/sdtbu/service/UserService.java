@@ -32,9 +32,11 @@ public interface UserService extends BaseService<UserEntity, Long> {
      * login by remember token
      * @param rememberToken a jwt string to verify user identify
      * @param requestIp where user login from
+     * @throws ForbiddenException it mean someone try to act as a user
+     * @throws NotFoundException user not found
      * @return user info
      */
-    UserEntity login(String rememberToken, String requestIp) throws ForbiddenException;
+    UserEntity login(String rememberToken, String requestIp) throws ForbiddenException, NotFoundException;
 
     /**
      * login by remember token

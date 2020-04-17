@@ -36,9 +36,10 @@ public class CookieInterceptor implements HandlerInterceptor {
                 if (Const.REMEMBER_TOKEN.equals(cookie.getName())) {
                     try {
                         userEntity = userService.login(cookie.getValue(), RequestIpUtil.getClientIp(request));
-                        request.setAttribute(Const.USER_SESSION_INFO, userEntity);
+                        request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
                         log.debug("user {} login by cookie", userEntity.getUsername());
-                    } catch (ForbiddenException ignore) {
+                    } catch (ForbiddenException | NotFoundException e) {
+                        response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
                     }
                 }
             }

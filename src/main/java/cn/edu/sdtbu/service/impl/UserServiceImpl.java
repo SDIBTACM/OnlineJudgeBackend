@@ -72,7 +72,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     }
 
     @Override
-    public UserEntity login(String rememberToken, String requestIp) throws ForbiddenException {
+    public UserEntity login(String rememberToken, String requestIp) throws ForbiddenException, NotFoundException {
         DecodedJWT jwtUnVerify = JWT.decode(rememberToken);
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
                 jwtUnVerify.getClaim("username").asString(), Const.TIME_ZERO);
