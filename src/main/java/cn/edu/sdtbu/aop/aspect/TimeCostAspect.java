@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -18,15 +21,24 @@ import java.util.Objects;
  */
 @Slf4j
 @Aspect
+@Component
 public class TimeCostAspect {
+
     @Around("execution(* cn.edu.sdtbu.controller.api.*.*(..))")
-    public ResponseEntity around(ProceedingJoinPoint joinPoint) throws Throwable {
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder
-                .getRequestAttributes())).getRequest();
-        long before = System.currentTimeMillis();
-        ResponseEntity res = (ResponseEntity) joinPoint.proceed();
-        long after = System.currentTimeMillis();
-        log.debug("{}: {} was cost [ {} ] millis", request.getMethod(), request.getRequestURI(), after - before);
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(
+            RequestContextHolder.getRequestAttributes())).getRequest();
+
+        long before = System.nanoTime();
+        Object res = joinPoint.proceed();
+        long costTime = System.nanoTime() - before;
+
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        if (response != null) {
+            response.setHeader("Request-Cost-Time", costTime + " ns");
+        }
+
+        log.debug("{}: {} was cost [ {} ] nanosecond", request.getMethod(), request.getRequestURI(), costTime);
         return res;
     }
     //@annotation(cn.edu.sdtbu.aop.annotation.Debug)
