@@ -4,6 +4,7 @@ LOG_PATH_IS_UNDEFINED/
 
 # IDE Files
 .idea/
+OnlineJudgeBackend.iml
 
 # Runtime config
 config/application.yml
