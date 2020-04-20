@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.vo;
 
 import lombok.Data;
 
@@ -9,8 +9,7 @@ import lombok.Data;
  */
 
 @Data
-public class MailEntity {
-    private String from;
+public class MailVO {
     private String to;
     private String subject;
     private String text;

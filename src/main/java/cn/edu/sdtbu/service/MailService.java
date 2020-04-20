@@ -1,8 +1,5 @@
 package cn.edu.sdtbu.service;
 
-
-import cn.edu.sdtbu.model.entity.MailEntity;
-
 /**
  * @author Soul
  * @version 1.0
@@ -13,7 +10,8 @@ public interface MailService {
 
     /**
      * send email
-     * @param mailEntity email info
+     * @param sendTO send to email
+     * @param text email context
      */
-    void sendEmail(MailEntity mailEntity);
+    void sendMail(String sendTO,String text);
 }

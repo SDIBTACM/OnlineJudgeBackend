@@ -1,11 +1,14 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.model.entity.MailEntity;
+import cn.edu.sdtbu.model.vo.MailVO;
 import cn.edu.sdtbu.service.MailService;
+import cn.edu.sdtbu.util.MailUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,32 +29,34 @@ public class MailServiceImpl implements MailService {
     private TaskExecutor taskExecutor;
     @Resource
     private JavaMailSender javaMailSender;
+    @Value("spring.mail.username")
+    private String sendFrom;
+    @Value("SDTBU-OJ")
+    private String dName;
+    @Value("Notice")
+    private String title;
 
     @Override
-    public void sendEmail(MailEntity mailEntity) {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        String dName = "SDTBU-OJ";
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            helper.setFrom(new InternetAddress(mailEntity.getFrom(),dName,"UTF-8"));
-            helper.setTo(mailEntity.getTo());
-            helper.setSubject(mailEntity.getSubject());
-            helper.setText(mailEntity.getText(), true);
-            addSendMailTask(mimeMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-        }
+    @Async
+    public void sendMail(String sendTo, String text) {
+        MailUtil mailUtil = new MailUtil();
+        MailVO mailVO = new MailVO();
+        mailVO.setTo(sendTo);
+        mailVO.setSubject(title);
+        mailVO.setText(mailUtil.getText(sendTo));
+        addSendMail(mailVO);
     }
 
-    private void addSendMailTask(final MimeMessage mimeMessage) {
+    private void addSendMail(MailVO mailVO) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
-            taskExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    javaMailSender.send(mimeMessage);
-                }
-            });
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setFrom(new InternetAddress(sendFrom,dName,"UTF-8"));
+            helper.setTo(mailVO.getTo());
+            helper.setSubject(mailVO.getSubject());
+            helper.setText(mailVO.getText(), true);
+            javaMailSender.send(mimeMessage);
+            log.info("success,send to {}",mailVO.getTo());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
