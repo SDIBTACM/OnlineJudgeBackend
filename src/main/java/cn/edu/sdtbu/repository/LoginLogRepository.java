@@ -12,7 +12,7 @@ import org.springframework.lang.NonNull;
  * @version 1.0
  * @date 2020-04-11 10:41
  */
-public interface LoginLogRepository extends BaseRepository<LoginLogEntity, Long>, JpaSpecificationExecutor<LoginLogEntity> {
+public interface LoginLogRepository extends BaseRepository<LoginLogEntity, Long> {
     /**
      * find all login log
      * @param userId    id

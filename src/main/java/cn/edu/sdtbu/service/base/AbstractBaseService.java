@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -25,6 +26,7 @@ import java.util.Optional;
  * @date 2020-04-14 17:30
  */
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOMAIN, ID> {
 
     private final String domainName;
@@ -219,7 +221,7 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
         Assert.notNull(domain, domainName + " data must not be null");
         Assert.notNull(id, id + " data must not be null");
         Object entity  = repository.findById(id).orElseThrow(() -> new NotFoundException("not such entity"));
-        BeanUtils.copyProperties(domain, entity, SpringBeanUtil.getNullPropertyNames(domain));
+        SpringBeanUtil.cloneWithoutNullVal(domain, entity);
         return repository.saveAndFlush((DOMAIN)entity);
     }
 

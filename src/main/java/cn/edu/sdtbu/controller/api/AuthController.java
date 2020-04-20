@@ -4,6 +4,7 @@ import cn.edu.sdtbu.exception.TeapotException;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.vo.UserLoginInfo;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +32,9 @@ public class AuthController {
     UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginParam loginParam,
-                                        @ApiIgnore HttpServletRequest request,
-                                        @ApiIgnore HttpServletResponse response) {
+    public ResponseEntity<UserLoginInfo> login(@RequestBody LoginParam loginParam,
+                                               @ApiIgnore HttpServletRequest request,
+                                               @ApiIgnore HttpServletResponse response) {
         UserEntity userEntity = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestIpUtil.getClientIp(request));
         log.debug("{} is login", userEntity);
         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
@@ -43,11 +44,11 @@ public class AuthController {
             rememberTokenCookie.setPath("/");
             response.addCookie(rememberTokenCookie);
         }
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(UserLoginInfo.fetchByUserEntity(userEntity));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@ApiIgnore HttpSession session,
+    public ResponseEntity<Void> logout(@ApiIgnore HttpSession session,
                                              @ApiIgnore HttpServletResponse response) {
         UserEntity user = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (user == null) {
@@ -57,6 +58,6 @@ public class AuthController {
         log.debug("{} is logout", user);
         session.removeAttribute(Const.USER_SESSION_INFO);
         response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().build();
     }
 }

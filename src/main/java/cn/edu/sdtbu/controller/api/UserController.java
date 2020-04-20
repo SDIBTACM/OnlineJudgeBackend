@@ -55,10 +55,10 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<String> register(@RequestBody @Validated(UserParam.Resister.class) UserParam registerAo) {
+    public ResponseEntity<Void> register(@RequestBody @Validated(UserParam.Resister.class) UserParam registerAo) {
         log.debug("registered: {}", registerAo.toString());
         userService.addUser(registerAo);
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{userId}")

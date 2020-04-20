@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.util;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import javax.management.ObjectName;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +22,7 @@ public class SpringBeanUtil {
     /**
      * filter NULL value when bean property clone
      */
-    public static String[] getNullPropertyNames(Object source) {
+    private static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
@@ -35,6 +37,9 @@ public class SpringBeanUtil {
         return emptyNames.toArray(result);
     }
 
+    public static void cloneWithoutNullVal(Object source, Object target){
+        BeanUtils.copyProperties(source, target, SpringBeanUtil.getNullPropertyNames(source));
+    }
 
     public static <T> T registerBean(ConfigurableApplicationContext applicationContext, String name, Class<T> clazz,
                                      Object... args) {

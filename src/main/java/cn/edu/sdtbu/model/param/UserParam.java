@@ -73,7 +73,7 @@ public class UserParam {
         return transformToEntity(new UserEntity());
     }
     public UserEntity transformToEntity(UserEntity entity) {
-        BeanUtils.copyProperties(this, entity, SpringBeanUtil.getNullPropertyNames(this));
+        SpringBeanUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
 
