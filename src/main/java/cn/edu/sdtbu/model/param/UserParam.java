@@ -8,7 +8,6 @@ import cn.edu.sdtbu.util.SpringBeanUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Email;

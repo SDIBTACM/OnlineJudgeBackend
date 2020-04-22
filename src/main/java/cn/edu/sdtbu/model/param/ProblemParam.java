@@ -7,8 +7,6 @@ import cn.edu.sdtbu.model.enums.ProblemType;
 import cn.edu.sdtbu.util.SpringBeanUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.BeanUtilsBean;
 
 import javax.validation.constraints.NotNull;
 
@@ -43,12 +41,12 @@ public class ProblemParam {
     Boolean isSpecialJudge = false;
     ProblemType type = ProblemType.NORMAL;
     Boolean hide = false;
-    public ProblemEntity transformToEntity(){
+    public ProblemEntity transformToEntity() {
         ProblemEntity entity = new ProblemEntity();
         SpringBeanUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
-    public ProblemDescEntity transFormToDescEntity(){
+    public ProblemDescEntity transFormToDescEntity() {
         ProblemDescEntity entity = new ProblemDescEntity();
         SpringBeanUtil.cloneWithoutNullVal(this, entity);
         return entity;

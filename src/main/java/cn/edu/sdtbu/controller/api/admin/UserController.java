@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping("/loginLog/{userId}")
     public ResponseEntity<Page<LoginLogEntity>> loginLog(@PathVariable Long userId,
-                                                         @PageableDefault(sort = "updateTime", direction = DESC) Pageable pageable,
+                                                         @PageableDefault(sort = "updateAt", direction = DESC) Pageable pageable,
                                                          @ApiIgnore HttpSession session) {
         return ResponseEntity.ok(logService.select(userId, pageable));
     }

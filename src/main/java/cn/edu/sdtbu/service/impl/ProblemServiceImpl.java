@@ -10,7 +10,6 @@ import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -32,9 +31,9 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
     }
 
     @Override
-    public ProblemDescEntity getProblemDesc(Long id){
+    public ProblemDescEntity getProblemDesc(Long id) {
         Optional<ProblemDescEntity> descEntity = descRepository.findById(id);
-        return descEntity.orElseThrow(()->
+        return descEntity.orElseThrow(() ->
             new NotFoundException("this problem not found"));
     }
 

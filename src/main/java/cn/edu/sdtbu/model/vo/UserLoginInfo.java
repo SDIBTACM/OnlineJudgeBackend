@@ -15,7 +15,7 @@ public class UserLoginInfo {
     Long id;
     String username;
     String token;
-    public static UserLoginInfo fetchByUserEntity(UserEntity entity){
+    public static UserLoginInfo fetchByUserEntity(UserEntity entity) {
         return UserLoginInfo.builder()
             .id(entity.getId())
             .token(entity.getRememberToken())

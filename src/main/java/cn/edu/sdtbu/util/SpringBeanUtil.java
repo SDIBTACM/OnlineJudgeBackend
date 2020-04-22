@@ -8,7 +8,6 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import javax.management.ObjectName;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +36,7 @@ public class SpringBeanUtil {
         return emptyNames.toArray(result);
     }
 
-    public static void cloneWithoutNullVal(Object source, Object target){
+    public static void cloneWithoutNullVal(Object source, Object target) {
         BeanUtils.copyProperties(source, target, SpringBeanUtil.getNullPropertyNames(source));
     }
 

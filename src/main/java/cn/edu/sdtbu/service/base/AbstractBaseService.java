@@ -4,7 +4,6 @@ import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 import cn.edu.sdtbu.util.SpringBeanUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

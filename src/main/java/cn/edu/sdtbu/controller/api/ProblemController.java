@@ -2,7 +2,6 @@ package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
-import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.service.ProblemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,11 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 /**
  * @author bestsort
@@ -35,7 +35,7 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/{id}")
-    public ResponseEntity<ProblemDescEntity> getProblemDesc(@PathVariable Long id){
+    public ResponseEntity<ProblemDescEntity> getProblemDesc(@PathVariable Long id) {
         return ResponseEntity.ok(problemService.getProblemDesc(id));
     }
 
