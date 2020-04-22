@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.controller.api;
+package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
@@ -14,29 +14,28 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 /**
  * @author bestsort
  * @version 1.0
- * @date 2020-04-14 17:08
+ * @date 2020-04-20 16:19
  */
 
 @Slf4j
-@RestController
-@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RestController("admin-problem-controller")
+@RequestMapping(value = "/api/admin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class ProblemController {
     @Resource
     private ProblemService problemService;
 
-    @GetMapping("/problems")
-    public ResponseEntity<Page<ProblemEntity>> listProblems(@PageableDefault Pageable pageable) {
-        return null;
+    @PutMapping("/problem")
+    public ResponseEntity<Void> putProblem(@Validated ProblemParam param){
+        problemService.generatorProblem(param);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/problem/{id}")
-    public ResponseEntity<ProblemDescEntity> getProblemDesc(@PathVariable Long id){
-        return ResponseEntity.ok(problemService.getProblemDesc(id));
+    @GetMapping("/problem/example")
+    public ResponseEntity<ProblemParam> getDefaultProblemParam(){
+        return ResponseEntity.ok(new ProblemParam());
     }
-
 }

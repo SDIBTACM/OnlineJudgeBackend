@@ -34,38 +34,10 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class UserController {
     @Resource
     UserService userService;
-    @Resource
-    LoginLogService logService;
-
-    @GetMapping("/loginLog/{userId}")
-    public ResponseEntity<Page<LoginLogEntity>> loginLog(@PathVariable Long userId,
-                                                         @PageableDefault(sort = "updateTime", direction = DESC) Pageable pageable,
-                                                         @ApiIgnore HttpSession session) {
-        //TODO authentication
-        return ResponseEntity.ok(logService.select(userId, pageable));
-    }
-    @PostMapping("/{userId}")
-    public ResponseEntity<UserEntity> updateUserById(
-            @RequestBody @Validated(UserParam.Update.class) UserParam userParam,
-            @PathVariable Long userId) {
-
-        UserEntity userEntity = userParam.transformToEntity();
-        userEntity.setId(userId);
-        return ResponseEntity.ok(userService.update(userEntity, userId));
-    }
-
     @PutMapping
     public ResponseEntity<Void> register(@RequestBody @Validated(UserParam.Resister.class) UserParam registerAo) {
         log.debug("registered: {}", registerAo.toString());
         userService.addUser(registerAo);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserEntity> queryUserById(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.fetchById(userId).orElseThrow(() ->
-            new NotFoundException(
-                String.format("user not found, id: [%d], please check it", userId)
-            )));
     }
 }
