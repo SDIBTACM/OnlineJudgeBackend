@@ -11,7 +11,6 @@ public interface MailService {
     /**
      * send email
      * @param sendTO send to email
-     * @param text email context
      */
-    void sendMail(String sendTO,String text);
+    void sendMail(String sendTO);
 }

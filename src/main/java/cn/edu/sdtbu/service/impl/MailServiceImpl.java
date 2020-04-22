@@ -26,8 +26,6 @@ import javax.mail.internet.MimeMessage;
 public class MailServiceImpl implements MailService {
 
     @Resource
-    private TaskExecutor taskExecutor;
-    @Resource
     private JavaMailSender javaMailSender;
     @Value("spring.mail.username")
     private String sendFrom;
@@ -38,7 +36,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     @Async
-    public void sendMail(String sendTo, String text) {
+    public void sendMail(String sendTo) {
         MailUtil mailUtil = new MailUtil();
         MailVO mailVO = new MailVO();
         mailVO.setTo(sendTo);
@@ -48,8 +46,8 @@ public class MailServiceImpl implements MailService {
     }
 
     private void addSendMail(MailVO mailVO) {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setFrom(new InternetAddress(sendFrom,dName,"UTF-8"));
             helper.setTo(mailVO.getTo());

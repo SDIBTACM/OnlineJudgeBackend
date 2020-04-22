@@ -1,8 +1,10 @@
 package cn.edu.sdtbu.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.annotation.Resource;
 import java.util.UUID;
 
 /**
@@ -13,7 +15,8 @@ import java.util.UUID;
  */
 
 public class MailUtil {
-    private TemplateEngine templateEngine = new TemplateEngine();
+
+    private final TemplateEngine templateEngine = new TemplateEngine();
 
     private String getActiveCode() {
         return UUID.randomUUID().toString().replace("-","");
@@ -23,6 +26,6 @@ public class MailUtil {
         Context context = new Context();
         context.setVariable("username", to);
         context.setVariable("code",getActiveCode());
-        return templateEngine.process("mail",context);
+        return templateEngine.process("/resources/templates/mail",context);
     }
 }
