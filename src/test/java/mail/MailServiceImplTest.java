@@ -3,9 +3,6 @@ package mail;
 import cn.edu.sdtbu.service.impl.MailServiceImpl;
 import cn.edu.sdtbu.util.MailUtil;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.Resource;
 
 /**
  * @author Soul

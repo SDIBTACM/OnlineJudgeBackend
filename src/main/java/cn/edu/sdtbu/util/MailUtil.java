@@ -1,10 +1,8 @@
 package cn.edu.sdtbu.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.annotation.Resource;
 import java.util.UUID;
 
 /**

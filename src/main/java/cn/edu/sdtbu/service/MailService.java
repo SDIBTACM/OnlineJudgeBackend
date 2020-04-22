@@ -10,7 +10,7 @@ public interface MailService {
 
     /**
      * send email
-     * @param sendTO send to email
+     * @param sendTo send to email
      */
-    void sendMail(String sendTO);
+    void sendMail(String sendTo);
 }
