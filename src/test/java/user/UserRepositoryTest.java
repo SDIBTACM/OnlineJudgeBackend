@@ -64,6 +64,7 @@ public class UserRepositoryTest {
         userEntity.setPassword("password");
         userEntity.setSchool("school");
         userEntity.setUsername("name");
+        userEntity.setRememberToken("token");
         userEntity =  repository.saveAndFlush(userEntity);
         assert userEntity.getId() != null;
         return userEntity;

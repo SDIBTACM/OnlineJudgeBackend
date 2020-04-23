@@ -36,7 +36,7 @@ public class RedisManagerImpl implements RedisManager {
     @Override
     public void put(String key, String value, long timeOut, TimeUnit timeUnit) {
         try (Jedis jedis = pool.getResource()) {
-            if (jedis.exists(key)){
+            if (jedis.exists(key)) {
                 jedis.del(key);
             }
             jedis.set(key, value, "nx", "px", TimeUtil.time2Mill(timeOut, timeUnit));
