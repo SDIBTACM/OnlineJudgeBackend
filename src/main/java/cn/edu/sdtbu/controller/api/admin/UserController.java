@@ -1,6 +1,5 @@
 package cn.edu.sdtbu.controller.api.admin;
 
-import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
@@ -52,12 +51,8 @@ public class UserController {
         userEntity.setId(userId);
         return ResponseEntity.ok(userService.update(userEntity, userId));
     }
-
     @GetMapping("/{userId}")
     public ResponseEntity<UserEntity> queryUserById(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.fetchById(userId).orElseThrow(() ->
-            new NotFoundException(
-                String.format("user not found, id: [%d], please check it", userId)
-            )));
+        return ResponseEntity.ok(userService.getById(userId));
     }
 }

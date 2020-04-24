@@ -4,7 +4,7 @@ import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
 import cn.edu.sdtbu.model.enums.ProblemType;
-import cn.edu.sdtbu.util.SpringBeanUtil;
+import cn.edu.sdtbu.util.SpringUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -43,12 +43,12 @@ public class ProblemParam {
     Boolean hide = false;
     public ProblemEntity transformToEntity() {
         ProblemEntity entity = new ProblemEntity();
-        SpringBeanUtil.cloneWithoutNullVal(this, entity);
+        SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
     public ProblemDescEntity transFormToDescEntity() {
         ProblemDescEntity entity = new ProblemDescEntity();
-        SpringBeanUtil.cloneWithoutNullVal(this, entity);
+        SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
 }

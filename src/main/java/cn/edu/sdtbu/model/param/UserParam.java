@@ -4,7 +4,7 @@ import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.enums.UserStatus;
-import cn.edu.sdtbu.util.SpringBeanUtil;
+import cn.edu.sdtbu.util.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -72,7 +72,7 @@ public class UserParam {
         return transformToEntity(new UserEntity());
     }
     public UserEntity transformToEntity(UserEntity entity) {
-        SpringBeanUtil.cloneWithoutNullVal(this, entity);
+        SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
 

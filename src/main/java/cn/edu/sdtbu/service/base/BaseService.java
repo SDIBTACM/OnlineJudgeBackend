@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * include some default method(curd and etc...)
@@ -64,15 +63,6 @@ public interface BaseService<DOMAIN, ID> {
      */
     @NonNull
     List<DOMAIN> listAllByIds(@Nullable Collection<ID> ids, @NonNull Sort sort);
-
-    /**
-     * Fetch by id
-     *
-     * @param id id
-     * @return Optional
-     */
-    @NonNull
-    Optional<DOMAIN> fetchById(@NonNull ID id);
 
     /**
      * Get by id

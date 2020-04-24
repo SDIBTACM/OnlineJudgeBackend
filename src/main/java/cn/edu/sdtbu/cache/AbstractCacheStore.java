@@ -32,7 +32,7 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
 
     @Override
     public V get(K key) {
-        return getInternal(key).get();
+        return getInternal(key).orElse(null);
     }
 
     @Override

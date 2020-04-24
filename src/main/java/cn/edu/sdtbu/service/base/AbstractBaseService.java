@@ -1,8 +1,9 @@
 package cn.edu.sdtbu.service.base;
 
+import cn.edu.sdtbu.aop.annotation.Cache;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.repository.base.BaseRepository;
-import cn.edu.sdtbu.util.SpringBeanUtil;
+import cn.edu.sdtbu.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -119,8 +120,8 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
      * @param id id
      * @return Optional
      */
-    @Override
-    public Optional<DOMAIN> fetchById(ID id) {
+
+    private Optional<DOMAIN> fetchById(ID id) {
         Assert.notNull(id, domainName + " id must not be null");
 
         return repository.findById(id);
@@ -133,6 +134,7 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
      * @return DOMAIN
      * @throws NotFoundException If the specified id does not exist
      */
+    @Cache(key = "#id")
     @Override
     public DOMAIN getById(ID id) {
         return fetchById(id).orElseThrow(() -> new NotFoundException(domainName + " was not found or has been deleted"));
@@ -220,7 +222,7 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
         Assert.notNull(domain, domainName + " data must not be null");
         Assert.notNull(id, id + " data must not be null");
         Object entity  = repository.findById(id).orElseThrow(() -> new NotFoundException("not such entity"));
-        SpringBeanUtil.cloneWithoutNullVal(domain, entity);
+        SpringUtil.cloneWithoutNullVal(domain, entity);
         return repository.saveAndFlush((DOMAIN)entity);
     }
 

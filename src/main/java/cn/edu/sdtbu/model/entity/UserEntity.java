@@ -2,6 +2,7 @@ package cn.edu.sdtbu.model.entity;
 
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.enums.UserStatus;
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -61,7 +62,10 @@ public class UserEntity extends BaseEntityWithDeleteTs {
         userEntity.setStatus(UserStatus.NORMAL);
         return userEntity;
     }
-
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
     @PrePersist
     protected void prePersist() {
         rememberToken = UUID.randomUUID().toString();
