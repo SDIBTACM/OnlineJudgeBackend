@@ -36,7 +36,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 Const.ONLINE_JUDGE_VERSION,
                 AnsiOutput.toString(AnsiColor.BLUE, "http://localhost:8080/swagger-ui.html"));
     }
-    private void init(){
+    private void init() {
         handler.setStrategy(properties.getCacheStoreType());
     }
 }

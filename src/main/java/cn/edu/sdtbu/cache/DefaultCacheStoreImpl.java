@@ -15,7 +15,9 @@ import java.util.concurrent.TimeUnit;
  * @date 2020-04-26 16:18
  */
 @Component
-public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String> implements CacheStore<String, String>{
+public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
+    implements CacheStore<String, String> {
+
     @Resource
     CacheService service;
     @Override

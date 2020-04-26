@@ -3,7 +3,6 @@ package cn.edu.sdtbu.cache;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;

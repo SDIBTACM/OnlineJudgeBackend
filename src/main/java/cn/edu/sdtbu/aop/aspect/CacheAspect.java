@@ -94,7 +94,7 @@ public class CacheAspect {
         return target.getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
     }
 
-    private CacheStore<String, String> service(){
+    private CacheStore<String, String> service() {
         return handler.fetchCacheStore();
     }
 }

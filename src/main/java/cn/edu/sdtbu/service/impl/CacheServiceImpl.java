@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Optional;
 
 /**
  * @author bestsort
@@ -30,10 +29,10 @@ public class CacheServiceImpl extends AbstractBaseService<CacheEntity, Long> imp
     @Override
     public void put(String key, String value) {
         CacheEntity entity = cacheRepository.findByKey(key).orElse(new CacheEntity());
-        if (StringUtils.isEmpty(entity.getKey())){
+        if (StringUtils.isEmpty(entity.getKey())) {
             entity.setKey(key);
         }
-        if (StringUtils.equals(entity.getValue(), value)){
+        if (StringUtils.equals(entity.getValue(), value)) {
             return;
         }
         entity.setValue(value);
@@ -49,7 +48,7 @@ public class CacheServiceImpl extends AbstractBaseService<CacheEntity, Long> imp
     @Override
     public void inc(String key, int stepLength) {
         CacheEntity entity = cacheRepository.findByKey(key).orElse(new CacheEntity());
-        if (StringUtils.isEmpty(entity.getKey())){
+        if (StringUtils.isEmpty(entity.getKey())) {
             entity.setKey(key);
             entity.setValue("0");
         }
