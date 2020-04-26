@@ -46,7 +46,6 @@ public class UserController {
     public ResponseEntity<UserEntity> updateUserById(
         @RequestBody @Validated(UserParam.Update.class) UserParam userParam,
         @PathVariable Long userId) {
-
         UserEntity userEntity = userParam.transformToEntity();
         userEntity.setId(userId);
         return ResponseEntity.ok(userService.update(userEntity, userId));

@@ -50,11 +50,9 @@ public class UserParam {
     private String email;
 
     @Null(groups = BeforeResister.class)
-    @NullOrNotBlank(groups = BeforeUpdate.class)
     private UserRole role;
 
     @Null(groups = BeforeResister.class)
-    @NullOrNotBlank(groups = BeforeUpdate.class)
     private UserStatus status;
 
 
