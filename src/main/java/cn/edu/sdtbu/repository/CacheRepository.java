@@ -3,6 +3,8 @@ package cn.edu.sdtbu.repository;
 import cn.edu.sdtbu.model.entity.CacheEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 
+import java.util.Optional;
+
 /**
  * @author bestsort
  * @version 1.0
@@ -10,4 +12,5 @@ import cn.edu.sdtbu.repository.base.BaseRepository;
  */
 public interface CacheRepository extends BaseRepository<CacheEntity, Long> {
     void removeByKey(String key);
+    Optional<CacheEntity> findByKey(String key);
 }

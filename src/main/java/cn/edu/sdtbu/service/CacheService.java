@@ -9,8 +9,8 @@ import cn.edu.sdtbu.service.base.BaseService;
  * @date 2020-04-22 21:16
  */
 public interface CacheService extends BaseService<CacheEntity, Long> {
-    void removeByKey(String toString);
+    void removeByKey(String key);
     void put(String key, String value);
-
-    void inc(String toString, int stepLength);
+    String get(String key);
+    void inc(String key, int stepLength);
 }

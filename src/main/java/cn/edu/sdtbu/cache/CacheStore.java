@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.cache;
 
+import cn.edu.sdtbu.model.enums.CacheStoreType;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public interface CacheStore<K, V> {
      * @param timeout  the key expiration must not be less than 1
      * @param timeUnit timeout unit
      */
-    void putWithoutBackup(@NotNull K key, @NotNull V value, long timeout, @NotNull TimeUnit timeUnit);
+    void putInternal(@NotNull K key, @NotNull V value, long timeout, @NotNull TimeUnit timeUnit);
 
     /**
      * Puts a cache which will be expired.
@@ -67,4 +68,10 @@ public interface CacheStore<K, V> {
      * @param stepLength  cache value must not be null
      */
     void inc(@NotNull K key, int stepLength);
+
+    /**
+     * get cache interface impl support's cache type
+     * @return type
+     */
+    CacheStoreType getCacheType();
 }

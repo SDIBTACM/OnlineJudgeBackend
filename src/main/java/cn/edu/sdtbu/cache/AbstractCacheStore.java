@@ -1,12 +1,8 @@
 package cn.edu.sdtbu.cache;
 
-import cn.edu.sdtbu.manager.RedisManager;
-import cn.edu.sdtbu.service.CacheService;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -22,13 +18,8 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
      * default expire : 60 minutes
      */
     static final long DEFAULT_EXPIRE = 60;
-
-    @Resource
-    CacheService cacheService;
-    @Resource
-    RedisManager cacheManager;
-    @Resource
-    ApplicationEventPublisher applicationEventPublisher;
+    //@Resource
+    //ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public V get(K key) {
@@ -48,14 +39,8 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
     }
 
     @Override
-    public void putWithoutBackup(@NotNull K key, @NotNull V value, long timeout, @NotNull TimeUnit timeUnit) {
-        cacheManager.put(key.toString(), value.toString(), timeout, timeUnit);
-    }
-
-    @Override
     public void put(@NonNull K key,@NonNull V value, long timeout,@NonNull TimeUnit timeUnit) {
-        putWithoutBackup(key, value, timeout, timeUnit);
-        cacheService.put(key.toString(), value.toString());
+        putInternal(key, value, timeout, timeUnit);
     }
 
     /**
@@ -72,14 +57,7 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
             return;
         }
         // put to db
-        cacheService.put(key.toString(), value.toString());
         // put to cache middleware
-        putWithoutBackup(key, value, DEFAULT_EXPIRE, TimeUnit.MINUTES);
-    }
-
-    @Override
-    public void inc(@NotNull K key, int stepLength) {
-        cacheManager.inc(key.toString(), stepLength);
-        cacheService.inc(key.toString(), stepLength);
+        putInternal(key, value, DEFAULT_EXPIRE, TimeUnit.MINUTES);
     }
 }

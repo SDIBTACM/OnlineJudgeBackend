@@ -2,6 +2,7 @@ package cn.edu.sdtbu.aop.aspect;
 
 import cn.edu.sdtbu.aop.annotation.Cache;
 import cn.edu.sdtbu.cache.CacheStore;
+import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.util.SpringUtil;
 import cn.edu.sdtbu.util.TimeUtil;
 import com.alibaba.fastjson.JSON;
@@ -33,9 +34,12 @@ public class CacheAspect {
     private static final String CACHE_HIT = "cache_hit";
     private static final String CACHE_MISS = "cache_miss";
     private static final String SEPARATOR = "$";
+
     @Resource
-    CacheStore<String, String> service;
+    CacheHandler handler;
+
     Random random = new Random();
+
     @Around("@annotation(cn.edu.sdtbu.aop.annotation.Cache)")
     public Object aroundCache(ProceedingJoinPoint point) throws Throwable {
         // fetch @Cache's args
@@ -58,20 +62,20 @@ public class CacheAspect {
         String resStr;
         Object returnObj;
         // try fetch value from cache
-        if (!StringUtils.isEmpty(resStr = service.get(key))) {
+        if (!StringUtils.isEmpty(resStr = service().get(key))) {
             Type type = fetchReturnType(point);
             try {
                 returnObj = JSON.parseObject(resStr, type);
-                service.inc(CACHE_HIT, 1);
+                service().inc(CACHE_HIT, 1);
                 return returnObj;
             } catch (Throwable ignore) {
                 log.error("cache string [{}] parse to object [{}] failed", resStr, type);
             }
         }
-        // cache miss, fetch value from service
-        service.inc(CACHE_MISS, 1);
+        // cache miss, fetch value from service()
+        service().inc(CACHE_MISS, 1);
         returnObj = point.proceed();
-        service.put(key, returnObj.toString(), timeOut, TimeUnit.MILLISECONDS);
+        service().put(key, returnObj.toString(), timeOut, TimeUnit.MILLISECONDS);
         return returnObj;
     }
 
@@ -88,5 +92,9 @@ public class CacheAspect {
         methodSignature = (MethodSignature) signature;
         Object target = point.getTarget();
         return target.getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
+    }
+
+    private CacheStore<String, String> service(){
+        return handler.fetchCacheStore();
     }
 }
