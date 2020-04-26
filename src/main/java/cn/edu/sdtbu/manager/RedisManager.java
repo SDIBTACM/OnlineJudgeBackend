@@ -11,4 +11,6 @@ public interface RedisManager {
     String get(String key);
     void inc(String key, int stepLength);
     void put(String key, String value, long timeOut, TimeUnit timeUnit);
+
+    void delete(String key);
 }

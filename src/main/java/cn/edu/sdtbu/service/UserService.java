@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.service;
 
+import cn.edu.sdtbu.aop.annotation.CacheDelete;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.UserEntity;
@@ -45,4 +46,7 @@ public interface UserService extends BaseService<UserEntity, Long> {
      * @return jwt type string
      */
     String generateRememberToken(UserEntity entity, String requestIp);
+
+
+    void test(Long id);
 }

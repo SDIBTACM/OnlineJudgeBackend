@@ -38,4 +38,9 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     public CacheStoreType getCacheType() {
         return CacheStoreType.REDIS;
     }
+
+    @Override
+    public void delete(String key) {
+        manager.delete(key);
+    }
 }

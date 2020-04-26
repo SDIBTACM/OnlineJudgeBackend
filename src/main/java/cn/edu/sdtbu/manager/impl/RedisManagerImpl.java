@@ -42,4 +42,11 @@ public class RedisManagerImpl implements RedisManager {
             jedis.set(key, value, "nx", "px", TimeUtil.time2Mill(timeOut, timeUnit));
         }
     }
+
+    @Override
+    public void delete(String key) {
+        try(Jedis jedis = pool.getResource()) {
+            jedis.del(key);
+        }
+    }
 }

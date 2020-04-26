@@ -74,4 +74,6 @@ public interface CacheStore<K, V> {
      * @return type
      */
     CacheStoreType getCacheType();
+
+    void delete(V key);
 }

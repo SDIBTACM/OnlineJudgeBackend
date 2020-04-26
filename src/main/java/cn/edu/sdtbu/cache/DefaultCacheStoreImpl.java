@@ -39,4 +39,9 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     public CacheStoreType getCacheType() {
         return CacheStoreType.DEFAULT;
     }
+
+    @Override
+    public void delete(String key) {
+        service.removeByKey(key);
+    }
 }
