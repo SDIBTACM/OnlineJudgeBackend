@@ -45,7 +45,7 @@ public class RedisManagerImpl implements RedisManager {
 
     @Override
     public void delete(String key) {
-        try(Jedis jedis = pool.getResource()) {
+        try (Jedis jedis = pool.getResource()) {
             jedis.del(key);
         }
     }

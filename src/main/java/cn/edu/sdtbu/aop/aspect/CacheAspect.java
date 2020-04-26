@@ -43,7 +43,7 @@ public class CacheAspect {
 
     Random random = new Random();
     @Around("@annotation(cn.edu.sdtbu.aop.annotation.CacheDelete)")
-    public Object aroundCacheDelete(ProceedingJoinPoint point) throws Throwable{
+    public Object aroundCacheDelete(ProceedingJoinPoint point) throws Throwable {
         CacheDelete cacheDelete = fetchAnnotation(point, CacheDelete.class);
         String key = fetchKey(point, cacheDelete.key(), cacheDelete.targetClass(), fetchMethod(point), cacheDelete.method());
         service().delete(key);
@@ -72,7 +72,7 @@ public class CacheAspect {
         // try fetch value from cache
         if (!StringUtils.isEmpty(resStr = service().get(key))) {
             Type type = fetchReturnType(point);
-            if (VOID.equals(type.getTypeName())){
+            if (VOID.equals(type.getTypeName())) {
                 point.proceed();
                 return null;
             }
@@ -138,7 +138,7 @@ public class CacheAspect {
         return fetchKey(point, expression, point.getTarget().getClass(), fetchMethod(point));
     }
 
-    private String fetchKey(ProceedingJoinPoint point, String expression, Class<?>clazz, Method method, String targetMethod){
+    private String fetchKey(ProceedingJoinPoint point, String expression, Class<?> clazz, Method method, String targetMethod) {
         return clazz.getSimpleName() + SEPARATOR + targetMethod + SEPARATOR +
             SpringUtil.parseSpel(method, point.getArgs(), expression);
     }
@@ -147,7 +147,7 @@ public class CacheAspect {
         return handler.fetchCacheStore();
     }
 
-    private <T extends Annotation> T fetchAnnotation(ProceedingJoinPoint point, Class<T> annotationClass){
+    private <T extends Annotation> T fetchAnnotation(ProceedingJoinPoint point, Class<T> annotationClass) {
         return ((MethodSignature)point.getSignature())
             .getMethod()
             .getAnnotation(annotationClass);

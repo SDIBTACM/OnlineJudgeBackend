@@ -1,6 +1,5 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.aop.annotation.CacheDelete;
 import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
@@ -105,12 +104,6 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             .withIssuedAt(new Date(System.currentTimeMillis()))
             .withExpiresAt(new Date(System.currentTimeMillis() + REMEMBER_TOKEN_EXPRESS_TIME))
             .sign(algorithm);
-    }
-
-    @CacheDelete(targetClass = UserServiceImpl.class, method = "getById",key = "#id")
-    @Override
-    public void test(Long id) {
-        return;
     }
 
     public int countByUserNameOrEmail(String name, String email) {
