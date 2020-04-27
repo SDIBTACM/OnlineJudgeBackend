@@ -201,4 +201,22 @@ public interface BaseService<DOMAIN, ID> {
      */
     @Transactional
     void removeAll();
+
+    /**
+     * save
+     */
+    @Transactional
+    void save(DOMAIN domain);
+
+    /**
+     * save all
+     * @param set data
+     */
+    @Transactional
+    void saveAll(Iterable<DOMAIN> set);
+    /**
+     * get class impl' supported type
+     * @return clazz
+     */
+    Class<?> getTemplateType();
 }

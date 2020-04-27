@@ -30,7 +30,6 @@ public class LoginLogTest {
     @Test
     public void LoginTest(){
         Sort sort = Sort.unsorted();
-
         logService.login(1L, "127.0.0.1");
         Pageable pageable = PageRequest.of(0, 10, sort);
         Page<LoginLogEntity> page = logService.select(1L, pageable);

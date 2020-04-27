@@ -102,7 +102,9 @@ public class CacheAspect {
         return Modifier.isAbstract(point.getSignature().getDeclaringType().getModifiers()) &&
             //or return generic
             returnType.getTypeName().equals(Object.class.getName()) ?
+            // true
             ((ParameterizedType)(point.getTarget().getClass().getGenericSuperclass())).getActualTypeArguments()[0] :
+            // false
             returnType;
     }
 

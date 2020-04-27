@@ -19,4 +19,5 @@ public class OnlineJudgeProperties {
     private CacheStoreType cacheStoreType = CacheStoreType.DEFAULT;
     private String url = "https://acm.sdtbu.edu.cn";
     private MailProperties mail = new MailProperties();
+    private DebugProperties debug = new DebugProperties();
 }

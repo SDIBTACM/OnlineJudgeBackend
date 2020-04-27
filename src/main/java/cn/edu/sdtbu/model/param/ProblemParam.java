@@ -5,7 +5,9 @@ import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
 import cn.edu.sdtbu.model.enums.ProblemType;
 import cn.edu.sdtbu.util.SpringUtil;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ import javax.validation.constraints.NotNull;
  * @date 2020-04-20 09:02
  */
 @Data
+@ApiModel
 public class ProblemParam {
     @NotNull
     String title;

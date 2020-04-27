@@ -27,4 +27,6 @@ spring:
     encoding:
       charset: UTF-8
 online-judge:
-  cacheStoreType: DEFAULT
+  cache-store-type: DEFAULT
+  debug:
+    generator-data: false

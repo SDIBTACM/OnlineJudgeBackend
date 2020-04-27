@@ -323,4 +323,20 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
     public void removeAll() {
         repository.deleteAll();
     }
+
+    @Override
+    public void save(DOMAIN domain) {
+        repository.saveAndFlush(domain);
+    }
+
+    @Override
+    public void saveAll(Iterable<DOMAIN> domains) {
+        repository.saveAll(domains);
+    }
+
+    @Override
+    public Class<?> getTemplateType(){
+        return (Class<?>) ((ParameterizedType) getClass()
+            .getGenericSuperclass()).getActualTypeArguments()[0];
+    }
 }
