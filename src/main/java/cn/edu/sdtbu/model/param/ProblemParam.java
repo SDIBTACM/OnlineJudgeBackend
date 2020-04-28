@@ -7,7 +7,6 @@ import cn.edu.sdtbu.model.enums.ProblemType;
 import cn.edu.sdtbu.util.SpringUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

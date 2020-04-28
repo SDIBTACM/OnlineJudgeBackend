@@ -2,6 +2,7 @@ package cn.edu.sdtbu.service.base;
 
 import cn.edu.sdtbu.aop.annotation.Cache;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.entity.BaseEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 import cn.edu.sdtbu.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
-public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOMAIN, ID> {
+public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> implements BaseService<DOMAIN, ID> {
 
     private final String domainName;
 
@@ -335,7 +336,7 @@ public abstract class AbstractBaseService<DOMAIN, ID> implements BaseService<DOM
     }
 
     @Override
-    public Class<?> getTemplateType(){
+    public Class<?> getTemplateType() {
         return (Class<?>) ((ParameterizedType) getClass()
             .getGenericSuperclass()).getActualTypeArguments()[0];
     }

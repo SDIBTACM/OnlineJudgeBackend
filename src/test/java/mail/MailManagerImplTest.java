@@ -2,8 +2,6 @@ package mail;
 
 import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.manager.MailManager;
-import cn.edu.sdtbu.manager.impl.MailManagerImpl;
-import cn.edu.sdtbu.util.MailUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

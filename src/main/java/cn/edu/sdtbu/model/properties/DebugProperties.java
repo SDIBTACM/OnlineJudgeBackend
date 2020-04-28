@@ -1,8 +1,6 @@
 package cn.edu.sdtbu.model.properties;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author bestsort

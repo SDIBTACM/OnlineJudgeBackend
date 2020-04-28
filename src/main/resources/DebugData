@@ -1,7 +1,7 @@
 {
-    "datas":[
+    "all-data":[
         {
-            "class_pkg":"cn.edu.sdtbu.model.entity",
+            "class_pkg":"cn.edu.sdtbu.model.entity.UserEntity",
             "data":[
                 {
                     "email":"admin@mail.com",
