@@ -2,6 +2,7 @@ package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
+import cn.edu.sdtbu.service.ProblemDescService;
 import cn.edu.sdtbu.service.ProblemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,15 +29,15 @@ import javax.annotation.Resource;
 public class ProblemController {
     @Resource
     private ProblemService problemService;
-
+    @Resource
+    private ProblemDescService descService;
     @GetMapping("/problems")
     public ResponseEntity<Page<ProblemEntity>> listProblems(@PageableDefault Pageable pageable) {
-        return null;
+        return ResponseEntity.ok(problemService.listAll(pageable));
     }
 
     @GetMapping("/problem/{id}")
     public ResponseEntity<ProblemDescEntity> getProblemDesc(@PathVariable Long id) {
-        return ResponseEntity.ok(problemService.getProblemDesc(id));
+        return ResponseEntity.ok(descService.getProblemDesc(id));
     }
-
 }

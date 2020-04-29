@@ -5,7 +5,11 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.service.base.BaseService;
 import cn.edu.sdtbu.util.DebugUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -19,6 +23,7 @@ import org.springframework.lang.NonNull;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * after application start need to do
@@ -56,8 +61,36 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             HashMap<Class<?>, BaseService<?, ?>> map = new HashMap<>(16);
             context.getBeansOfType(BaseService.class).values().forEach(o -> map.put(o.getTemplateType(), o));
             try {
-                DebugUtil.generatorDebugData(map);
+                generatorDebugData(map);
             } catch (IOException ignore) { }
+        }
+    }
+
+    private void generatorDebugData(HashMap<Class<?>, BaseService<?, ?>> map) throws IOException {
+        String json = DebugUtil.loadDebugData();
+
+        // parse JSON string and save to database
+        JSONArray array = JSON.parseObject(json).getJSONArray(DebugUtil.ALL_DATA);
+        for (int i = 0;i < array.size(); i++) {
+            JSONObject object = array.getJSONObject(i);
+            List lst;
+            Class<?> clazz;
+            // try parse
+            try {
+                clazz = Class.forName(object.getString(DebugUtil.ALL_CLASS_NAME));
+                lst = JSON.parseArray(object.getString(DebugUtil.DATA), clazz);
+            } catch (Exception ignore) {
+                continue;
+            }
+            // if entity is UserEntity, encode user's password
+            DebugUtil.defaultEntityFieldGenerator(lst);
+
+            // save to database
+            if (CollectionUtils.isNotEmpty(lst)) {
+                map.get(lst.get(0).getClass()).saveAll(lst);
+            }
+            log.info("debug data generator success, class -> [{}], data -> {}",
+                clazz.getName(), JSON.toJSONString(lst));
         }
     }
 }

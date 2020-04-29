@@ -40,7 +40,7 @@ public class ProblemParam {
     //TODO max or min value
     @ApiModelProperty(notes = "kbytes")
     Integer memoryLimit = 1 << 10;
-    Boolean isSpecialJudge = false;
+    Boolean specialJudge = false;
     ProblemType type = ProblemType.NORMAL;
     Boolean hide = false;
     public ProblemEntity transformToEntity() {
