@@ -1,0 +1,78 @@
+{
+    "all-data":[
+        {
+            "class_pkg":"cn.edu.sdtbu.model.entity.UserEntity",
+            "data":[
+                {
+                    "id":"1",
+                    "email":"admin@mail.com",
+                    "nickname":"admin",
+                    "password":"password",
+                    "role":"ADMIN",
+                    "school":"admin_school",
+                    "status":"NORMAL",
+                    "username":"admin"
+                },
+                {
+                    "id":"2",
+                    "email":"teacher@mail.com",
+                    "nickname":"teacher",
+                    "password":"password",
+                    "role":"TEACHER",
+                    "school":"teacher_school",
+                    "status":"NORMAL",
+                    "username":"teacher"
+                },
+                {
+                    "id":"3",
+                    "email":"student@mail.com",
+                    "nickname":"student",
+                    "password":"password",
+                    "role":"STUDENT",
+                    "school":"student_school",
+                    "status":"NORMAL",
+                    "username":"student"
+                },
+                {
+                    "id":"4",
+                    "email":"lock@mail.com",
+                    "nickname":"locked",
+                    "password":"password",
+                    "role":"STUDENT",
+                    "school":"lock_school",
+                    "status":"LOCK",
+                    "username":"lock"
+                }
+            ]
+        },
+        {
+            "class_pkg":"cn.edu.sdtbu.model.entity.ProblemEntity",
+            "data":[
+                {
+                    "id":"1",
+                    "title":"this is a problem, id is 1",
+                    "similarFrom":"1",
+                    "ownerId":"1",
+                    "source":"not source",
+                    "problemType":"NORMAL",
+                    "testDataUpdatedAt":"2020-04-29 06:54:17",
+                    "hide":"false"
+                }
+            ]
+        },
+        {
+            "class_pkg":"cn.edu.sdtbu.model.entity.ProblemDescEntity",
+            "data":[
+                {
+                    "id":"1",
+                    "problemId":"1",
+                    "description":"this is a problem desceription, id is 1, used HTML",
+                    "input":"1 1 1",
+                    "output":"1 2 3 ",
+                    "sample":"not sample",
+                    "hint":"not hint"
+                }
+            ]
+        }
+    ]
+}

@@ -4,11 +4,10 @@ import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
 import cn.edu.sdtbu.model.enums.ProblemType;
-import cn.edu.sdtbu.util.SpringBeanUtil;
+import cn.edu.sdtbu.util.SpringUtil;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.BeanUtilsBean;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,6 +17,7 @@ import javax.validation.constraints.NotNull;
  * @date 2020-04-20 09:02
  */
 @Data
+@ApiModel
 public class ProblemParam {
     @NotNull
     String title;
@@ -40,17 +40,17 @@ public class ProblemParam {
     //TODO max or min value
     @ApiModelProperty(notes = "kbytes")
     Integer memoryLimit = 1 << 10;
-    Boolean isSpecialJudge = false;
+    Boolean specialJudge = false;
     ProblemType type = ProblemType.NORMAL;
     Boolean hide = false;
-    public ProblemEntity transformToEntity(){
+    public ProblemEntity transformToEntity() {
         ProblemEntity entity = new ProblemEntity();
-        SpringBeanUtil.cloneWithoutNullVal(this, entity);
+        SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
-    public ProblemDescEntity transFormToDescEntity(){
+    public ProblemDescEntity transFormToDescEntity() {
         ProblemDescEntity entity = new ProblemDescEntity();
-        SpringBeanUtil.cloneWithoutNullVal(this, entity);
+        SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
 }

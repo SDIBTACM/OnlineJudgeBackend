@@ -1,7 +1,5 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
@@ -10,9 +8,6 @@ import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * @author bestsort
@@ -29,13 +24,6 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
     protected ProblemServiceImpl(ProblemDescRepository descRepository, ProblemRepository repository) {
         super(repository);
         this.descRepository = descRepository;
-    }
-
-    @Override
-    public ProblemDescEntity getProblemDesc(Long id){
-        Optional<ProblemDescEntity> descEntity = descRepository.findById(id);
-        return descEntity.orElseThrow(()->
-            new NotFoundException("this problem not found"));
     }
 
     @Override

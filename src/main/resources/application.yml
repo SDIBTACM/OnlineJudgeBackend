@@ -1,5 +1,9 @@
 spring:
-
+  mail:
+    host: mtp.exmail.qq.com
+    port: 465
+    username: no-reply@mail.bestsort.cn
+    password: nfNHVYBwXYWNHUsd
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/onlinejudge?useUnicode=true&characterEncoding=UTF-8
     username: root
@@ -18,6 +22,11 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   http:
     encoding:
       charset: UTF-8
+online-judge:
+  cache-store-type: DEFAULT
+  debug:
+    generator-data: false

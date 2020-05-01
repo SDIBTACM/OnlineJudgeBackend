@@ -21,8 +21,7 @@ import java.util.Objects;
 @Aspect
 @Component
 public class TimeCostAspect {
-
-    @Around("execution(* cn.edu.sdtbu.controller.api.*.*(..))")
+    @Around("execution(* cn.edu.sdtbu.controller.api..*.*(..))")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(
             RequestContextHolder.getRequestAttributes())).getRequest();

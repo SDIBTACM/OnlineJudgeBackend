@@ -1,8 +1,12 @@
 package controller;
 
 import cn.edu.sdtbu.Application;
+import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.vo.UserLoginInfo;
 import com.alibaba.fastjson.JSON;
+import org.apache.catalina.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +35,7 @@ import javax.annotation.Resource;
 @SpringBootTest(classes = Application.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-public class UserControllerTest {
+public class AuthTest {
     @Resource
     public WebApplicationContext applicationContext;
 
@@ -59,9 +63,23 @@ public class UserControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 // assert http status is 200
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                // assert is registered
-                .andExpect(MockMvcResultMatchers.content().string("success"))
                 // get result
                 .andReturn();
+        loginTest(userRegisterParam);
+    }
+    void loginTest(UserParam param) throws Exception {
+        LoginParam loginParam = new LoginParam();
+        loginParam.setIdentify(param.getUsername());
+        loginParam.setPassword(param.getPassword());
+        loginParam.setRemember(false);
+        MvcResult result = mvc.perform(
+            MockMvcRequestBuilders.post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(JSON.toJSONString(loginParam)))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        UserLoginInfo loginInfo = JSON.parseObject(result.getResponse().getContentAsString(), UserLoginInfo.class);
+        assert loginInfo.getUsername().equals(param.getUsername());
     }
 }

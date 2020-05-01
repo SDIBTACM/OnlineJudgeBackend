@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.service;
+package cn.edu.sdtbu.manager;
 
 /**
  * @author Soul
@@ -6,11 +6,11 @@ package cn.edu.sdtbu.service;
  * @date 2020-04-16 11:45
  */
 
-public interface MailService {
+public interface MailManager {
 
     /**
      * send email
      * @param sendTo send to email
      */
-    void sendMail(String sendTo);
+    void sendSignUpMail(String token, String username, String sendTo);
 }

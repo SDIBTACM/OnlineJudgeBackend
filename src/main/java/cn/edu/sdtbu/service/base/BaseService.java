@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.service.base;
 
+import cn.edu.sdtbu.model.entity.BaseEntity;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * include some default method(curd and etc...)
@@ -19,7 +19,7 @@ import java.util.Optional;
  * @date 2020-4-6 20:49
  */
 
-public interface BaseService<DOMAIN, ID> {
+public interface BaseService<DOMAIN extends BaseEntity, ID> {
     /**
      * List All
      *
@@ -64,15 +64,6 @@ public interface BaseService<DOMAIN, ID> {
      */
     @NonNull
     List<DOMAIN> listAllByIds(@Nullable Collection<ID> ids, @NonNull Sort sort);
-
-    /**
-     * Fetch by id
-     *
-     * @param id id
-     * @return Optional
-     */
-    @NonNull
-    Optional<DOMAIN> fetchById(@NonNull ID id);
 
     /**
      * Get by id
@@ -211,4 +202,22 @@ public interface BaseService<DOMAIN, ID> {
      */
     @Transactional
     void removeAll();
+
+    /**
+     * save
+     */
+    @Transactional
+    void save(DOMAIN domain);
+
+    /**
+     * save all
+     * @param set data
+     */
+    @Transactional
+    void saveAll(Iterable<DOMAIN> set);
+    /**
+     * get class impl' supported type
+     * @return clazz
+     */
+    Class<?> getTemplateType();
 }

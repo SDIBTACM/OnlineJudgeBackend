@@ -64,6 +64,7 @@ public class UserRepositoryTest {
         userEntity.setPassword("password");
         userEntity.setSchool("school");
         userEntity.setUsername("name");
+        userEntity.setRememberToken("token");
         userEntity =  repository.saveAndFlush(userEntity);
         assert userEntity.getId() != null;
         return userEntity;
@@ -75,14 +76,14 @@ public class UserRepositoryTest {
         after.setId(before.getId());
         after.setDeleteAt(TimeUtil.now());
         userService.update(after, after.getId());
-        after = userService.fetchById(before.getId()).get();
+        after = userService.getById(before.getId());
         assert before.getNickname().equals(after.getNickname());
         assert !before.getRememberToken().equals(after.getRememberToken());
         assert after.getRememberToken().equals("afterUpdate");
     }
 
     UserEntity queryUserEntityById(Long userId){
-        return userService.fetchById(userId).get();
+        return userService.getById(userId);
     }
 
 
