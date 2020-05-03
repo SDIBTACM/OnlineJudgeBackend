@@ -81,4 +81,6 @@ public interface CacheStore<K, V> {
     void delete(K key);
 
     void delete(Collection<K> collection);
+
+    Map<K, V> fetchAll(String prefix);
 }

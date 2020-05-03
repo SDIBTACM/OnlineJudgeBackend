@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 public class RedisProperties {
     private Integer port = 6379;
     private String host = "127.0.0.1";
-    private Integer maxTotal = 16;
-    private Integer maxIdle = 16;
+    private Integer maxTotal = Runtime.getRuntime().availableProcessors() * 2;
+    private Integer maxIdle = Runtime.getRuntime().availableProcessors() * 2;
     private Integer minIdle = 4;
     private Integer maxWaitMillis = 50;
     private String password = null;

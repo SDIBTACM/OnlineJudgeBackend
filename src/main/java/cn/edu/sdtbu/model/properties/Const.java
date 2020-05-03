@@ -1,7 +1,5 @@
 package cn.edu.sdtbu.model.properties;
 
-import cn.edu.sdtbu.util.TimeUtil;
-
 import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +30,7 @@ public class Const {
     public static final String ACCOUNT_TOKEN = "account_token";
     public static final String REMEMBER_TOKEN = "rememberToken";
     public static final Cookie EMPTY_REMEMBER_TOKEN = new Cookie(REMEMBER_TOKEN, null);
-    public static final long REMEMBER_TOKEN_EXPRESS_TIME = TimeUtil.time2Mill(30, TimeUnit.DAYS);
+    public static final long REMEMBER_TOKEN_EXPRESS_TIME = TimeUnit.DAYS.toMillis(30);
 
     // init
     static {

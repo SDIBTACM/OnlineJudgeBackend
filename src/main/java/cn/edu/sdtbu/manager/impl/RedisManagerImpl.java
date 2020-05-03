@@ -1,12 +1,14 @@
 package cn.edu.sdtbu.manager.impl;
 
 import cn.edu.sdtbu.manager.RedisManager;
-import cn.edu.sdtbu.util.TimeUtil;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,7 +41,7 @@ public class RedisManagerImpl implements RedisManager {
             if (jedis.exists(key)) {
                 jedis.del(key);
             }
-            jedis.set(key, value, "nx", "px", TimeUtil.time2Mill(timeOut, timeUnit));
+            jedis.set(key, value, "nx", "px", timeUnit.toMillis(timeOut));
         }
     }
 
@@ -47,6 +49,16 @@ public class RedisManagerImpl implements RedisManager {
     public void delete(String key) {
         try (Jedis jedis = pool.getResource()) {
             jedis.del(key);
+        }
+    }
+
+    @Override
+    public Map<String, String> fetchAll(String prefix) {
+        try (Jedis jedis = pool.getResource()) {
+            Set<String> strings = jedis.keys(prefix + "*");
+            HashMap<String, String> map = new HashMap<>(strings.size());
+            strings.forEach(i -> map.put(i, get(i)));
+            return map;
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -49,5 +50,10 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     @Override
     public void delete(Collection<String> collection) {
         service.removeByKeysIn(collection);
+    }
+
+    @Override
+    public Map<String, String> fetchAll(String prefix) {
+        return service.fetchAllByPrefix(prefix);
     }
 }

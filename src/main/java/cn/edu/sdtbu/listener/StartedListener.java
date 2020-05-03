@@ -16,8 +16,6 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 
 import javax.annotation.Resource;
@@ -34,7 +32,6 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class StartedListener implements ApplicationListener<ApplicationStartedEvent> {
     @Resource
     CacheHandler handler;
@@ -54,7 +51,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @SuppressWarnings("unchecked")
     private void init() {
         // init cache
-        handler.setStrategy(properties.getCacheStoreType());
+        handler.init(context, properties.getCacheStoreType());
+
         // init debug data
         if (properties.getDebug().getGeneratorData()) {
             // get all BaseService impl and save to map.

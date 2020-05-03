@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.manager;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -11,6 +12,6 @@ public interface RedisManager {
     String get(String key);
     void inc(String key, int stepLength);
     void put(String key, String value, long timeOut, TimeUnit timeUnit);
-
     void delete(String key);
+    Map<String, String> fetchAll(String prefix);
 }

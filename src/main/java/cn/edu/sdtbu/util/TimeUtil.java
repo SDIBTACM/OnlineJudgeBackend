@@ -21,28 +21,8 @@ public class TimeUtil {
     }
 
     public static Timestamp add(Timestamp date, long time, TimeUnit timeUnit) {
-        return new Timestamp(date.getTime() + time2Mill(time, timeUnit));
+        return new Timestamp(date.getTime() + timeUnit.toMillis(time));
     }
-
-    /**
-     * @param times     time
-     * @param timeUnit  unit
-     * @return          millisecond
-     */
-    public static long time2Mill(long times, TimeUnit timeUnit) {
-
-        //really don't have 'break' keyword...
-        switch (timeUnit) {
-            case DAYS:    times *= HOUR_TO_DAY;
-            case HOURS:   times *= MINUTE_TO_HOUR;
-            case MINUTES: times *= SECOND_TO_MINUTE;
-            case SECONDS: times *= MILL_TO_SECOND;
-            case MILLISECONDS:
-            default:
-        }
-        return times;
-    }
-
     private TimeUtil(){}
 }
 

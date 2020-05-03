@@ -5,7 +5,6 @@ import cn.edu.sdtbu.aop.annotation.CacheDelete;
 import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.util.SpringUtil;
-import cn.edu.sdtbu.util.TimeUtil;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -60,9 +59,9 @@ public class CacheAspect {
         // fetch @Cache's args
         Cache cache = fetchAnnotation(point, Cache.class);
         // time transformation
-        long timeOut = TimeUtil.time2Mill(cache.expire(), cache.timeUnit());
+        long timeOut = cache.timeUnit().toMillis(cache.expire());
         if (cache.random()) {
-            timeOut += TimeUtil.time2Mill(random.nextInt(cache.randomInterval()), cache.timeUnit());
+            timeOut += cache.timeUnit().toMillis(random.nextInt(cache.randomInterval()));
         }
         // generator key
         String key = fetchKey(point, cache.key());

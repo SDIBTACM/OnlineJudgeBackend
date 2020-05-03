@@ -3,13 +3,10 @@ package cn.edu.sdtbu.handler;
 import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.model.enums.CacheStoreType;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -23,6 +20,17 @@ public class CacheHandler {
     private final ConcurrentHashMap<CacheStoreType, CacheStore<String, String>> cacheMap = new ConcurrentHashMap<>();
     private static CacheStoreType STRATEGY = CacheStoreType.DEFAULT;
 
+    /**
+     * Please don't use constructor method replace {@link #init(ApplicationContext)} to init {@link #cacheMap}
+     * It will cause the missing some implement. similar problems have been found in {@link CacheStoreType#DEFAULT}
+     * @param context application context to fetch {@link CacheStore} implement
+     */
+    public void init(ApplicationContext context, CacheStoreType type) {
+        for (CacheStore cacheStore : context.getBeansOfType(CacheStore.class).values()) {
+            this.cacheMap.put(cacheStore.getCacheType(), cacheStore);
+        }
+        setStrategy(type);
+    }
     public void setStrategy(CacheStoreType strategy) {
         setStrategy(strategy, strategy != STRATEGY);
     }
@@ -43,16 +51,5 @@ public class CacheHandler {
         CacheStore<String, String> store = cacheMap.get(STRATEGY);
         Assert.notNull(store,"cache storage not found");
         return  store;
-    }
-
-    public CacheHandler(ApplicationContext applicationContext) {
-        addCacheHandlers(applicationContext.getBeansOfType(CacheStore.class).values());
-    }
-    private void addCacheHandlers(@Nullable Collection<CacheStore> cacheHandlers) {
-        if (!CollectionUtils.isEmpty(cacheHandlers)) {
-            for (CacheStore cacheHandler : cacheHandlers) {
-                this.cacheMap.put(cacheHandler.getCacheType(), cacheHandler);
-            }
-        }
     }
 }

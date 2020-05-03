@@ -28,7 +28,7 @@ public class LoginLogServiceImpl extends AbstractBaseService<LoginLogEntity, Lon
         LoginLogEntity entity = new LoginLogEntity();
         entity.setIp(ip);
         entity.setUserId(userId);
-        repository.saveAndFlush(entity);
+        save(entity);
     }
 
     @Override

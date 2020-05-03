@@ -20,4 +20,12 @@ public class ProblemDescVO {
     private String sample;
 
     private String hint;
+
+    private Integer timeLimit;
+
+    private Integer memoryLimit;
+
+    private Long submitCount;
+
+    private Long acCount;
 }
