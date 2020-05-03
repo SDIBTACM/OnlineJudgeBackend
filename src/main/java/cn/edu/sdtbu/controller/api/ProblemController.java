@@ -2,8 +2,10 @@ package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
+import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.service.ProblemDescService;
 import cn.edu.sdtbu.service.ProblemService;
+import cn.edu.sdtbu.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +39,13 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/{id}")
-    public ResponseEntity<ProblemDescEntity> getProblemDesc(@PathVariable Long id) {
-        return ResponseEntity.ok(descService.getProblemDesc(id));
+    public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id) {
+        ProblemDescEntity descEntity = descService.getById(id);
+        ProblemDescVO vo = new ProblemDescVO();
+        SpringUtil.cloneWithoutNullVal(descEntity, vo);
+        ProblemEntity problemEntity = problemService.getById(id);
+        vo.setTitle(problemEntity.getTitle());
+
+        return ResponseEntity.ok(vo);
     }
 }

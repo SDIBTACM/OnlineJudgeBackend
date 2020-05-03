@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * @author bestsort
@@ -54,5 +55,10 @@ public class CacheServiceImpl extends AbstractBaseService<CacheEntity, Long> imp
         }
         entity.setValue((Long.parseLong(entity.getValue()) + stepLength) + "");
         cacheRepository.saveAndFlush(entity);
+    }
+
+    @Override
+    public void removeByKeysIn(Collection<String> collection) {
+        cacheRepository.removeByKeyIn(collection);
     }
 }

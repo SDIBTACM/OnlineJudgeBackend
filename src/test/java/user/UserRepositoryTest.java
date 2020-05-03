@@ -4,6 +4,7 @@ import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.repository.UserRepository;
+import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.service.impl.UserServiceImpl;
 import cn.edu.sdtbu.util.TimeUtil;
 import org.junit.Test;

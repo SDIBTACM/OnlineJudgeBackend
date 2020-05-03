@@ -18,7 +18,7 @@ public @interface CacheDelete {
      * key witch need to be delete/refresh, support SpEL
      * @return key
      */
-    String key();
+    String deleteKey();
 
     /**
      * refresh value or not

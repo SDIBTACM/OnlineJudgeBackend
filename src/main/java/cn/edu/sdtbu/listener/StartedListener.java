@@ -83,6 +83,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 continue;
             }
             // if entity is UserEntity, encode user's password
+            // if entity is other entity, fetch default fields
             DebugUtil.defaultEntityFieldGenerator(lst);
 
             // save to database

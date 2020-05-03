@@ -7,6 +7,7 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author bestsort
@@ -27,10 +29,16 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieInterceptor implements HandlerInterceptor {
     @Resource
     UserService userService;
+    final AtomicLong atomicLong = new AtomicLong();
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull Object handler) {
         UserEntity userEntity = (UserEntity) request.getSession().getAttribute(Const.USER_SESSION_INFO);
+
+        // add necessary attribute
+        request.setAttribute(Const.REQUEST_PROCESS_BEFORE, System.nanoTime());
+        request.setAttribute(Const.REQUEST_ID, atomicLong.getAndIncrement());
+
         if (userEntity == null && request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (Const.REMEMBER_TOKEN.equals(cookie.getName())) {
@@ -43,6 +51,9 @@ public class CookieInterceptor implements HandlerInterceptor {
                     }
                 }
             }
+        }
+        if (atomicLong.get() == Long.MAX_VALUE) {
+            atomicLong.set(1);
         }
         return true;
     }

@@ -45,7 +45,7 @@ public class CacheAspect {
     @Around("@annotation(cn.edu.sdtbu.aop.annotation.CacheDelete)")
     public Object aroundCacheDelete(ProceedingJoinPoint point) throws Throwable {
         CacheDelete cacheDelete = fetchAnnotation(point, CacheDelete.class);
-        String key = fetchKey(point, cacheDelete.key(), cacheDelete.targetClass(), fetchMethod(point), cacheDelete.method());
+        String key = fetchKey(point, cacheDelete.deleteKey(), cacheDelete.targetClass(), fetchMethod(point), cacheDelete.method());
         service().delete(key);
         Object object = point.proceed();
         Type type = fetchReturnType(point);

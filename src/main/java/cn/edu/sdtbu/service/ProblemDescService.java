@@ -9,5 +9,4 @@ import cn.edu.sdtbu.service.base.BaseService;
  * @date 2020-04-29 21:11
  */
 public interface ProblemDescService extends BaseService<ProblemDescEntity, Long> {
-    ProblemDescEntity getProblemDesc(Long id);
 }

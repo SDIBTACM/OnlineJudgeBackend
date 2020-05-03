@@ -4,6 +4,8 @@ import cn.edu.sdtbu.model.enums.CacheStoreType;
 import org.springframework.lang.NonNull;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -62,6 +64,7 @@ public interface CacheStore<K, V> {
      */
     void put(K key, V value);
 
+    void put(Map<K, V> kvMap);
     /**
      * add by step length
      * @param key   cache key must not be null
@@ -75,5 +78,7 @@ public interface CacheStore<K, V> {
      */
     CacheStoreType getCacheType();
 
-    void delete(V key);
+    void delete(K key);
+
+    void delete(Collection<K> collection);
 }

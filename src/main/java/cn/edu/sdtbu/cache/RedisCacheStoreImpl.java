@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -42,5 +43,12 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     @Override
     public void delete(String key) {
         manager.delete(key);
+    }
+
+    @Override
+    public void delete(Collection<String> collection) {
+        for (String s : collection) {
+            delete(s);
+        }
     }
 }

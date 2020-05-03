@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +24,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      *
      * @return List
      */
-    @NonNull
     List<DOMAIN> listAll();
 
     /**
@@ -70,7 +68,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      *
      * @param id id
      * @return DOMAIN
-     * @throws NotFoundException If the specified id does not exist
      */
     @NonNull
     DOMAIN getById(@NonNull ID id);
@@ -114,7 +111,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      * @return DOMAIN
      */
     @NonNull
-    @Transactional
     DOMAIN create(@NonNull DOMAIN domain);
 
     /**
@@ -124,7 +120,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      * @return List
      */
     @NonNull
-    @Transactional
     List<DOMAIN> createInBatch(@NonNull Collection<DOMAIN> domains);
 
     /**
@@ -134,7 +129,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      * @return DOMAIN
      */
     @NonNull
-    @Transactional
     DOMAIN update(@NonNull DOMAIN domain, ID id);
 
     /**
@@ -149,7 +143,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      * @return List
      */
     @NonNull
-    @Transactional
     List<DOMAIN> updateInBatch(@NonNull Collection<DOMAIN> domains);
 
     /**
@@ -160,7 +153,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      * @throws NotFoundException If the specified id does not exist
      */
     @NonNull
-    @Transactional
     DOMAIN removeById(@NonNull ID id);
 
     /**
@@ -170,7 +162,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      * @return DOMAIN
      */
     @Nullable
-    @Transactional
     DOMAIN removeByIdOfNullable(@NonNull ID id);
 
     /**
@@ -178,7 +169,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      *
      * @param domain domain
      */
-    @Transactional
     void remove(@NonNull DOMAIN domain);
 
     /**
@@ -186,7 +176,6 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      *
      * @param ids ids
      */
-    @Transactional
     void removeInBatch(@NonNull Collection<ID> ids);
 
     /**
@@ -194,26 +183,23 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      *
      * @param domains domains
      */
-    @Transactional
     void removeAll(@NonNull Collection<DOMAIN> domains);
 
     /**
      * Remove all
      */
-    @Transactional
     void removeAll();
 
     /**
      * save
+     * @param domain must be not null
      */
-    @Transactional
     void save(DOMAIN domain);
 
     /**
      * save all
      * @param set data
      */
-    @Transactional
     void saveAll(Iterable<DOMAIN> set);
     /**
      * get class impl' supported type

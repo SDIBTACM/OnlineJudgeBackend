@@ -50,7 +50,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         }
         // Use BCrypt for other language service
         ao.setPassword(BCrypt.hashpw(ao.getPassword(), BCrypt.gensalt()));
-        userRepository.saveAndFlush(
+        userRepository.save(
             ao.transformToEntity(UserEntity.getDefaultValue())
         );
         return true;

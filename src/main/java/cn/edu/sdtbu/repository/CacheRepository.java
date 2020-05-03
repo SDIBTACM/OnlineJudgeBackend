@@ -3,6 +3,7 @@ package cn.edu.sdtbu.repository;
 import cn.edu.sdtbu.model.entity.CacheEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -12,5 +13,6 @@ import java.util.Optional;
  */
 public interface CacheRepository extends BaseRepository<CacheEntity, Long> {
     void removeByKey(String key);
+    void removeByKeyIn(Collection<String> keys);
     Optional<CacheEntity> findByKey(String key);
 }

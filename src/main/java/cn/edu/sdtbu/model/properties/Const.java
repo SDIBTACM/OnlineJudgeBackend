@@ -20,6 +20,14 @@ public class Const {
 
     public static final String ONLINE_JUDGE_VERSION = "1.0";
 
+
+    //Header
+    public static final String REQUEST_COST_TIME = "Request-Cost-Time";
+
+    public static final String REQUEST_PROCESS_BEFORE = "request_process_before";
+    public static final String REQUEST_PROCESS_FINISHED = "request_process_finished";
+
+    public static final String REQUEST_ID = "request_id";
     public static final String USER_SESSION_INFO = "user_session_info";
     public static final String ACCOUNT_TOKEN = "account_token";
     public static final String REMEMBER_TOKEN = "rememberToken";
