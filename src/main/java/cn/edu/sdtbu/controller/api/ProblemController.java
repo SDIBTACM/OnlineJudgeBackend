@@ -3,6 +3,7 @@ package cn.edu.sdtbu.controller.api;
 import cn.edu.sdtbu.model.entity.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.ProblemEntity;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
+import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.service.ProblemDescService;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.util.SpringUtil;
@@ -34,12 +35,13 @@ public class ProblemController {
     @Resource
     private ProblemDescService descService;
     @GetMapping("/problems")
-    public ResponseEntity<Page<ProblemEntity>> listProblems(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(problemService.listAll(pageable));
+    public ResponseEntity<Page<ProblemSimpleListVO>> listProblems(@PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(problemService.listSimpleLists(pageable));
     }
 
     @GetMapping("/problem/{id}")
     public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id) {
+        //TODO permissions
         ProblemDescEntity descEntity = descService.getById(id);
         ProblemDescVO vo = new ProblemDescVO();
         SpringUtil.cloneWithoutNullVal(descEntity, vo);

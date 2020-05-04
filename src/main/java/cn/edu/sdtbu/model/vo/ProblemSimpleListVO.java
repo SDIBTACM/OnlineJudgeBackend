@@ -21,7 +21,10 @@ public class ProblemSimpleListVO {
 
     Long submitPeopleCount;
 
-    Boolean isAccept;
+    Boolean isAccepted;
+
+    Boolean hide;
 
     Timestamp lastSubmit;
+
 }

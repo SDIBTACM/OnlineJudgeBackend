@@ -2,7 +2,10 @@ package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.model.entity.ProblemEntity;
 import cn.edu.sdtbu.model.param.ProblemParam;
+import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.service.base.BaseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author bestsort
@@ -10,7 +13,6 @@ import cn.edu.sdtbu.service.base.BaseService;
  * @date 2020-04-14 17:29
  */
 public interface ProblemService extends BaseService<ProblemEntity, Long> {
-
-
+    Page<ProblemSimpleListVO> listSimpleLists(Pageable pageable);
     void generatorProblem(ProblemParam param);
 }

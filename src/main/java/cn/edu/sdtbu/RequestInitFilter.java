@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.interceptor;
+package cn.edu.sdtbu;
 
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
@@ -7,38 +7,40 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author bestsort
  * @version 1.0
- * @date 2020-04-10 20:23
+ * @date 2020-05-04 18:30
  */
-
-@Slf4j
+@WebFilter
 @Component
-public class CookieInterceptor implements HandlerInterceptor {
+@Slf4j
+public class RequestInitFilter implements Filter {
     @Resource
     UserService userService;
     final AtomicLong atomicLong = new AtomicLong();
 
     @Override
-    public boolean preHandle(HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull Object handler) {
+    public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest)servletRequest;
         UserEntity userEntity = (UserEntity) request.getSession().getAttribute(Const.USER_SESSION_INFO);
 
         // add necessary attribute
-        request.setAttribute(Const.REQUEST_PROCESS_BEFORE, System.nanoTime());
+        request.setAttribute(Const.REQUEST_START_TIMESTAMP, System.nanoTime());
         request.setAttribute(Const.REQUEST_ID, atomicLong.getAndIncrement());
 
+        // add user info
         if (userEntity == null && request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (Const.REMEMBER_TOKEN.equals(cookie.getName())) {
@@ -47,7 +49,7 @@ public class CookieInterceptor implements HandlerInterceptor {
                         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
                         log.debug("user {} login by cookie", userEntity.getUsername());
                     } catch (ForbiddenException | NotFoundException e) {
-                        response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
+                        ((HttpServletResponse)response).addCookie(Const.EMPTY_REMEMBER_TOKEN);
                     }
                 }
             }
@@ -55,12 +57,6 @@ public class CookieInterceptor implements HandlerInterceptor {
         if (atomicLong.get() == Long.MAX_VALUE) {
             atomicLong.set(1);
         }
-        return true;
+        chain.doFilter(request, response);
     }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) { }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) { }
 }

@@ -11,19 +11,14 @@ import java.util.concurrent.TimeUnit;
  * @date 2020/4/6 下午8:36
  */
 public class Const {
-    /**
-     * default time. used to replace NULL
-     */
+/***********************************         default time. used to replace NULL        ********************************/
     public static final Timestamp TIME_ZERO = Timestamp.valueOf("1900-1-1 00:00:00");
 
     public static final String ONLINE_JUDGE_VERSION = "1.0";
 
-
-    //Header
-    public static final String REQUEST_COST_TIME = "Request-Cost-Time";
-
-    public static final String REQUEST_PROCESS_BEFORE = "request_process_before";
-    public static final String REQUEST_PROCESS_FINISHED = "request_process_finished";
+/***********************************         About Some Web Config Field         ********************************/
+    public static final String REQUEST_COST_TIME = "request-time-cost";
+    public static final String REQUEST_START_TIMESTAMP = "request_process_before";
 
     public static final String REQUEST_ID = "request_id";
     public static final String USER_SESSION_INFO = "user_session_info";

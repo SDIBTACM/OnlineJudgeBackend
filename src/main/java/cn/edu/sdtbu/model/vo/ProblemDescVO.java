@@ -28,4 +28,6 @@ public class ProblemDescVO {
     private Long submitCount;
 
     private Long acCount;
+
+    private Boolean isAccepted;
 }
