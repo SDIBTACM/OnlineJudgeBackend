@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.base;
 
 import cn.edu.sdtbu.model.properties.Const;
 import lombok.Data;

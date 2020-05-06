@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.entity.contest;
 
-import cn.edu.sdtbu.model.entity.BaseEntityWithDeleteTs;
+import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import cn.edu.sdtbu.model.enums.ContestPrivilege;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

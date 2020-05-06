@@ -11,6 +11,8 @@ import lombok.Data;
 public class ProblemDescVO {
     private String title;
 
+    private Long problemId;
+
     private String description;
 
     private String input;

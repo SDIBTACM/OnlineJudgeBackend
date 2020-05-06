@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service.base;
 
-import cn.edu.sdtbu.model.entity.BaseEntity;
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

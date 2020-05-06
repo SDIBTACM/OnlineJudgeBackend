@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.model.entity.ProblemDescEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.service.ProblemDescService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;

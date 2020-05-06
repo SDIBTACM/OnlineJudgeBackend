@@ -1,8 +1,8 @@
 package cn.edu.sdtbu.model.param;
 
 import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
-import cn.edu.sdtbu.model.entity.ProblemDescEntity;
-import cn.edu.sdtbu.model.entity.ProblemEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.enums.ProblemType;
 import cn.edu.sdtbu.util.SpringUtil;
 import io.swagger.annotations.ApiModel;

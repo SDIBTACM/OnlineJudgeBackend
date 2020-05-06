@@ -46,7 +46,7 @@
             ]
         },
         {
-            "class_pkg":"cn.edu.sdtbu.model.entity.ProblemEntity",
+            "class_pkg":"cn.edu.sdtbu.model.entity.problem.ProblemEntity",
             "data":[
                 {
                     "id":"1",
@@ -57,11 +57,21 @@
                     "problemType":"NORMAL",
                     "testDataUpdatedAt":"2020-04-29 06:54:17",
                     "hide":"false"
+                },
+                {
+                    "id":"1",
+                    "title":"this is a problem, id is 2",
+                    "similarFrom":"1",
+                    "ownerId":"1",
+                    "source":"not source",
+                    "problemType":"NORMAL",
+                    "testDataUpdatedAt":"2020-04-29 06:54:17",
+                    "hide":"false"
                 }
             ]
         },
         {
-            "class_pkg":"cn.edu.sdtbu.model.entity.ProblemDescEntity",
+            "class_pkg":"cn.edu.sdtbu.model.entity.problem.ProblemDescEntity",
             "data":[
                 {
                     "id":"1",
@@ -71,6 +81,76 @@
                     "output":"1 2 3 ",
                     "sample":"not sample",
                     "hint":"not hint"
+                },
+                {
+                    "id":"1",
+                    "problemId":"2",
+                    "description":"this is a problem desceription, id is 2, used HTML",
+                    "input":"2 2 2",
+                    "output":"2 2 2 ",
+                    "sample":"not sample",
+                    "hint":"not hint"
+                }
+            ]
+        },
+        {
+            "class_pkg":"cn.edu.sdtbu.model.entity.solution.SolutionEntity",
+            "data":[
+                {
+                    "id":"1",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"ACCEPT",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"2",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"WRONG_ANSWER",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"3",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"TIME_LIMIT_EXCEEDED",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"4",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"MEMORY_LIMIT_EXCEEDED",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"5",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"OUTPUT_LIMIT_EXCEEDED",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"6",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"COMPILE_ERROR",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"7",
+                    "problemId":"1",
+                    "ownerId":"1",
+                    "result":"RUNTIME_ERROR",
+                    "lang":"C_11"
+                },
+                {
+                    "id":"8",
+                    "problemId":"2",
+                    "ownerId":"1",
+                    "result":"RUNTIME_ERROR",
+                    "lang":"C_11"
                 }
             ]
         }

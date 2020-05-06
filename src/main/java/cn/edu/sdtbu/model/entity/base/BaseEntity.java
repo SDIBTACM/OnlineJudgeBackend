@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.base;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

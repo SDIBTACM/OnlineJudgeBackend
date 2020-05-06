@@ -3,8 +3,10 @@ package cn.edu.sdtbu.service.base;
 import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.handler.CacheHandler;
-import cn.edu.sdtbu.model.entity.BaseEntity;
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
+import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.repository.base.BaseRepository;
+import cn.edu.sdtbu.service.CountService;
 import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import com.alibaba.fastjson.JSON;
@@ -37,6 +39,9 @@ import java.util.stream.Collectors;
 public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> implements BaseService<DOMAIN, ID> {
     @Resource
     protected CacheHandler handler;
+    @Resource
+    protected CountService countService;
+
     private final String domainName;
 
     private final BaseRepository<DOMAIN, ID> repository;
@@ -374,8 +379,8 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
         return JSON.parseObject(cache().get(key(clazz, args)), clazz);
     }
 
-    protected String key(Class<?> clazz, Object... args) {
-        return CacheUtil.defaultKey(clazz, args);
+    protected String key(Class<?> clazz, Object args) {
+        return CacheUtil.defaultKey(clazz, args, KeyPrefix.ENTITY);
     }
     protected Class<?> fetchClass() {
         Class<?> clazz = null;

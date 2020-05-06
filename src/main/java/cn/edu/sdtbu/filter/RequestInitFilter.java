@@ -1,4 +1,4 @@
-package cn.edu.sdtbu;
+package cn.edu.sdtbu.filter;
 
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * used to persistent login & add some necessary header {@link Const#REQUEST_ID} and {@link Const#REQUEST_START_TIMESTAMP}
  * @author bestsort
  * @version 1.0
  * @date 2020-05-04 18:30

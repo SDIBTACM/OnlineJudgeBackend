@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.repository;
 
-import cn.edu.sdtbu.model.entity.ProblemEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 
 /**

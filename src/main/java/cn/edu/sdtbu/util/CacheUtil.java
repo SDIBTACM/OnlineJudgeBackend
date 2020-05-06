@@ -1,12 +1,12 @@
 package cn.edu.sdtbu.util;
 
-import cn.edu.sdtbu.model.entity.ProblemEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
-import com.alibaba.fastjson.JSON;
+import cn.edu.sdtbu.model.enums.KeyPrefix;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.util.Pair;
 
-import java.util.List;
-import java.util.SortedMap;
+import java.util.*;
 
 /**
  * @author bestsort
@@ -15,44 +15,36 @@ import java.util.SortedMap;
  */
 public class CacheUtil {
     public static final String SEPARATOR = "::";
+    public static final String NOT_DEFINED_PREFIX = "not_defined_prefix";
     public static final String COUNT_PREFIX = "count";
 
-    public static String countUserProblemKey(Long userId, Long problemId) {
-        return countKey(UserEntity.class, userId) + SEPARATOR + defaultKey(ProblemEntity.class, problemId);
-    }
-    public static String countKey(Class<?> clazz, Object arg) {
-        return defaultKey(clazz, arg, COUNT_PREFIX);
+    public static String userSubmitCountKey(Long userId, Long problemId) {
+        List<Pair<Class<?>, Object>> list = new ArrayList<>(4);
+        list.add(Pair.of(UserEntity.class, userId));
+        list.add(Pair.of(ProblemEntity.class, problemId));
+        return defaultKey(list, KeyPrefix.SUBMIT_PEOPLE_COUNT);
     }
 
-    public static String countKey(SortedMap<Class<?>, List<Object>> clazzArgsMap) {
-        StringBuilder builder = new StringBuilder(COUNT_PREFIX);
-        for (Class c : clazzArgsMap.keySet()) {
-            builder.append(SEPARATOR)
-                .append(c.getSimpleName());
-        }
-        for (Class c : clazzArgsMap.keySet()) {
-            for (Object o : clazzArgsMap.get(c)) {
-                builder.append(SEPARATOR)
-                    .append(o.toString());
-            }
-        }
+    public static String countKey(Class<?> clazz, Object arg, KeyPrefix type) {
+        return defaultKey(clazz, arg, type);
+    }
+
+    public static String countKey(Pair<Class<?>, Object> arg1, Pair<Class<?>, Object> arg2, KeyPrefix type) {
+        List<Pair<Class<?>, Object>> list = new ArrayList<>(4);
+        list.add(arg2);
+        list.add(arg1);
+        return defaultKey(list, type);
+    }
+
+    public static String defaultKey(Class<?> clazz, Object arg, Object prefix) {
+        return prefix + SEPARATOR + clazz.getName() + SEPARATOR + arg;
+    }
+
+    public static String defaultKey(List<Pair<Class<?>, Object>> clazzArgsMap, Object prefix) {
+        clazzArgsMap.sort(Comparator.comparing(pir -> pir.getFirst().getSimpleName()));
+        StringBuilder builder = new StringBuilder(StringUtils.isEmpty(prefix.toString()) ? NOT_DEFINED_PREFIX : prefix.toString());
+        clazzArgsMap.forEach(pair -> builder.append(SEPARATOR).append(pair.getFirst().getSimpleName()));
+        clazzArgsMap.forEach(pair -> builder.append(SEPARATOR).append(pair.getSecond()));
         return builder.toString();
-    }
-
-    public static String defaultKey(Class<?> clazz, Object args) {
-        return defaultKey(clazz, args, null);
-    }
-
-    public static String defaultKey(Class<?> clazz, Object arg, String prefix) {
-        StringBuilder builder = StringUtils.isEmpty(prefix) ?
-            new StringBuilder() :
-            new StringBuilder(prefix + SEPARATOR);
-        builder.append(clazz.getSimpleName());
-        builder.append(SEPARATOR).append(arg.toString());
-        return builder.toString();
-    }
-
-    public static Object parseDefault(Class<?> clazz, Object args) {
-        return JSON.parseObject(defaultKey(clazz, args), clazz);
     }
 }

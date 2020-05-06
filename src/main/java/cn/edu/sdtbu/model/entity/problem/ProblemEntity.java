@@ -1,5 +1,6 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.problem;
 
+import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import cn.edu.sdtbu.model.enums.ProblemType;
 import cn.edu.sdtbu.model.properties.Const;
 import lombok.Data;
