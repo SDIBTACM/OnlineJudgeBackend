@@ -1,24 +1,32 @@
 package cn.edu.sdtbu.service.base;
 
-import cn.edu.sdtbu.aop.annotation.Cache;
+import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.model.entity.BaseEntity;
+import cn.edu.sdtbu.handler.CacheHandler;
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
+import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.repository.base.BaseRepository;
+import cn.edu.sdtbu.service.CountService;
+import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -29,6 +37,10 @@ import java.util.Optional;
 @Slf4j
 @Transactional(rollbackFor = Exception.class)
 public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> implements BaseService<DOMAIN, ID> {
+    @Resource
+    protected CacheHandler handler;
+    @Resource
+    protected CountService countService;
 
     private final String domainName;
 
@@ -36,23 +48,30 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
 
     protected AbstractBaseService(BaseRepository<DOMAIN, ID> repository) {
         this.repository = repository;
-
         @SuppressWarnings("unchecked")
-        Class<DOMAIN> domainClass = (Class<DOMAIN>) fetchType(0);
+        Class<DOMAIN> domainClass = (Class<DOMAIN>) fetchType();
         domainName = domainClass.getSimpleName();
     }
 
     /**
-     * Gets actual generic type.
+     * Fetch by id
      *
-     * @param index generic type index
-     * @return real generic type will be returned
+     * @param id id
+     * @return Optional
      */
-    private Type fetchType(int index) {
-        Assert.isTrue(index >= 0 && index <= 1, "type index must be between 0 to 1");
-
-        return ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[index];
+    private Optional<DOMAIN> fetchById(ID id) {
+        Assert.notNull(id, domainName + " id must not be null");
+        String key = key(fetchClass(), id);
+        Object res;
+        if ((res = parseObj(fetchClass(), id)) != null) {
+            return Optional.of((DOMAIN) res);
+        }
+        res = repository.findById(id);
+        cache().put(key, JSON.toJSONString(res));
+        return (Optional<DOMAIN>) res;
     }
+
+
 
     /**
      * List All
@@ -70,8 +89,9 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param sort sort
      * @return List
      */
+    @NonNull
     @Override
-    public List<DOMAIN> listAll(Sort sort) {
+    public List<DOMAIN> listAll(@NonNull Sort sort) {
         Assert.notNull(sort, "Sort info must not be null");
 
         return repository.findAll(sort);
@@ -83,10 +103,10 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param pageable pageable
      * @return Page
      */
+    @NonNull
     @Override
-    public Page<DOMAIN> listAll(Pageable pageable) {
+    public Page<DOMAIN> listAll(@NonNull Pageable pageable) {
         Assert.notNull(pageable, "Pageable info must not be null");
-
         return repository.findAll(pageable);
     }
 
@@ -96,6 +116,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param ids ids
      * @return List
      */
+    @NonNull
     @Override
     public List<DOMAIN> listAllByIds(Collection<ID> ids) {
         return CollectionUtils.isEmpty(ids) ? Collections.emptyList() : repository.findAllById(ids);
@@ -108,25 +129,15 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param sort sort
      * @return List
      */
+    @NonNull
     @Override
-    public List<DOMAIN> listAllByIds(Collection<ID> ids, Sort sort) {
+    public List<DOMAIN> listAllByIds(Collection<ID> ids,@NonNull Sort sort) {
         Assert.notNull(sort, "Sort info must not be null");
 
         return CollectionUtils.isEmpty(ids) ? Collections.emptyList() : repository.findAllByIdIn(ids, sort);
     }
 
-    /**
-     * Fetch by id
-     *
-     * @param id id
-     * @return Optional
-     */
 
-    private Optional<DOMAIN> fetchById(ID id) {
-        Assert.notNull(id, domainName + " id must not be null");
-
-        return repository.findById(id);
-    }
 
     /**
      * Get by id
@@ -135,9 +146,9 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @return DOMAIN
      * @throws NotFoundException If the specified id does not exist
      */
-    @Cache(key = "#id")
+    @NonNull
     @Override
-    public DOMAIN getById(ID id) {
+    public DOMAIN getById(@NonNull ID id) {
         return fetchById(id).orElseThrow(() -> new NotFoundException(domainName + " was not found or has been deleted"));
     }
 
@@ -148,7 +159,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @return DOMAIN
      */
     @Override
-    public DOMAIN getByIdOfNullable(ID id) {
+    public DOMAIN getByIdOfNullable(@NonNull ID id) {
         return fetchById(id).orElse(null);
     }
 
@@ -159,7 +170,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @return boolean
      */
     @Override
-    public boolean existsById(ID id) {
+    public boolean existsById(@NonNull ID id) {
         Assert.notNull(id, domainName + " id must not be null");
 
         return repository.existsById(id);
@@ -172,7 +183,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @throws NotFoundException If the specified id does not exist
      */
     @Override
-    public void mustExistById(ID id) {
+    public void mustExistById(@NonNull ID id) {
         if (!existsById(id)) {
             throw new NotFoundException(domainName + " was not exist");
         }
@@ -194,11 +205,13 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param domain domain
      * @return DOMAIN
      */
+    @NonNull
     @Override
-    public DOMAIN create(DOMAIN domain) {
+    public DOMAIN create(@NonNull DOMAIN domain) {
         Assert.notNull(domain, domainName + " data must not be null");
-
-        return repository.save(domain);
+        DOMAIN res = repository.save(domain);
+        cache().put(key(fetchClass(), domain.getId()), JSON.toJSONString(domain));
+        return res;
     }
 
     /**
@@ -207,8 +220,9 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param domains domains
      * @return List
      */
+    @NonNull
     @Override
-    public List<DOMAIN> createInBatch(Collection<DOMAIN> domains) {
+    public List<DOMAIN> createInBatch(@NonNull Collection<DOMAIN> domains) {
         return CollectionUtils.isEmpty(domains) ? Collections.emptyList() : repository.saveAll(domains);
     }
 
@@ -218,12 +232,16 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param domain domain
      * @return DOMAIN
      */
+    @NonNull
     @Override
-    public DOMAIN update(DOMAIN domain, ID id) {
+    public DOMAIN update(@NonNull DOMAIN domain, ID id) {
         Assert.notNull(domain, domainName + " data must not be null");
         Assert.notNull(id, id + " data must not be null");
         Object entity  = repository.findById(id).orElseThrow(() -> new NotFoundException("not such entity"));
         SpringUtil.cloneWithoutNullVal(domain, entity);
+
+        //flush cache
+        cache().put(key(fetchClass(), id), JSON.toJSONString(entity));
         return repository.saveAndFlush((DOMAIN)entity);
     }
 
@@ -238,8 +256,9 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param domains domains
      * @return List
      */
+    @NonNull
     @Override
-    public List<DOMAIN> updateInBatch(Collection<DOMAIN> domains) {
+    public List<DOMAIN> updateInBatch(@NonNull Collection<DOMAIN> domains) {
         return CollectionUtils.isEmpty(domains) ? Collections.emptyList() : repository.saveAll(domains);
     }
 
@@ -250,14 +269,15 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @return DOMAIN
      * @throws NotFoundException If the specified id does not exist
      */
+    @NonNull
     @Override
-    public DOMAIN removeById(ID id) {
+    public DOMAIN removeById(@NonNull ID id) {
         // Get non null domain by id
         DOMAIN domain = getById(id);
 
         // Remove it
         remove(domain);
-
+        cache().delete(key(fetchClass(), id));
         // return the deleted domain
         return domain;
     }
@@ -269,7 +289,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @return DOMAIN
      */
     @Override
-    public DOMAIN removeByIdOfNullable(ID id) {
+    public DOMAIN removeByIdOfNullable(@NonNull ID id) {
         return fetchById(id).map(domain -> {
             remove(domain);
             return domain;
@@ -282,9 +302,9 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param domain domain
      */
     @Override
-    public void remove(DOMAIN domain) {
+    public void remove(@NonNull DOMAIN domain) {
         Assert.notNull(domain, domainName + " data must not be null");
-
+        cache().delete(key(fetchClass(), domain.getId()));
         repository.delete(domain);
     }
 
@@ -294,12 +314,15 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param ids ids
      */
     @Override
-    public void removeInBatch(Collection<ID> ids) {
+    public void removeInBatch(@NonNull Collection<ID> ids) {
         if (CollectionUtils.isEmpty(ids)) {
             log.debug(domainName + " id collection is empty");
             return;
         }
-
+        cache().delete(
+            ids.stream()
+                .map(id -> key(fetchClass(), id))
+                .collect(Collectors.toList()));
         repository.deleteByIdIn(ids);
     }
 
@@ -309,11 +332,16 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      * @param domains domains
      */
     @Override
-    public void removeAll(Collection<DOMAIN> domains) {
+    public void removeAll(@NonNull Collection<DOMAIN> domains) {
         if (CollectionUtils.isEmpty(domains)) {
             log.debug(domainName + " collection is empty");
             return;
         }
+
+        cache().delete(
+            domains.stream()
+                .map(domain -> key(fetchClass(), domain.getId()))
+                .collect(Collectors.toList()));
         repository.deleteInBatch(domains);
     }
 
@@ -335,9 +363,42 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
         repository.saveAll(domains);
     }
 
+    /**
+     * util methods
+     */
     @Override
     public Class<?> getTemplateType() {
         return (Class<?>) ((ParameterizedType) getClass()
             .getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+    protected CacheStore<String, String> cache() {
+        return handler.fetchCacheStore();
+    }
+
+    protected Object parseObj(Class<?> clazz, Object... args) {
+        return JSON.parseObject(cache().get(key(clazz, args)), clazz);
+    }
+
+    protected String key(Class<?> clazz, Object args) {
+        return CacheUtil.defaultKey(clazz, args, KeyPrefix.ENTITY);
+    }
+    protected Class<?> fetchClass() {
+        Class<?> clazz = null;
+        try {
+            return Class.forName(fetchType().getTypeName());
+        } catch (ClassNotFoundException e) {
+            log.error("class[{}] not found, can't generator cache key, trace is {}",
+                fetchType().getTypeName(), JSON.toJSONString(e.getStackTrace()));
+            return null;
+        }
+    }
+
+    /**
+     * Gets actual generic type.
+     *
+     * @return real generic type will be returned
+     */
+    private Type fetchType() {
+        return ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 }

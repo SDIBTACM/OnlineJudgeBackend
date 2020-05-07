@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.model.entity;
 
+import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.enums.UserStatus;
 import com.alibaba.fastjson.JSON;

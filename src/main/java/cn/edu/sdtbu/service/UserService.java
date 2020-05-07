@@ -2,9 +2,13 @@ package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.entity.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.vo.UserCenterVO;
 import cn.edu.sdtbu.service.base.BaseService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * @author bestsort
@@ -12,6 +16,7 @@ import cn.edu.sdtbu.service.base.BaseService;
  * @date 2020-4-6 21:01
  */
 public interface UserService extends BaseService<UserEntity, Long> {
+    UserCenterVO generatorUserCenterVO(UserCenterVO centerVO, Long userId);
     /**
      * insert user info
      * @param userRegisterParam    user entity info
@@ -45,4 +50,6 @@ public interface UserService extends BaseService<UserEntity, Long> {
      * @return jwt type string
      */
     String generateRememberToken(UserEntity entity, String requestIp);
+
+    Page<LoginLogEntity> loginLogs(Long userId, Pageable pageable);
 }

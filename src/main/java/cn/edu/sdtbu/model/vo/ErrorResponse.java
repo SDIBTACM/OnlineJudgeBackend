@@ -19,6 +19,7 @@ public class ErrorResponse {
     private final Object errors;
     private final Object data;
     private final Object message;
+    private final Object requestId;
 
     public String toJSONString() {
         return JSON.toJSONString(this);
@@ -37,6 +38,7 @@ public class ErrorResponse {
         private Object type;
         private Object errors;
         private Object message;
+        private Object requestId;
         private Object data;
 
         private ResponseBuilder() { }
@@ -52,6 +54,11 @@ public class ErrorResponse {
 
         public ResponseBuilder code(final HttpStatus status) {
             this.code = status.value();
+            return this;
+        }
+
+        public ResponseBuilder requestId(final Object id) {
+            this.requestId = id;
             return this;
         }
 
@@ -77,7 +84,7 @@ public class ErrorResponse {
         }
 
         public ErrorResponse build() {
-            return new ErrorResponse(this.code, this.type, this.errors, this.data, this.message);
+            return new ErrorResponse(this.code, this.type, this.errors, this.data, this.message,this.requestId);
         }
     }
 }

@@ -48,7 +48,8 @@ public class UserController {
         @PathVariable Long userId) {
         UserEntity userEntity = userParam.transformToEntity();
         userEntity.setId(userId);
-        return ResponseEntity.ok(userService.update(userEntity, userId));
+        userEntity = userService.update(userEntity, userId);
+        return ResponseEntity.ok(userEntity);
     }
     @GetMapping("/{userId}")
     public ResponseEntity<UserEntity> queryUserById(@PathVariable Long userId) {

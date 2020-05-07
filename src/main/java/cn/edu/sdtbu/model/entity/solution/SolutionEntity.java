@@ -1,5 +1,6 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.solution;
 
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import cn.edu.sdtbu.model.enums.LangType;
 import cn.edu.sdtbu.model.enums.SolutionResult;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class SolutionEntity extends BaseEntity {
     Long problemId;
     @Column
     Long constId;
-    @Column(length = 255)
+    @Column
     String hash;
     @Column
     LangType lang;

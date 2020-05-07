@@ -1,8 +1,9 @@
 package cn.edu.sdtbu.util;
 
-import cn.edu.sdtbu.model.entity.ProblemEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.ProblemParam;
+import cn.edu.sdtbu.model.properties.Const;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -44,9 +45,10 @@ public class DebugUtil {
             return;
         }
         if (target.get(0) instanceof UserEntity) {
-            target.forEach(o -> ((UserEntity)o).setPassword(
-                BCrypt.hashpw(((UserEntity)o).getPassword(), BCrypt.gensalt()))
-            );
+            target.forEach(o -> {
+                UserEntity user = (UserEntity)o;
+                user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+                user.setDeleteAt(Const.TIME_ZERO); });
         } else if (target.get(0) instanceof ProblemEntity) {
             ProblemEntity buffer = new ProblemParam().transformToEntity();
             target.forEach(o -> SpringUtil.cloneWithoutNullVal(buffer, o));

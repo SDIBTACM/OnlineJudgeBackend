@@ -1,5 +1,6 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.problem;
 
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

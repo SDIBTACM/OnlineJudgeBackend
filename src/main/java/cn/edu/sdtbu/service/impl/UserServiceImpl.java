@@ -3,22 +3,31 @@ package cn.edu.sdtbu.service.impl;
 import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.entity.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.vo.UserCenterVO;
+import cn.edu.sdtbu.model.vo.UserSimpleInfoVO;
+import cn.edu.sdtbu.repository.LoginLogRepository;
 import cn.edu.sdtbu.repository.UserRepository;
-import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
+import cn.edu.sdtbu.util.SpringUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
 
@@ -34,14 +43,25 @@ import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 @Service
 @Slf4j
 public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> implements UserService {
-    private final LoginLogService loginLogService;
+    private final LoginLogRepository loginLogRepository;
     private final UserRepository userRepository;
 
-    public UserServiceImpl(LoginLogService loginLogService, UserRepository userRepository) {
+    public UserServiceImpl(LoginLogRepository loginLogRepository, UserRepository userRepository) {
         super(userRepository);
-        this.loginLogService = loginLogService;
+        this.loginLogRepository = loginLogRepository;
         this.userRepository = userRepository;
     }
+
+    @Override
+    public UserCenterVO generatorUserCenterVO(UserCenterVO centerVO, Long userId) {
+        centerVO.setLastLogin(lastLogin(userId));
+        UserSimpleInfoVO simpleInfoVO = new UserSimpleInfoVO();
+        SpringUtil.cloneWithoutNullVal(getById(userId), simpleInfoVO);
+        simpleInfoVO.setRank(userRank(userId));
+        centerVO.setUserInfo(simpleInfoVO);
+        return centerVO;
+    }
+
 
     @Override
     public boolean addUser(UserParam ao) {
@@ -50,9 +70,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         }
         // Use BCrypt for other language service
         ao.setPassword(BCrypt.hashpw(ao.getPassword(), BCrypt.gensalt()));
-        userRepository.saveAndFlush(
-            ao.transformToEntity(UserEntity.getDefaultValue())
-        );
+        save(ao.transformToEntity(UserEntity.getDefaultValue()));
         return true;
     }
 
@@ -112,6 +130,28 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     private void userLogin(UserEntity user, String requestIp) {
         log.info("user [{}] login from [{}]", user.getUsername(), requestIp);
-        loginLogService.login(user.getId(), requestIp);
+        appendLoginLog(user.getId(), requestIp);
+    }
+
+    private void appendLoginLog(Long userId, String ip) {
+        LoginLogEntity entity = new LoginLogEntity();
+        entity.setIp(ip);
+        entity.setUserId(userId);
+        loginLogRepository.saveAndFlush(entity);
+    }
+
+    @Override
+    public Page<LoginLogEntity> loginLogs(Long userId, Pageable pageable) {
+        return loginLogRepository.findAllByUserId(userId, pageable);
+    }
+
+    private Timestamp lastLogin(Long userId) {
+        Pageable pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createAt");
+        Page<LoginLogEntity> page = loginLogRepository.findAllByUserId(userId,pageable);
+        return page.hasContent() ? page.getContent().get(0).getCreateAt() : null;
+    }
+
+    private Integer userRank(Long userId) {
+        return -1;
     }
 }

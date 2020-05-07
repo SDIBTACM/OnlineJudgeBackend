@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service;
 
-import cn.edu.sdtbu.model.entity.ProblemDescEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.service.base.BaseService;
 
 /**
@@ -9,5 +9,4 @@ import cn.edu.sdtbu.service.base.BaseService;
  * @date 2020-04-29 21:11
  */
 public interface ProblemDescService extends BaseService<ProblemDescEntity, Long> {
-    ProblemDescEntity getProblemDesc(Long id);
 }

@@ -3,6 +3,7 @@ package cn.edu.sdtbu.cache;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -58,5 +59,12 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
         // put to db
         // put to cache middleware
         putInternal(key, value, DEFAULT_EXPIRE, TimeUnit.MINUTES);
+    }
+
+    @Override
+    public void put(Map<K, V> kvMap) {
+        for (K k : kvMap.keySet()) {
+            put(k, kvMap.get(k));
+        }
     }
 }

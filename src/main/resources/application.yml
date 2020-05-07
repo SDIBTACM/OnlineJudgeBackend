@@ -26,6 +26,8 @@ spring:
   http:
     encoding:
       charset: UTF-8
+logging:
+  path:
 online-judge:
   cache-store-type: DEFAULT
   debug:

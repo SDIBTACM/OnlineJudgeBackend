@@ -13,9 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * @author bestsort
  * @version 1.0

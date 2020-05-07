@@ -6,6 +6,7 @@ package cn.edu.sdtbu.model.enums;
  * @date 2020-04-21 15:35
  */
 public enum SolutionResult {
+    UNKNOWN,
     PENDING,
     PENDING_REJUDGE,
     COMPILING,

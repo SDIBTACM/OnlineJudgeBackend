@@ -1,6 +1,5 @@
 package cn.edu.sdtbu.config;
 
-import cn.edu.sdtbu.interceptor.CookieInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,10 +19,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
-    CookieInterceptor cookieInterceptor;
-    public WebConfig(CookieInterceptor cookieInterceptor) {
-        this.cookieInterceptor = cookieInterceptor;
-    }
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -41,8 +37,5 @@ public class WebConfig implements WebMvcConfigurer {
         exclude.add("/css/**");
         exclude.add("/favicon.ico");
         exclude.add("/");
-        registry.addInterceptor(cookieInterceptor)
-            .addPathPatterns("/**")
-            .excludePathPatterns(exclude);
     }
 }

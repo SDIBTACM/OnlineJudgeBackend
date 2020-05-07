@@ -1,5 +1,7 @@
 package cn.edu.sdtbu.aop.annotation;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -41,16 +43,13 @@ public @interface Cache {
     int randomInterval() default 3;
 
     /**
-     * key, if null, used {@link cn.edu.sdtbu.cache.key.DefaultKeyGenerator}.
      * support spring expression language
      * {@see <a href="https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html">SpEL</a>}
      * @return key
      */
-    String key();
+    @AliasFor("value")
+    String key() default "";
 
-    /**
-     * add package suffix to key
-     * @return is or not
-     */
-    boolean pkgSuffix() default true;
+    @AliasFor("key")
+    String value() default "";
 }

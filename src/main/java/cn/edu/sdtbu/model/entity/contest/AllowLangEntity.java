@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.entity.contest;
 
-import cn.edu.sdtbu.model.entity.BaseEntity;
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import cn.edu.sdtbu.model.enums.LangType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
