@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Table(name = "user_group")
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class UserGroupEntity extends BaseEntity{
+public class UserGroupEntity extends BaseEntity {
     @Column
     Long userId;
 
