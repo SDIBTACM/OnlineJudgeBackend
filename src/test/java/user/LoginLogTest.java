@@ -1,7 +1,7 @@
 package user;
 
 import cn.edu.sdtbu.Application;
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.service.LoginLogService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

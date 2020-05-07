@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.model.vo;
 
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 

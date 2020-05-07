@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.util;
 
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.util.Pair;
@@ -22,7 +22,7 @@ public class CacheUtil {
         List<Pair<Class<?>, Object>> list = new ArrayList<>(4);
         list.add(Pair.of(UserEntity.class, userId));
         list.add(Pair.of(ProblemEntity.class, problemId));
-        return defaultKey(list, KeyPrefix.SUBMIT_PEOPLE_COUNT);
+        return defaultKey(list, KeyPrefix.USER_SUBMIT_COUNT);
     }
 
     public static String countKey(Class<?> clazz, Object arg, KeyPrefix type) {
@@ -37,7 +37,7 @@ public class CacheUtil {
     }
 
     public static String defaultKey(Class<?> clazz, Object arg, Object prefix) {
-        return prefix + SEPARATOR + clazz.getName() + SEPARATOR + arg;
+        return prefix + SEPARATOR + clazz.getSimpleName() + SEPARATOR + arg;
     }
 
     public static String defaultKey(List<Pair<Class<?>, Object>> clazzArgsMap, Object prefix) {

@@ -2,6 +2,11 @@ package cn.edu.sdtbu.repository;
 
 import cn.edu.sdtbu.model.entity.CountEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
+import org.hibernate.annotations.SQLUpdate;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author bestsort
@@ -15,4 +20,14 @@ public interface CountRepository extends BaseRepository<CountEntity, Long> {
      * @return res
      */
     CountEntity findByCountKey(String countKey);
+
+    /**
+     * inc by step.
+     * @param key key
+     * @param step must not be null
+     */
+    @Transactional
+    @Modifying
+    @Query("update CountEntity set total = total + :step where countKey = :count_key")
+    void incByStep(@Param("count_key") String key, @Param("step") Long step);
 }

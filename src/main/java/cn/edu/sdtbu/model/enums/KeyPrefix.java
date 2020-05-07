@@ -8,7 +8,7 @@ package cn.edu.sdtbu.model.enums;
 public enum KeyPrefix {
     ENTITY,
     /******************    count     ********************/
-    AC_COUNT,
-    SUBMIT_PEOPLE_COUNT,
+    USER_ACCEPTED_COUNT,
+    USER_SUBMIT_COUNT,
     TOTAL_SUBMIT_COUNT;
 }

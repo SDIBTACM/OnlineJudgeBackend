@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.vo;
 
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

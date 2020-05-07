@@ -4,6 +4,7 @@ import cn.edu.sdtbu.manager.RedisManager;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class RedisManagerImpl implements RedisManager {
             if (jedis.exists(key)) {
                 jedis.del(key);
             }
-            jedis.set(key, value, "nx", "px", timeUnit.toMillis(timeOut));
+            jedis.set(key, value, new SetParams().nx().px(timeUnit.toMillis(timeOut)));
         }
     }
 

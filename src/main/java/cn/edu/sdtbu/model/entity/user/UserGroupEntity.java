@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.user;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;
@@ -12,20 +12,17 @@ import javax.persistence.Table;
 /**
  * @author Soul
  * @version 1.0
- * @date 2020-05-04 14:43
+ * @date 2020-05-04 14:40
  */
 @Data
 @Entity
-@Table(name = "news")
+@Table(name = "user_group")
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class NewsEntity extends BaseEntity {
+public class UserGroupEntity extends BaseEntity {
     @Column
-    Long ownerId;
-
-    @Column(length = 64)
-    String title;
+    Long userId;
 
     @Column
-    Boolean status;
+    Long GroupId;
 }

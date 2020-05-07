@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.exception.TeapotException;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.UserLoginInfo;

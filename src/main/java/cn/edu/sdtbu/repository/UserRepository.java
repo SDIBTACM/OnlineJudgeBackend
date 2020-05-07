@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.repository;
 
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 import org.springframework.data.jpa.repository.Query;
 

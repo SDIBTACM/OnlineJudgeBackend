@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.user;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;

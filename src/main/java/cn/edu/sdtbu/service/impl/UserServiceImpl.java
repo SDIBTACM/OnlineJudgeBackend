@@ -3,8 +3,9 @@ package cn.edu.sdtbu.service.impl;
 import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.UserCenterVO;
@@ -13,12 +14,14 @@ import cn.edu.sdtbu.repository.LoginLogRepository;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
+import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -143,6 +146,22 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     @Override
     public Page<LoginLogEntity> loginLogs(Long userId, Pageable pageable) {
         return loginLogRepository.findAllByUserId(userId, pageable);
+    }
+
+    @Override
+    public Long fetchSubmitCount(Long userId) {
+        return fetchCount(userId, KeyPrefix.TOTAL_SUBMIT_COUNT);
+    }
+
+    @Override
+    public Long fetchAcceptedCount(Long userId) {
+        return fetchCount(userId, KeyPrefix.USER_ACCEPTED_COUNT);
+    }
+
+    private Long fetchCount(Long userId, KeyPrefix prefix) {
+        String key = CacheUtil.countKey(UserEntity.class, userId, prefix);
+        String res = cache().get(key);
+        return StringUtils.isEmpty(res) ? countService.fetchCount(key) : Long.parseLong(res);
     }
 
     private Timestamp lastLogin(Long userId) {

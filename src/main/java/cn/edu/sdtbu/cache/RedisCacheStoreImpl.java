@@ -2,6 +2,7 @@ package cn.edu.sdtbu.cache;
 
 import cn.edu.sdtbu.manager.RedisManager;
 import cn.edu.sdtbu.model.enums.CacheStoreType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @date 2020-04-22 15:56
  */
+@Slf4j
 @Service
 public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> implements CacheStore<String, String> {
     @Resource
@@ -33,6 +35,7 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
 
     @Override
     public void inc(@NotNull String key, int stepLength) {
+        log.debug("inc : [ {} ],step is {}", key, stepLength);
         manager.inc(key, stepLength);
     }
 

@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 public interface ProblemService extends BaseService<ProblemEntity, Long> {
     Page<ProblemSimpleListVO> listSimpleLists(Pageable pageable);
 
-    UserCenterVO fetchUserCenterProblem(Long userId);
+    UserCenterVO fetchAllUserSubmitStatus(Long userId);
 
     void generatorProblem(ProblemParam param);
 }

@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.mail;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;
@@ -7,21 +7,28 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
  * @author Soul
  * @version 1.0
- * @date 2020-05-04 14:49
+ * @date 2020-05-04 14:52
  */
 @Data
 @Entity
-@Table(name = "news_context")
+@Table(name = "mail")
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class NewsContextEntity extends BaseEntity {
-    @Lob
+public class MailEntity extends BaseEntity {
     @Column
-    String context;
+    Long fromUserId;
+
+    @Column
+    Long toUserId;
+
+    @Column
+    String topic;
+
+    @Column
+    Boolean status;
 }

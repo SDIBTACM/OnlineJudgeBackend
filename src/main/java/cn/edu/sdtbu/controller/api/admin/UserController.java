@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.controller.api.admin;
 
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;

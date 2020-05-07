@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> implements BaseService<DOMAIN, ID> {
     @Resource
     protected CacheHandler handler;
+
     @Resource
     protected CountService countService;
 

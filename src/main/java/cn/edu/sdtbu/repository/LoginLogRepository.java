@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.repository;
 
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

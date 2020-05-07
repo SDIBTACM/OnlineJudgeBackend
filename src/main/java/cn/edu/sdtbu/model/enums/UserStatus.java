@@ -1,7 +1,9 @@
 package cn.edu.sdtbu.model.enums;
 
+import cn.edu.sdtbu.model.entity.user.UserEntity;
+
 /**
- * user status, {@link cn.edu.sdtbu.model.entity.UserEntity} used this enum.
+ * user status, {@link UserEntity} used this enum.
  * can be changed status by ADMIN {@link cn.edu.sdtbu.model.enums.UserRole}
  * @author bestsort
  * @version 1.0

@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.util;
 
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.model.properties.Const;
 import lombok.extern.slf4j.Slf4j;

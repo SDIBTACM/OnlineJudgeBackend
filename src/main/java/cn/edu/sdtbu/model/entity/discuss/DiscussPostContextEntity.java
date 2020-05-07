@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.discuss;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;
@@ -13,14 +13,14 @@ import javax.persistence.Table;
 /**
  * @author Soul
  * @version 1.0
- * @date 2020-05-04 14:57
+ * @date 2020-05-04 14:38
  */
 @Data
 @Entity
-@Table(name = "mail_context")
+@Table(name = "discuss_post_context")
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class MailContextEntity extends BaseEntity {
+public class DiscussPostContextEntity extends BaseEntity {
     @Lob
     @Column
     String context;

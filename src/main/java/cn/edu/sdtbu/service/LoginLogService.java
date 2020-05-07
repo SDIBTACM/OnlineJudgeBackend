@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service;
 
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

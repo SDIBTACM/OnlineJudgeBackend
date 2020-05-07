@@ -2,8 +2,8 @@ package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.model.entity.LoginLogEntity;
-import cn.edu.sdtbu.model.entity.UserEntity;
+import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.vo.UserCenterVO;
 import cn.edu.sdtbu.service.base.BaseService;
@@ -52,4 +52,8 @@ public interface UserService extends BaseService<UserEntity, Long> {
     String generateRememberToken(UserEntity entity, String requestIp);
 
     Page<LoginLogEntity> loginLogs(Long userId, Pageable pageable);
+
+    Long fetchSubmitCount(Long userId);
+
+    Long fetchAcceptedCount(Long userId);
 }

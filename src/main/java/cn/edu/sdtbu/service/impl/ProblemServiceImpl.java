@@ -1,7 +1,9 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
+import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.enums.SolutionResult;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
@@ -11,6 +13,7 @@ import cn.edu.sdtbu.repository.ProblemRepository;
 import cn.edu.sdtbu.repository.SolutionRepository;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
+import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +57,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
     }
 
     @Override
-    public UserCenterVO fetchUserCenterProblem(Long userId) {
+    public UserCenterVO fetchAllUserSubmitStatus(Long userId) {
         List<SolutionEntity> list = solutionRepository.findAllByOwnerId(userId);
         List<Long> accepted = new LinkedList<>();
         List<Long> unsolved = new LinkedList<>();
@@ -75,6 +78,14 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
                 unsolved.add(k);
             }
         });
+        // cache common fields
+        countService.setCount(
+            CacheUtil.countKey(UserEntity.class, userId, KeyPrefix.USER_ACCEPTED_COUNT),
+            (long) accepted.size());
+        countService.setCount(
+            CacheUtil.countKey(UserEntity.class, userId, KeyPrefix.USER_SUBMIT_COUNT),
+            (long) list.size()
+        );
         return new UserCenterVO(accepted, unsolved, resultMap);
     }
     @Override

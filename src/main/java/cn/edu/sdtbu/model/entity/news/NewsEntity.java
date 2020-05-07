@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.entity;
+package cn.edu.sdtbu.model.entity.news;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;
@@ -8,40 +8,24 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
 
 /**
  * @author Soul
  * @version 1.0
- * @date 2020-05-04 14:28
+ * @date 2020-05-04 14:43
  */
 @Data
 @Entity
-@Table(name = "discuss_topic")
+@Table(name = "news")
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class DiscussTopicEntity extends BaseEntity {
+public class NewsEntity extends BaseEntity {
     @Column
     Long ownerId;
 
-    @Column
-    Long contestId;
-
-    @Column
-    Long problemId;
-
-    @Column
+    @Column(length = 64)
     String title;
 
     @Column
     Boolean status;
-
-    @Column
-    Long views;
-
-    @Column
-    Long replies;
-
-    @Column
-    Timestamp latestReplyAt;
 }

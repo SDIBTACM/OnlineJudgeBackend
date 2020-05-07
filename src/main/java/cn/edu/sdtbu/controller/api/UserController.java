@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<UserCenterVO> userCenter(Long userId) {
         return ResponseEntity.ok(
             userService.generatorUserCenterVO(
-                problemService.fetchUserCenterProblem(userId),
+                problemService.fetchAllUserSubmitStatus(userId),
                 userId));
     }
 }

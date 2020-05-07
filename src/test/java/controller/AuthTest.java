@@ -1,18 +1,15 @@
 package controller;
 
 import cn.edu.sdtbu.Application;
-import cn.edu.sdtbu.model.entity.UserEntity;
 import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.vo.UserLoginInfo;
 import com.alibaba.fastjson.JSON;
-import org.apache.catalina.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;

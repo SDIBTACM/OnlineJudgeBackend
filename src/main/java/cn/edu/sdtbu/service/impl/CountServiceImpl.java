@@ -1,11 +1,14 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.cache.CacheStore;
+import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.CountEntity;
 import cn.edu.sdtbu.repository.CountRepository;
 import cn.edu.sdtbu.service.CountService;
-import cn.edu.sdtbu.service.base.AbstractBaseService;
 import cn.edu.sdtbu.util.CacheUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,13 +19,14 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @date 2020-05-03 15:01
  */
+@Slf4j
 @Service
-public class CountServiceImpl extends AbstractBaseService<CountEntity, Long> implements CountService {
-
+public class CountServiceImpl implements CountService {
+    private final CacheHandler cacheHandler;
     private final CountRepository repository;
-    public CountServiceImpl(CountRepository repository) {
-        super(repository);
+    public CountServiceImpl(CountRepository repository, CacheHandler cacheHandler) {
         this.repository = repository;
+        this.cacheHandler = cacheHandler;
     }
     public void flushCountFromDb() {
         Map<String, String> map = cache().fetchAll(CacheUtil.COUNT_PREFIX + CacheUtil.SEPARATOR);
@@ -44,5 +48,34 @@ public class CountServiceImpl extends AbstractBaseService<CountEntity, Long> imp
             return 0L;
         }
         return Long.parseLong(value);
+    }
+
+    @Override
+    public void  incCount(String key, int step) {
+        cache().inc(key, step);
+        repository.incByStep(key, (long) step);
+    }
+
+    @Override
+    public void incCount(String key) {
+        incCount(key, 1);
+    }
+
+    @Override
+    public void setCount(String key, Long val) {
+        cache().put(key, val.toString(), 1, TimeUnit.DAYS);
+        CountEntity entity = repository.findByCountKey(key);
+        if (entity == null) {
+            entity = new CountEntity();
+        }
+        entity.setCountKey(key);
+        entity.setTotal(val);
+        save(entity);
+    }
+    private void save(CountEntity entity) {
+        repository.saveAndFlush(entity);
+    }
+    private CacheStore<String, String> cache() {
+        return cacheHandler.fetchCacheStore();
     }
 }
