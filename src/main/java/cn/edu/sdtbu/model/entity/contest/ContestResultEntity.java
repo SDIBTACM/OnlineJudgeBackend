@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.entity.contest;
 
-import cn.edu.sdtbu.model.entity.BaseEntity;
+import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "contest_result")
+
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContestResultEntity extends BaseEntity {
