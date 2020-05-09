@@ -17,10 +17,10 @@ public class CacheUtil {
     public static final String SEPARATOR = "::";
     public static final String NOT_DEFINED_PREFIX = "not_defined_prefix";
     public static final String COUNT_PREFIX = "count";
-    private static final double ratio = 1e-6;
+    private static final double RATIO = 1e-6;
 
     public static Double rankListScore(int acceptedCount, int submitCount) {
-        return acceptedCount + submitCount * ratio;
+        return acceptedCount + submitCount * RATIO;
     }
 
     public static String userSubmitCountKey(Long userId, Long problemId) {

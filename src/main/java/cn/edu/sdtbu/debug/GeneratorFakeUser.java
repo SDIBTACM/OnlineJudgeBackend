@@ -5,7 +5,6 @@ import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.enums.UserStatus;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.repository.UserRepository;
-import cn.edu.sdtbu.service.UserService;
 import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,7 @@ public class GeneratorFakeUser {
         while (nameSet.size() != n) {
             nameSet.add(faker.name().username());
         }
-        HashSet<String>emailSet = new HashSet<>();
+        HashSet<String> emailSet = new HashSet<>();
         while (emailSet.size() != n) {
             emailSet.add(faker.internet().emailAddress());
         }

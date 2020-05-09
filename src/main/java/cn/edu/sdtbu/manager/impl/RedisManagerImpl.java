@@ -8,10 +8,11 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * @author bestsort
@@ -56,14 +57,14 @@ public class RedisManagerImpl implements RedisManager {
 
     @Override
     public void sortedListAdd(String key, Map<String, Double> doubleStringMap) {
-        try(Jedis jedis = pool.getResource()) {
+        try (Jedis jedis = pool.getResource()) {
             jedis.zadd(key, doubleStringMap);
         }
     }
 
     @Override
     public void sortedListAdd(String key, String value, double score) {
-        try(Jedis jedis = pool.getResource()) {
+        try (Jedis jedis = pool.getResource()) {
             jedis.zadd(key, score, value);
         }
     }
@@ -80,7 +81,7 @@ public class RedisManagerImpl implements RedisManager {
 
     @Override
     public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
-        try(Jedis jedis = pool.getResource()) {
+        try (Jedis jedis = pool.getResource()) {
             long start = pageable.getOffset();
             long stop = start + pageable.getPageSize() - 1;
             return less ?
@@ -91,7 +92,7 @@ public class RedisManagerImpl implements RedisManager {
 
     @Override
     public Long totalElementOfList(String key) {
-        try(Jedis jedis = pool.getResource()) {
+        try (Jedis jedis = pool.getResource()) {
             return jedis.zcard(key);
         }
     }

@@ -1,8 +1,8 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.enums.SolutionResult;
 import cn.edu.sdtbu.model.param.ProblemParam;
@@ -17,7 +17,6 @@ import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

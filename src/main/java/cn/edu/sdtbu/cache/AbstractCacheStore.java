@@ -1,15 +1,12 @@
 package cn.edu.sdtbu.cache;
 
-import org.springframework.data.util.Pair;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * @author bestsort

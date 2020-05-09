@@ -1,10 +1,8 @@
 package cn.edu.sdtbu.manager;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 

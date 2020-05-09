@@ -162,7 +162,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         List<UserRankListDTO> list = new LinkedList<>();
         //TODO init rank list from db
         Collection<String> caches = cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false);
-        for (String s : caches){
+        for (String s : caches) {
             list.add(JSON.parseObject(s, UserRankListDTO.class));
         }
         List<UserRankListVO> vos = new ArrayList<>(list.size());
