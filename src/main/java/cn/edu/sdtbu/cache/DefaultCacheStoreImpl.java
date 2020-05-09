@@ -2,6 +2,8 @@ package cn.edu.sdtbu.cache;
 
 import cn.edu.sdtbu.model.enums.CacheStoreType;
 import cn.edu.sdtbu.service.CacheService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -28,13 +30,33 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     }
 
     @Override
+    public void sortedListAdd(String listName, Map<String, Double> scoreValMap) {
+        //TODO default cache rank impl
+    }
+
+    @Override
+    public void sortedListAdd(String listName, String value, double score) {
+
+    }
+
+    @Override
+    public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
+        return null;
+    }
+
+    @Override
     public void putInternal(@NotNull String key, @NotNull String value, long timeout, @NotNull TimeUnit timeUnit) {
         service.put(key, value);
     }
 
     @Override
-    public void inc(@NotNull String key, int stepLength) {
+    public void inc(@NonNull String key, int stepLength) {
         service.inc(key, stepLength);
+    }
+
+    @Override
+    public Long totalElementOfList(String key) {
+        return 0L;
     }
 
     @Override

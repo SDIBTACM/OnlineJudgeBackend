@@ -2,7 +2,6 @@ package cn.edu.sdtbu.repository;
 
 import cn.edu.sdtbu.model.entity.CountEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
-import org.hibernate.annotations.SQLUpdate;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

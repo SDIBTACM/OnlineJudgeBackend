@@ -3,19 +3,22 @@ package cn.edu.sdtbu.service.impl;
 import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
-import cn.edu.sdtbu.model.vo.UserCenterVO;
-import cn.edu.sdtbu.model.vo.UserSimpleInfoVO;
+import cn.edu.sdtbu.model.vo.user.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserRankListVO;
+import cn.edu.sdtbu.model.vo.user.UserSimpleInfoVO;
 import cn.edu.sdtbu.repository.LoginLogRepository;
 import cn.edu.sdtbu.repository.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
 import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
+import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -23,16 +26,12 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 
@@ -156,6 +155,28 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     @Override
     public Long fetchAcceptedCount(Long userId) {
         return fetchCount(userId, KeyPrefix.USER_ACCEPTED_COUNT);
+    }
+
+    @Override
+    public Page<UserRankListVO> fetchRankList(Pageable pageable) {
+        List<UserRankListDTO> list = new LinkedList<>();
+        //TODO init rank list from db
+        Collection<String> caches = cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false);
+        for (String s : caches){
+            list.add(JSON.parseObject(s, UserRankListDTO.class));
+        }
+        List<UserRankListVO> vos = new ArrayList<>(list.size());
+        list.forEach(item -> {
+            UserRankListVO rankListVO = new UserRankListVO();
+            rankListVO.setAcceptedCount(item.getAcceptedCount());
+            rankListVO.setSubmitCount(item.getSubmitCount());
+            rankListVO.setId(item.getId());
+            UserEntity entity = getById(item.getId());
+            rankListVO.setNickname(entity.getNickname());
+            rankListVO.setUsername(entity.getUsername());
+            vos.add(rankListVO);
+        });
+        return new PageImpl<>(vos);
     }
 
     private Long fetchCount(Long userId, KeyPrefix prefix) {

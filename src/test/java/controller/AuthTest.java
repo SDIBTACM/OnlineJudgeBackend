@@ -3,7 +3,7 @@ package controller;
 import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.model.param.LoginParam;
 import cn.edu.sdtbu.model.param.UserParam;
-import cn.edu.sdtbu.model.vo.UserLoginInfo;
+import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
 import com.alibaba.fastjson.JSON;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +76,7 @@ public class AuthTest {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn();
-        UserLoginInfo loginInfo = JSON.parseObject(result.getResponse().getContentAsString(), UserLoginInfo.class);
+        UserLoginInfoVO loginInfo = JSON.parseObject(result.getResponse().getContentAsString(), UserLoginInfoVO.class);
         assert loginInfo.getUsername().equals(param.getUsername());
     }
 }

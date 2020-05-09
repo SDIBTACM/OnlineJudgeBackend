@@ -3,7 +3,7 @@ package cn.edu.sdtbu.service;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
-import cn.edu.sdtbu.model.vo.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

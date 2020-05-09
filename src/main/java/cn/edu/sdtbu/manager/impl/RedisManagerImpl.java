@@ -1,16 +1,17 @@
 package cn.edu.sdtbu.manager.impl;
 
 import cn.edu.sdtbu.manager.RedisManager;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author bestsort
@@ -54,12 +55,44 @@ public class RedisManagerImpl implements RedisManager {
     }
 
     @Override
+    public void sortedListAdd(String key, Map<String, Double> doubleStringMap) {
+        try(Jedis jedis = pool.getResource()) {
+            jedis.zadd(key, doubleStringMap);
+        }
+    }
+
+    @Override
+    public void sortedListAdd(String key, String value, double score) {
+        try(Jedis jedis = pool.getResource()) {
+            jedis.zadd(key, score, value);
+        }
+    }
+
+    @Override
     public Map<String, String> fetchAll(String prefix) {
         try (Jedis jedis = pool.getResource()) {
             Set<String> strings = jedis.keys(prefix + "*");
             HashMap<String, String> map = new HashMap<>(strings.size());
             strings.forEach(i -> map.put(i, get(i)));
             return map;
+        }
+    }
+
+    @Override
+    public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
+        try(Jedis jedis = pool.getResource()) {
+            long start = pageable.getOffset();
+            long stop = start + pageable.getPageSize() - 1;
+            return less ?
+                jedis.zrange(listName, start, stop) :
+                jedis.zrevrange(listName, start, stop);
+        }
+    }
+
+    @Override
+    public Long totalElementOfList(String key) {
+        try(Jedis jedis = pool.getResource()) {
+            return jedis.zcard(key);
         }
     }
 }

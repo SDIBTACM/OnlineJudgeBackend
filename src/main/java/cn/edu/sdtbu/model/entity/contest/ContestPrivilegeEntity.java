@@ -20,12 +20,12 @@ import javax.persistence.Table;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContestPrivilegeEntity extends BaseEntity {
-     @Column
-     Long contestId;
+    @Column
+    Long contestId;
 
-     @Column
-     Long userId;
+    @Column
+    Long userId;
 
-     @Column
-     Long type;
+    @Column
+    Long type;
 }

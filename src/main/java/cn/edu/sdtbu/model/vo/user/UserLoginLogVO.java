@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.vo;
+package cn.edu.sdtbu.model.vo.user;
 
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;

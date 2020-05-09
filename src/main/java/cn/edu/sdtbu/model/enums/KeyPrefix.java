@@ -10,5 +10,10 @@ public enum KeyPrefix {
     /******************    count     ********************/
     USER_ACCEPTED_COUNT,
     USER_SUBMIT_COUNT,
-    TOTAL_SUBMIT_COUNT;
+    TOTAL_SUBMIT_COUNT,
+
+    PROBLEM_TOTAL_ACCEPT,
+    PROBLEM_TOTAL_SUBMIT,
+    /******************     list     ********************/
+    USERS_RANK_LIST_DTO
 }

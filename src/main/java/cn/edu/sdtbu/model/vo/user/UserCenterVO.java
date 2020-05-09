@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.vo;
+package cn.edu.sdtbu.model.vo.user;
 
 import cn.edu.sdtbu.model.enums.SolutionResult;
 import io.swagger.annotations.ApiModelProperty;

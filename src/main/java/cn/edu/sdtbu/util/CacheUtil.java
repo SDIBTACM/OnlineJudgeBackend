@@ -17,6 +17,11 @@ public class CacheUtil {
     public static final String SEPARATOR = "::";
     public static final String NOT_DEFINED_PREFIX = "not_defined_prefix";
     public static final String COUNT_PREFIX = "count";
+    private static final double ratio = 1e-6;
+
+    public static Double rankListScore(int acceptedCount, int submitCount) {
+        return acceptedCount + submitCount * ratio;
+    }
 
     public static String userSubmitCountKey(Long userId, Long problemId) {
         List<Pair<Class<?>, Object>> list = new ArrayList<>(4);

@@ -3,6 +3,8 @@ package cn.edu.sdtbu.cache;
 import cn.edu.sdtbu.manager.RedisManager;
 import cn.edu.sdtbu.model.enums.CacheStoreType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,14 +31,34 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     }
 
     @Override
+    public void sortedListAdd(String listName, Map<String, Double> scoreValMap) {
+        manager.sortedListAdd(listName, scoreValMap);
+    }
+
+    @Override
+    public void sortedListAdd(String listName, String value, double score) {
+        manager.sortedListAdd(listName, value, score);
+    }
+
+    @Override
+    public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
+        return manager.fetchRanksByPage(listName, pageable, less);
+    }
+
+    @Override
     public void putInternal(@NotNull String key, @NotNull String value, long timeout, @NotNull TimeUnit timeUnit) {
         manager.put(key, value, timeout, timeUnit);
     }
 
     @Override
-    public void inc(@NotNull String key, int stepLength) {
+    public void inc(@NonNull String key, int stepLength) {
         log.debug("inc : [ {} ],step is {}", key, stepLength);
         manager.inc(key, stepLength);
+    }
+
+    @Override
+    public Long totalElementOfList(String key) {
+        return manager.totalElementOfList(key);
     }
 
     @Override

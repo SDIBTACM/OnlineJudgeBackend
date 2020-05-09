@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.vo;
+package cn.edu.sdtbu.model.vo.user;
 
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
@@ -11,14 +11,14 @@ import lombok.Data;
  * @date 2020-04-20 09:07
  */
 @Data
-public class UserLoginInfo {
+public class UserLoginInfoVO {
     Long id;
     String username;
     String token;
     @ApiModelProperty(notes = "标注用户身份:student(default)/teacher/admin")
     UserRole role;
-    public static UserLoginInfo fetchByUserEntity(UserEntity entity) {
-        UserLoginInfo loginInfo = new UserLoginInfo();
+    public static UserLoginInfoVO fetchByUserEntity(UserEntity entity) {
+        UserLoginInfoVO loginInfo = new UserLoginInfoVO();
         loginInfo.id = entity.getId();
         loginInfo.token = entity.getRememberToken();
         loginInfo.username = entity.getUsername();

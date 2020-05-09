@@ -24,5 +24,5 @@ public class UserGroupEntity extends BaseEntity {
     Long userId;
 
     @Column
-    Long GroupId;
+    Long groupId;
 }

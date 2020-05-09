@@ -150,7 +150,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
     @NonNull
     @Override
     public DOMAIN getById(@NonNull ID id) {
-        return fetchById(id).orElseThrow(() -> new NotFoundException(domainName + " was not found or has been deleted"));
+        return fetchById(id).orElseThrow(() -> new NotFoundException(domainName + " was not found or has been deleted, id is " + id));
     }
 
     /**

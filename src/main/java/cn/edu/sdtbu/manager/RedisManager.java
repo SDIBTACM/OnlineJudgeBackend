@@ -1,5 +1,10 @@
 package cn.edu.sdtbu.manager;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -10,8 +15,12 @@ import java.util.concurrent.TimeUnit;
  */
 public interface RedisManager {
     String get(String key);
-    void inc(String key, int stepLength);
-    void put(String key, String value, long timeOut, TimeUnit timeUnit);
-    void delete(String key);
     Map<String, String> fetchAll(String prefix);
+    Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less);
+    void delete(String key);
+    void put(String key, String value, long timeOut, TimeUnit timeUnit);
+    void inc(String key, int stepLength);
+    void sortedListAdd(String key, Map<String, Double> doubleStringMap);
+    void sortedListAdd(String key, String value, double score);
+    Long totalElementOfList(String key);
 }

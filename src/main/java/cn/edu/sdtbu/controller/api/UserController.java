@@ -1,16 +1,22 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.param.UserParam;
-import cn.edu.sdtbu.model.vo.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * register | update | list login log
@@ -39,5 +45,10 @@ public class UserController {
             userService.generatorUserCenterVO(
                 problemService.fetchAllUserSubmitStatus(userId),
                 userId));
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<Page<UserRankListVO>> rankList(@PageableDefault(size = 50) Pageable pageable) {
+        return ResponseEntity.ok(userService.fetchRankList(pageable));
     }
 }

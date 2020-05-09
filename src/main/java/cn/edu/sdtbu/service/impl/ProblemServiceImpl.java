@@ -7,7 +7,7 @@ import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.enums.SolutionResult;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
-import cn.edu.sdtbu.model.vo.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
 import cn.edu.sdtbu.repository.SolutionRepository;
@@ -17,6 +17,7 @@ import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -47,9 +48,9 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
             buffer.setProblemId(entity.getId());
             //TODO real data
             buffer.setAcCount(0L);
+            buffer.setSubmitCount(0L);
             buffer.setIsAccepted(System.currentTimeMillis() % 3 == 1);
             buffer.setLastSubmit(TimeUtil.now());
-            buffer.setSubmitCount(0L);
             buffer.setSubmitPeopleCount(0L);
             listVOList.add(buffer);
         }

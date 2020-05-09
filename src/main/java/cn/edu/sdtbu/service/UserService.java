@@ -5,7 +5,8 @@ import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.UserParam;
-import cn.edu.sdtbu.model.vo.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserCenterVO;
+import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,4 +57,6 @@ public interface UserService extends BaseService<UserEntity, Long> {
     Long fetchSubmitCount(Long userId);
 
     Long fetchAcceptedCount(Long userId);
+
+    Page<UserRankListVO> fetchRankList(Pageable pageable);
 }
