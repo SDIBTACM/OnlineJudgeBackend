@@ -18,8 +18,8 @@ before_script:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS `onlinejudge` COLLATE `utf8_unicode_ci`;'
 
 script:
-  - mvn clean package
-  - mvn test
+  - mvn clean package test
+  - mvn sonar:sonar
   
 after_success:
   - bash <(curl -s https://codecov.io/bash)
