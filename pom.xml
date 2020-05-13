@@ -9,6 +9,10 @@
         <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <sonar.projectKey>SDIBTACM_OnlineJudgeBackend</sonar.projectKey>
+        <sonar.organization>sdibtacm</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.login>82953a478337b0f6baf4236e5876b32ff1ee8431</sonar.login>
     </properties>
 
     <groupId>cn.edu.sdtbu</groupId>
