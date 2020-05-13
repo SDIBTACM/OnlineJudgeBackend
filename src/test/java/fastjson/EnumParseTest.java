@@ -20,8 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class EnumParseTest {
     @Test
     public void  parseTest() {
-        String res = JSON.toJSONString(JudgeResult.PENDING);
-        Object ress = JSON.parseObject("-4", IntValueEnum.class);
-        System.out.println(res);
+//        String source = JSON.toJSONString(JudgeResult.PENDING);
+//        Object res = JSON.parseObject("\"PENDING\"", IntValueEnum.class);
+//        System.out.println(source + "\n" + res);
     }
 }
