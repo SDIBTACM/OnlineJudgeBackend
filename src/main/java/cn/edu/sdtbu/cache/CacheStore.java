@@ -115,4 +115,6 @@ public interface CacheStore<K, V> {
     void delete(Collection<K> collection);
 
     Map<K, V> fetchAll(String prefix);
+
+    long count(String key);
 }

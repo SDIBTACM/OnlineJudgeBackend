@@ -83,7 +83,7 @@
                     "hint":"not hint"
                 },
                 {
-                    "id":"1",
+                    "id":"2",
                     "problemId":"2",
                     "description":"this is a problem desceription, id is 2, used HTML",
                     "input":"2 2 2",
@@ -100,56 +100,56 @@
                     "id":"1",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"ACCEPT",
+                    "result":"0",
                     "lang":"C_11"
                 },
                 {
                     "id":"2",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"WRONG_ANSWER",
+                    "result":"1",
                     "lang":"C_11"
                 },
                 {
                     "id":"3",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"TIME_LIMIT_EXCEEDED",
+                    "result":"2",
                     "lang":"C_11"
                 },
                 {
                     "id":"4",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"MEMORY_LIMIT_EXCEEDED",
+                    "result":"3",
                     "lang":"C_11"
                 },
                 {
                     "id":"5",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"OUTPUT_LIMIT_EXCEEDED",
+                    "result":"4",
                     "lang":"C_11"
                 },
                 {
                     "id":"6",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"COMPILE_ERROR",
+                    "result":"5",
                     "lang":"C_11"
                 },
                 {
                     "id":"7",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"RUNTIME_ERROR",
+                    "result":"6",
                     "lang":"C_11"
                 },
                 {
                     "id":"8",
                     "problemId":"2",
                     "ownerId":"1",
-                    "result":"RUNTIME_ERROR",
+                    "result":"0",
                     "lang":"C_11"
                 }
             ]

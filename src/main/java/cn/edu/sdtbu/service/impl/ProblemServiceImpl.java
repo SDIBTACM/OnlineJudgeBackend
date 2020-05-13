@@ -4,7 +4,7 @@ import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
-import cn.edu.sdtbu.model.enums.SolutionResult;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -61,18 +61,18 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         List<SolutionEntity> list = solutionRepository.findAllByOwnerId(userId);
         List<Long> accepted = new LinkedList<>();
         List<Long> unsolved = new LinkedList<>();
-        Map<SolutionResult, Long> resultMap = new TreeMap<>();
+        Map<JudgeResult, Long> resultMap = new TreeMap<>();
 
-        HashMap<Long, SolutionResult> status = new HashMap<>();
+        HashMap<Long, JudgeResult> status = new HashMap<>();
         list.forEach(item -> {
-            SolutionResult buffer;
+            JudgeResult buffer;
             resultMap.put(item.getResult(), resultMap.getOrDefault(item.getResult(), 0L) + 1);
-            if ((buffer = status.get(item.getProblemId())) == null || buffer != SolutionResult.ACCEPT) {
+            if ((buffer = status.get(item.getProblemId())) == null || buffer != JudgeResult.ACCEPT) {
                 status.put(item.getProblemId(), item.getResult());
             }
         });
         status.forEach((k,v) -> {
-            if (v == SolutionResult.ACCEPT) {
+            if (v == JudgeResult.ACCEPT) {
                 accepted.add(k);
             } else {
                 unsolved.add(k);

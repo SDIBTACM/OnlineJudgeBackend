@@ -76,10 +76,10 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         String json = DebugUtil.loadDebugData();
 
         /******************************              generator virtual rank list    ***********************************************/
-        generatorFakeUser.generatorUsers(200, true);
+        generatorFakeUser.generatorUsers(100, true);
         Map<String, Double> rankValues = new TreeMap<>();
         Random random = new Random();
-        for (int i = 1;i <= 200; i++) {
+        for (int i = 1;i <= 100; i++) {
             int acceptedCount = random.nextInt(300);
             int submit = random.nextInt(500) + acceptedCount;
             UserRankListDTO rankListVO = new UserRankListDTO();

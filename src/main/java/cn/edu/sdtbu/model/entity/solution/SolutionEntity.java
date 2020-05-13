@@ -2,7 +2,7 @@ package cn.edu.sdtbu.model.entity.solution;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
 import cn.edu.sdtbu.model.enums.LangType;
-import cn.edu.sdtbu.model.enums.SolutionResult;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -34,7 +34,7 @@ public class SolutionEntity extends BaseEntity {
     @Column
     LangType lang;
     @Column
-    SolutionResult result;
+    JudgeResult result;
     @Column
     Integer timeUsed;
     @Column

@@ -3,7 +3,7 @@ package cn.edu.sdtbu.controller.api;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
-import cn.edu.sdtbu.model.enums.SolutionResult;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.param.ProblemSubmitParam;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
@@ -62,15 +62,15 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/status")
-    public ResponseEntity<SolutionResult> checkJudgeStatus(String token) {
+    public ResponseEntity<JudgeResult> checkJudgeStatus(String token) {
         //TODO current limiting( up to N visits per unit time )
         try {
             return ResponseEntity.ok(
-                SolutionResult.valueOf(
+                JudgeResult.valueOf(
                     handler.fetchCacheStore().get(token)
             ));
         } catch (IllegalArgumentException ignore) {
-            return ResponseEntity.ok(SolutionResult.UNKNOWN);
+            return ResponseEntity.ok(JudgeResult.PENDING);
         }
     }
 }

@@ -16,7 +16,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "group")
+@Table(name = "_group")
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class GroupEntity extends BaseEntity {

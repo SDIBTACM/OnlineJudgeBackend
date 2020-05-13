@@ -78,4 +78,9 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     public Map<String, String> fetchAll(String prefix) {
         return service.fetchAllByPrefix(prefix);
     }
+
+    @Override
+    public long count(String key) {
+        return 0;
+    }
 }

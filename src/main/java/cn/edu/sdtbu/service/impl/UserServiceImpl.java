@@ -161,7 +161,9 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     public Page<UserRankListVO> fetchRankList(Pageable pageable) {
         List<UserRankListDTO> list = new LinkedList<>();
         //TODO init rank list from db
+        long total = cache().count(KeyPrefix.USERS_RANK_LIST_DTO.toString());
         Collection<String> caches = cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false);
+
         for (String s : caches) {
             list.add(JSON.parseObject(s, UserRankListDTO.class));
         }
@@ -176,7 +178,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             rankListVO.setUsername(entity.getUsername());
             vos.add(rankListVO);
         });
-        return new PageImpl<>(vos);
+        return new PageImpl<>(vos, pageable, total);
     }
 
     private Long fetchCount(Long userId, KeyPrefix prefix) {

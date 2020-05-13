@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.vo.user;
 
-import cn.edu.sdtbu.model.enums.SolutionResult;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -26,9 +26,9 @@ public class UserCenterVO {
     Collection<Long> unsolved;
 
     @ApiModelProperty(notes = "Key-Value, 记录各个提交状态对应的总数")
-    Map<SolutionResult, Long> resultMap;
+    Map<JudgeResult, Long> resultMap;
 
-    public UserCenterVO(Collection<Long> accepted, Collection<Long> unsolved, Map<SolutionResult, Long> map) {
+    public UserCenterVO(Collection<Long> accepted, Collection<Long> unsolved, Map<JudgeResult, Long> map) {
         this.accepted = accepted;
         this.unsolved = unsolved;
         this.resultMap = map;

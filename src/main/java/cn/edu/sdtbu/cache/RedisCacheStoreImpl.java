@@ -82,4 +82,9 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     public Map<String, String> fetchAll(String prefix) {
         return manager.fetchAll(prefix);
     }
+
+    @Override
+    public long count(String key) {
+        return manager.totalElementOfList(key);
+    }
 }

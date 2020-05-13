@@ -17,18 +17,18 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "option")
+@Table(name = "online_judge_option")
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class OptionEntity extends BaseEntity {
-    @Column(length = 64)
+    @Column(name = "option_key",length = 64)
     String key;
 
     @Lob
-    @Column
+    @Column(name = "option_value")
     String value;
 
     @Lob
-    @Column
+    @Column(name = "option_comment")
     String comment;
 }
