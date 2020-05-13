@@ -27,7 +27,7 @@ public class MailManagerImplTest {
         /**
          *  sendTo Test email
          */
-        mailService.sendSignUpMail(UUID.randomUUID().toString(),"bestsort","bestsort@qq.com");
+
     }
 
 }
