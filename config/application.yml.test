@@ -41,6 +41,6 @@ online-judge:
   url: http://localhost/ # url generate will use it
   cache-store-type: DEFAULT
   debug:
-    generator-data: false
+    generator-data: true
 
 
