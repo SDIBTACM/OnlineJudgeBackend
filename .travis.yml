@@ -21,6 +21,6 @@ script:
   - mvn clean package test
   
 after_success:
-  - mvn sonar:sonar
+  - mvn jacoco:report
   - bash <(curl -s https://codecov.io/bash)
-  - mvn clean jacoco:report coveralls:report
+  - mvn sonar:sonar coveralls:report
