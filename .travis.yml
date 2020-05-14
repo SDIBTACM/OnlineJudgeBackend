@@ -19,7 +19,8 @@ before_script:
 
 script:
   - mvn clean package test
-  - mvn sonar:sonar
   
 after_success:
+  - mvn sonar:sonar
   - bash <(curl -s https://codecov.io/bash)
+  - mvn clean cobertura:cobertura coveralls:report
