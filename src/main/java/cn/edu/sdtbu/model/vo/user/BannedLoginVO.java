@@ -7,20 +7,11 @@ import java.sql.Timestamp;
 /**
  * @author bestsort
  * @version 1.0
- * @date 2020-05-16 18:52
+ * @date 2020-05-16 21:09
  */
-
 @Data
-public class UserOnlineInfoVO {
-    Long id;
-
+public class BannedLoginVO {
     String username;
-
-    String nickname;
-
-    String email;
-
-    Timestamp loginTime;
-
-    String ip;
+    String bannedBy;
+    Timestamp endTime;
 }

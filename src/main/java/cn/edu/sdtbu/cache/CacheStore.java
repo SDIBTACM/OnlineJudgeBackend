@@ -117,4 +117,6 @@ public interface CacheStore<K, V> {
     Map<K, V> fetchAll(String prefix);
 
     long count(String key);
+
+    Long ttl(String key);
 }

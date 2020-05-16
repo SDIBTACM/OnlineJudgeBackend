@@ -87,4 +87,9 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     public long count(String key) {
         return manager.totalElementOfList(key);
     }
+
+    @Override
+    public Long ttl(String key) {
+        return manager.ttl(key);
+    }
 }

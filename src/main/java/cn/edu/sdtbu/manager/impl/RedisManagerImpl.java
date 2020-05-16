@@ -96,4 +96,11 @@ public class RedisManagerImpl implements RedisManager {
             return jedis.zcard(key);
         }
     }
+
+    @Override
+    public Long ttl(String key) {
+        try (Jedis jedis = pool.getResource()) {
+            return jedis.ttl(key);
+        }
+    }
 }

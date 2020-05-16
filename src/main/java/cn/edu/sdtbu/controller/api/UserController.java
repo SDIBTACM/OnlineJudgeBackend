@@ -1,7 +1,6 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -42,7 +41,7 @@ public class UserController {
     ServletContext context;
 
     @GetMapping("/onlinePeople")
-    public ResponseEntity<Integer> onlinePeople() {
+    public ResponseEntity<Integer> onlinePeopleCount() {
         return ResponseEntity.ok(((Set) context.getAttribute(Const.SESSION_SET)).size());
     }
 
@@ -59,7 +58,7 @@ public class UserController {
         UserCenterVO vo = userService.generatorUserCenterVO(
             problemService.fetchAllUserSubmitStatus(userId),
             userId);
-        vo.setIsOwner(entity != null && (entity.getId().equals(userId) || entity.getRole() == UserRole.ADMIN));
+        vo.setIsOwner(entity != null && entity.getId().equals(userId));
         return ResponseEntity.ok(vo);
     }
 

@@ -83,4 +83,9 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     public long count(String key) {
         return 0;
     }
+
+    @Override
+    public Long ttl(String key) {
+        return null;
+    }
 }

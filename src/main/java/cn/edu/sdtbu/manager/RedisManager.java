@@ -21,4 +21,6 @@ public interface RedisManager {
     void sortedListAdd(String key, Map<String, Double> doubleStringMap);
     void sortedListAdd(String key, String value, double score);
     Long totalElementOfList(String key);
+
+    Long ttl(String key);
 }
