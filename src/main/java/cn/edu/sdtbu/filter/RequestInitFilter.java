@@ -16,7 +16,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * used to persistent login & add some necessary header {@link Const#REQUEST_ID} and {@link Const#REQUEST_START_TIMESTAMP}
@@ -30,17 +29,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RequestInitFilter implements Filter {
     @Resource
     UserService userService;
-    final AtomicLong atomicLong = new AtomicLong();
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         UserEntity userEntity = (UserEntity) request.getSession().getAttribute(Const.USER_SESSION_INFO);
-
+        request.getSession().setAttribute(Const.USER_IP, RequestIpUtil.getClientIp(request));
         // add necessary attribute
         request.setAttribute(Const.REQUEST_START_TIMESTAMP, System.nanoTime());
-        request.setAttribute(Const.REQUEST_ID, atomicLong.getAndIncrement());
-
         // add user info
         if (userEntity == null && request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
@@ -54,9 +50,6 @@ public class RequestInitFilter implements Filter {
                     }
                 }
             }
-        }
-        if (atomicLong.get() == Long.MAX_VALUE) {
-            atomicLong.set(1);
         }
         chain.doFilter(request, response);
     }

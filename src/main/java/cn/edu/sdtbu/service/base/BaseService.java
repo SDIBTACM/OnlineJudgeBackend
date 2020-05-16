@@ -72,6 +72,9 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
     @NonNull
     DOMAIN getById(@NonNull ID id);
 
+    @NonNull
+    Page<DOMAIN> getByIds(@NonNull Collection<ID> ids, Pageable page);
+
     /**
      * Gets domain of nullable by id.
      *

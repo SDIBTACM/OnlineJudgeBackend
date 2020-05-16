@@ -1,6 +1,9 @@
 package cn.edu.sdtbu.controller.api;
 
+import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.service.ProblemService;
@@ -13,8 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+import java.util.Set;
 
 /**
  * register | update | list login log
@@ -25,12 +32,20 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
     @Resource
     UserService userService;
     @Resource
     ProblemService problemService;
+    @Resource
+    ServletContext context;
+
+    @GetMapping("/onlinePeople")
+    public ResponseEntity<Integer> onlinePeople() {
+        return ResponseEntity.ok(((Set) context.getAttribute(Const.SESSION_SET)).size());
+    }
+
     @PutMapping
     public ResponseEntity<Void> register(@RequestBody @Validated(UserParam.Resister.class) UserParam registerAo) {
         log.debug("registered: {}", registerAo.toString());
@@ -38,11 +53,14 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/center")
-    public ResponseEntity<UserCenterVO> userCenter(Long userId) {
-        return ResponseEntity.ok(
-            userService.generatorUserCenterVO(
-                problemService.fetchAllUserSubmitStatus(userId),
-                userId));
+    public ResponseEntity<UserCenterVO> userCenter(Long userId,
+                                                   @ApiIgnore HttpSession session) {
+        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserCenterVO vo = userService.generatorUserCenterVO(
+            problemService.fetchAllUserSubmitStatus(userId),
+            userId);
+        vo.setIsOwner(entity != null && (entity.getId().equals(userId) || entity.getRole() == UserRole.ADMIN));
+        return ResponseEntity.ok(vo);
     }
 
     @GetMapping("/rank")

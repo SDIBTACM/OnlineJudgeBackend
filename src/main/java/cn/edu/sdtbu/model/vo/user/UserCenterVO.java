@@ -28,6 +28,9 @@ public class UserCenterVO {
     @ApiModelProperty(notes = "Key-Value, 记录各个提交状态对应的总数")
     Map<JudgeResult, Long> resultMap;
 
+    @ApiModelProperty(notes = "是否本人登陆")
+    Boolean isOwner;
+
     public UserCenterVO(Collection<Long> accepted, Collection<Long> unsolved, Map<JudgeResult, Long> map) {
         this.accepted = accepted;
         this.unsolved = unsolved;

@@ -1,9 +1,13 @@
 package cn.edu.sdtbu.debug;
 
+import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
+import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.enums.UserStatus;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
+import cn.edu.sdtbu.repository.ProblemDescRepository;
+import cn.edu.sdtbu.repository.ProblemRepository;
 import cn.edu.sdtbu.repository.UserRepository;
 import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -18,28 +22,63 @@ import java.util.*;
  * @date 2020-05-09 16:23
  */
 @Component
-public class GeneratorFakeUser {
+public class GeneratorFakeData {
     Faker faker = new Faker(Locale.CHINA);
     @Resource
     OnlineJudgeProperties properties;
     @Resource
     UserRepository userRepository;
+    @Resource
+    ProblemRepository problemRepository;
+    @Resource
+    ProblemDescRepository descRepository;
 
-    public List<UserEntity> generatorUsers(int n, boolean save2Db) {
+    public void generatorAll(int total) {
+        generatorProblem(total);
+        generatorUsers(total, true);
+    }
+
+    public void generatorProblem(int total) {
+        // generator problem
+        List<ProblemEntity> problemEntityList = new LinkedList<>();
+        for (int i = 1; i <= total; i++) {
+            ProblemEntity entity = ProblemEntity.getDefaultValue();
+            entity.setTitle("this is a problem, id is [" + i + "]");
+            entity.setOwnerId(1L);
+            problemEntityList.add(entity);
+        }
+        problemRepository.saveAll(problemEntityList);
+
+        // generator problem desc
+        List<ProblemDescEntity> descEntities = new LinkedList<>();
+        for (int i = 1; i <= total; i++) {
+            ProblemDescEntity entity = new ProblemDescEntity();
+            entity.setHint(faker.leagueOfLegends().rank());
+            entity.setDescription(faker.leagueOfLegends().quote());
+            entity.setInput(faker.company().name());
+            entity.setOutput(faker.internet().safeEmailAddress());
+            entity.setProblemId((long) i);
+            entity.setSample(faker.howIMetYourMother().quote());
+            descEntities.add(entity);
+        }
+        descRepository.saveAll(descEntities);
+    }
+
+    public List<UserEntity> generatorUsers(int total, boolean save2Db) {
         int offset = properties.getDebug().getGeneratorData() ? 5 : 1;
         HashSet<String> nameSet = new HashSet<>();
-        while (nameSet.size() != n) {
+        while (nameSet.size() != total) {
             nameSet.add(faker.name().username());
         }
         HashSet<String> emailSet = new HashSet<>();
-        while (emailSet.size() != n) {
+        while (emailSet.size() != total) {
             emailSet.add(faker.internet().emailAddress());
         }
         Iterator<String> iterator = nameSet.iterator();
         Iterator<String> emailIterator = emailSet.iterator();
 
         List<UserEntity> userEntities = new LinkedList<>();
-        for (int i = offset; i <= n; i++) {
+        for (int i = offset; i <= total; i++) {
             UserEntity userEntity = new UserEntity();
             userEntity.setPassword(BCrypt.hashpw("password", BCrypt.gensalt()));
             userEntity.setEmail(emailIterator.next());

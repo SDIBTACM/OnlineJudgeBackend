@@ -28,7 +28,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProblemController {
     @Resource
     private ProblemService problemService;
@@ -43,11 +43,12 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/{id}")
-    public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id) {
+    public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id, Boolean fetchCount) {
         //TODO permissions
         ProblemDescEntity descEntity = descService.getById(id);
         ProblemDescVO vo = new ProblemDescVO();
         SpringUtil.cloneWithoutNullVal(descEntity, vo);
+
         ProblemEntity problemEntity = problemService.getById(id);
         vo.setTitle(problemEntity.getTitle());
 

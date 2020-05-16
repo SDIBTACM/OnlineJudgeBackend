@@ -21,18 +21,18 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController("admin-problem-controller")
-@RequestMapping(value = "/api/admin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/admin/problem", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProblemController {
     @Resource
     private ProblemService problemService;
 
-    @PutMapping("/problem")
+    @PutMapping
     public ResponseEntity<Void> putProblem(@Validated ProblemParam param) {
         problemService.generatorProblem(param);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/problem/example")
+    @GetMapping("/example")
     public ResponseEntity<ProblemParam> getDefaultProblemParam() {
         return ResponseEntity.ok(new ProblemParam());
     }

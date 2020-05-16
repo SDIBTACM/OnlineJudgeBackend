@@ -56,6 +56,9 @@ public class ProblemEntity extends BaseEntityWithDeleteTs {
     Timestamp testDataUpdatedAt;
     public static ProblemEntity getDefaultValue() {
         ProblemEntity entity = new ProblemEntity();
+        entity.hide = false;
+        entity.specialJudge = false;
+        entity.problemType = ProblemType.NORMAL;
         entity.timeLimit = 1000;
         entity.memoryLimit = 1 << 10;
         entity.testDataUpdatedAt = Const.TIME_ZERO;

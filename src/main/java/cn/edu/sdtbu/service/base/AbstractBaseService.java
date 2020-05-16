@@ -153,6 +153,12 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
         return fetchById(id).orElseThrow(() -> new NotFoundException(domainName + " was not found or has been deleted, id is " + id));
     }
 
+    @NonNull
+    @Override
+    public Page<DOMAIN> getByIds(@NonNull Collection<ID> ids, Pageable page) {
+        return repository.findAllByIdIn(ids, page);
+    }
+
     /**
      * Gets domain of nullable by id.
      *

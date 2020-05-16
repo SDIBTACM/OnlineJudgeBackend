@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.listener;
 
 import cn.edu.sdtbu.debug.DebugUtil;
-import cn.edu.sdtbu.debug.GeneratorFakeUser;
+import cn.edu.sdtbu.debug.GeneratorFakeData;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
@@ -43,7 +43,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @Resource
     ApplicationContext context;
     @Resource
-    GeneratorFakeUser generatorFakeUser;
+    GeneratorFakeData generatorFakeData;
 
     @Override
     public void onApplicationEvent(@NonNull ApplicationStartedEvent event) {
@@ -76,7 +76,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         String json = DebugUtil.loadDebugData();
 
         /******************************              generator virtual rank list    ***********************************************/
-        generatorFakeUser.generatorUsers(100, true);
+        generatorFakeData.generatorAll(105);
         Map<String, Double> rankValues = new TreeMap<>();
         Random random = new Random();
         for (int i = 1;i <= 100; i++) {

@@ -1,7 +1,6 @@
 package cn.edu.sdtbu.handler;
 
 import cn.edu.sdtbu.exception.BaseException;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -64,6 +63,6 @@ public class GlobalExceptionHandler {
 
     private Object fetchRequestId() {
         return Objects.requireNonNull(
-            RequestContextHolder.getRequestAttributes()).getAttribute(Const.REQUEST_ID,0);
+            RequestContextHolder.getRequestAttributes()).getSessionId();
     }
 }

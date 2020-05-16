@@ -19,6 +19,7 @@ public class Const {
 /***********************************         About Some Web Config Field         ********************************/
     public static final String REQUEST_COST_TIME = "request-time-cost";
     public static final String REQUEST_START_TIMESTAMP = "request_process_before";
+    public static final String SESSION_SET = "session_set";
 
     public static final String REQUEST_ID = "request_id";
     public static final String USER_SESSION_INFO = "user_session_info";
@@ -26,6 +27,7 @@ public class Const {
     public static final String REMEMBER_TOKEN = "rememberToken";
     public static final Cookie EMPTY_REMEMBER_TOKEN = new Cookie(REMEMBER_TOKEN, null);
     public static final long REMEMBER_TOKEN_EXPRESS_TIME = TimeUnit.DAYS.toMillis(30);
+    public static final String USER_IP = "user_ip";
 
     // init
     static {
