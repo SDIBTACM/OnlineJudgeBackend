@@ -8,7 +8,7 @@
                     "email":"admin@mail.com",
                     "nickname":"admin",
                     "password":"password",
-                    "role":"ADMIN",
+                    "role":"2",
                     "school":"admin_school",
                     "status":"NORMAL",
                     "username":"admin"
@@ -18,7 +18,7 @@
                     "email":"teacher@mail.com",
                     "nickname":"teacher",
                     "password":"password",
-                    "role":"TEACHER",
+                    "role":"1",
                     "school":"teacher_school",
                     "status":"NORMAL",
                     "username":"teacher"
@@ -28,7 +28,7 @@
                     "email":"student@mail.com",
                     "nickname":"student",
                     "password":"password",
-                    "role":"STUDENT",
+                    "role":"0",
                     "school":"student_school",
                     "status":"NORMAL",
                     "username":"student"
@@ -38,7 +38,7 @@
                     "email":"lock@mail.com",
                     "nickname":"locked",
                     "password":"password",
-                    "role":"STUDENT",
+                    "role":"0",
                     "school":"lock_school",
                     "status":"LOCK",
                     "username":"lock"

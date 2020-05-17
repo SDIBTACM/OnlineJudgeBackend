@@ -52,13 +52,14 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/center")
-    public ResponseEntity<UserCenterVO> userCenter(Long userId,
+    public ResponseEntity<UserCenterVO> userCenter(String username,
                                                    @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserEntity userEntity = userService.getByUsername(username);
         UserCenterVO vo = userService.generatorUserCenterVO(
-            problemService.fetchAllUserSubmitStatus(userId),
-            userId);
-        vo.setIsOwner(entity != null && entity.getId().equals(userId));
+            problemService.fetchAllUserSubmitStatus(userEntity.getId()),
+            userEntity.getId());
+        vo.setIsOwner(entity != null && entity.getId().equals(userEntity.getId()));
         return ResponseEntity.ok(vo);
     }
 

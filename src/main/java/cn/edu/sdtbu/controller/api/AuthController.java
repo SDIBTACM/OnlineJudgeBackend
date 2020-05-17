@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.exception.ForbiddenException;
+import cn.edu.sdtbu.exception.TeapotException;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
@@ -10,6 +11,7 @@ import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.RequestIpUtil;
+import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,8 +68,14 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@ApiIgnore HttpSession session,
+    public ResponseEntity<Void> logout(@ApiIgnore HttpServletRequest request,
                                              @ApiIgnore HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        if (entity == null) {
+            throw new TeapotException("would you have a teapot?");
+        }
+        userService.appendLoginLog(entity, RequestIpUtil.getClientIp(request), TimeUtil.now());
         session.invalidate();
         response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
         return ResponseEntity.ok().build();

@@ -10,6 +10,9 @@ import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
+
+import java.sql.Timestamp;
 
 /**
  * @author bestsort
@@ -51,6 +54,8 @@ public interface UserService extends BaseService<UserEntity, Long> {
      * @return jwt type string
      */
     String generateRememberToken(UserEntity entity, String requestIp);
+    @Async
+    void appendLoginLog(UserEntity entity, String ip, Timestamp logoutTime);
 
     Page<LoginLogEntity> loginLogs(Long userId, Pageable pageable);
 
@@ -59,4 +64,6 @@ public interface UserService extends BaseService<UserEntity, Long> {
     Long fetchAcceptedCount(Long userId);
 
     Page<UserRankListVO> fetchRankList(Pageable pageable);
+
+    UserEntity getByUsername(String username);
 }

@@ -3,7 +3,6 @@ package cn.edu.sdtbu.model.param;
 import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
-import cn.edu.sdtbu.model.enums.UserStatus;
 import cn.edu.sdtbu.util.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,9 +50,6 @@ public class UserParam {
 
     @Null(groups = BeforeResister.class)
     private UserRole role;
-
-    @Null(groups = BeforeResister.class)
-    private UserStatus status;
 
 
     @GroupSequence({Default.class, BeforeResister.class})

@@ -2,9 +2,12 @@ package cn.edu.sdtbu.listener;
 
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.service.UserService;
+import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
@@ -24,12 +27,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @WebListener
 public class SessionListener implements HttpSessionListener {
+    @Resource
+    UserService userService;
 
     @Override
     public void sessionDestroyed(HttpSessionEvent event) throws ClassCastException {
         HttpSession session = event.getSession();
         UserEntity userEntity = (UserEntity)session.getAttribute(Const.USER_SESSION_INFO);
         if (userEntity != null) {
+            userService.appendLoginLog(userEntity, session.getAttribute(Const.USER_IP).toString(), TimeUtil.now());
             log.info("user [{}] logout, ", userEntity.getUsername());
         }
         ServletContext application = session.getServletContext();

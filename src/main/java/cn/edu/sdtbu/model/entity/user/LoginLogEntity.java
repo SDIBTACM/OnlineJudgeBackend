@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * @author bestsort
@@ -22,6 +23,13 @@ import javax.persistence.*;
 public class LoginLogEntity extends BaseEntity {
     @Column(name = "user_id")
     Long userId;
+
     @Column(length = 40)
     String ip;
+
+    @Column
+    String username;
+
+    @Column
+    Timestamp logoutTime;
 }

@@ -25,7 +25,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -78,16 +77,10 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public UserEntity login(String identify, String password, String requestIp) {
-        Optional<UserEntity> optional;
-        if (EmailValidator.getInstance(true, false).isValid(identify)) {
-            optional = userRepository.findByEmailAndDeleteAtEquals(identify, Const.TIME_ZERO);
-        } else {
-            optional = userRepository.findByUsernameAndDeleteAtEquals(identify, Const.TIME_ZERO);
-        }
+        Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(identify, Const.TIME_ZERO);
         if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
             throw new ForbiddenException("identify or password error");
         }
-        userLogin(optional.get(), requestIp);
         return optional.get();
     }
 
@@ -106,7 +99,6 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             log.info("well, someone try to act as " + entity.getUsername());
             throw new ForbiddenException("not found user");
         }
-        userLogin(entity, requestIp);
         return entity;
     }
 
@@ -130,16 +122,15 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         return userRepository.countByUserNameOrEmail(name, email, Const.TIME_ZERO);
     }
 
-    private void userLogin(UserEntity user, String requestIp) {
-        log.info("user [{}] login from [{}]", user.getUsername(), requestIp);
-        appendLoginLog(user.getId(), requestIp);
-    }
 
-    private void appendLoginLog(Long userId, String ip) {
-        LoginLogEntity entity = new LoginLogEntity();
-        entity.setIp(ip);
-        entity.setUserId(userId);
-        loginLogRepository.saveAndFlush(entity);
+    @Override
+    public void appendLoginLog(UserEntity entity, String ip, Timestamp logoutTime) {
+        LoginLogEntity loginEntity = new LoginLogEntity();
+        loginEntity.setIp(ip);
+        loginEntity.setUsername(entity.getUsername());
+        loginEntity.setUserId(entity.getId());
+        loginEntity.setLogoutTime(logoutTime);
+        loginLogRepository.saveAndFlush(loginEntity);
     }
 
     @Override
@@ -179,6 +170,17 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             vos.add(rankListVO);
         });
         return new PageImpl<>(vos, pageable, total);
+    }
+
+    @Override
+    public UserEntity getByUsername(String username) {
+        String user = cache().get(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefix.USER_NAME));
+        if (user == null) {
+            UserEntity userEntity = userRepository.getByUsernameAndDeleteAt(username, Const.TIME_ZERO);
+            cache().put(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefix.USER_NAME), JSON.toJSONString(userEntity));
+            return userEntity;
+        }
+        return JSON.parseObject(user, UserEntity.class);
     }
 
     private Long fetchCount(Long userId, KeyPrefix prefix) {

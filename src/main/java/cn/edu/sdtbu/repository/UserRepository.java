@@ -24,6 +24,7 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
     @Query(value = "select count(*) from user u where " +
             "(u.username = ?1 and u.delete_at = ?3) or (u.email = ?2 and u.delete_at = ?3)",nativeQuery = true)
     int countByUserNameOrEmail(String username, String email, Timestamp deleteAt);
+    UserEntity getByUsernameAndDeleteAt(String username, Timestamp deleteAt);
     /**
      * find user info by user name
      * @param username name

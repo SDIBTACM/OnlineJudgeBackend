@@ -2,7 +2,6 @@ package cn.edu.sdtbu.model.entity.user;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import cn.edu.sdtbu.model.enums.UserRole;
-import cn.edu.sdtbu.model.enums.UserStatus;
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,9 +46,6 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(nullable = false)
     UserRole role;
 
-    @Column
-    UserStatus status;
-
     /**
      * used UUID
      */
@@ -60,7 +56,6 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     public static UserEntity getDefaultValue() {
         UserEntity userEntity = new UserEntity();
         userEntity.setRole(UserRole.STUDENT);
-        userEntity.setStatus(UserStatus.NORMAL);
         return userEntity;
     }
     @Override

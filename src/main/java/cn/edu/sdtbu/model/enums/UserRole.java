@@ -1,15 +1,28 @@
 package cn.edu.sdtbu.model.enums;
 
+import cn.edu.sdtbu.config.IntEnumValueDeserializer;
+import com.alibaba.fastjson.annotation.JSONType;
+
 /**
  * @author bestsort
  * @version 1.0
  * @date 2020-04-07 15:44
  */
-public enum UserRole {
+@JSONType(deserializer = IntEnumValueDeserializer.class)
+public enum UserRole implements IntValueEnum {
     // default role
-    STUDENT,
+    STUDENT(0),
     // teacher, need admin change role
-    TEACHER,
+    TEACHER(1),
     // admin
-    ADMIN;
+    ADMIN(2);
+
+    private final int value;
+    @Override
+    public int getValue() {
+        return value;
+    }
+    UserRole(int value) {
+        this.value = value;
+    }
 }

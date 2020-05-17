@@ -4,7 +4,6 @@ import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
-import cn.edu.sdtbu.model.enums.UserStatus;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
@@ -68,7 +67,7 @@ public class GeneratorFakeData {
         int offset = properties.getDebug().getGeneratorData() ? 5 : 1;
         HashSet<String> nameSet = new HashSet<>();
         while (nameSet.size() != total) {
-            nameSet.add(faker.name().username());
+            nameSet.add(faker.company().name());
         }
         HashSet<String> emailSet = new HashSet<>();
         while (emailSet.size() != total) {
@@ -86,7 +85,6 @@ public class GeneratorFakeData {
             userEntity.setNickname(faker.name().name());
             userEntity.setRole(UserRole.STUDENT);
             userEntity.setSchool("school");
-            userEntity.setStatus(UserStatus.NORMAL);
             userEntity.setId((long) i);
             userEntities.add(userEntity);
         }

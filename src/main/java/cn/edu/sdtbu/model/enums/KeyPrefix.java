@@ -6,7 +6,7 @@ package cn.edu.sdtbu.model.enums;
  * @date 2020-05-03 21:26
  */
 public enum KeyPrefix {
-    ENTITY,
+    ENTITY,USER_NAME,
     /******************    count     ********************/
     USER_ACCEPTED_COUNT,
     USER_SUBMIT_COUNT,
@@ -16,5 +16,5 @@ public enum KeyPrefix {
     PROBLEM_TOTAL_ACCEPT,
     PROBLEM_TOTAL_SUBMIT,
     /******************     list     ********************/
-    USERS_RANK_LIST_DTO
+    USERS_RANK_LIST_DTO;
 }
