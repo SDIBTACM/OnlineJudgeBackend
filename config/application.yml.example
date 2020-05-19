@@ -1,9 +1,11 @@
 spring:
   redis:
-    host: 127.0.0.1
     port: 6379
-    password:
-
+    host: 192.168.246.128
+    max-total: 4
+    max-idle: 4
+    min-idle: 4
+    max-wait-millis: 1000
   mail:
     host:
     port:
@@ -35,13 +37,13 @@ spring:
     encoding:
       charset: UTF-8
 
-logging:
-  path:
-
 online-judge:
-  url: http://localhost/ # url generate will use it
-  cache-store-type: DEFAULT
-  debug:
-    generator-data: false
-
-
+  # url generate will use it
+  url: http://localhost/
+  cache-store-type: REDIS
+      mail:
+        title: "Online Judge"
+        sendBy: "ACM Group"
+      debug:
+        enable: false
+        generator-data: false

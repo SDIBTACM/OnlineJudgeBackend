@@ -23,12 +23,12 @@ import java.sql.Timestamp;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "problem", indexes = {
-    @Index(columnList = "owner_id", name = "idx_owner_id"),
+    @Index(columnList = "ownerId", name = "idx_owner_id"),
     @Index(columnList = "source", name = "idx_source"),
     @Index(columnList = "title", name = "idx_title")
 })
 public class ProblemEntity extends BaseEntityWithDeleteTs {
-    @Column(name = "owner_id")
+    @Column
     Long ownerId;
     @Column(length = 128)
     String title;

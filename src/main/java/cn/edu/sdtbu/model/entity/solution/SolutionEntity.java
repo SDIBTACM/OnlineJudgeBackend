@@ -1,8 +1,8 @@
 package cn.edu.sdtbu.model.entity.solution;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
-import cn.edu.sdtbu.model.enums.LangType;
 import cn.edu.sdtbu.model.enums.JudgeResult;
+import cn.edu.sdtbu.model.enums.LangType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -28,7 +28,7 @@ public class SolutionEntity extends BaseEntity {
     @Column
     Long problemId;
     @Column
-    Long constId;
+    Long contestId;
     @Column
     String hash;
     @Column

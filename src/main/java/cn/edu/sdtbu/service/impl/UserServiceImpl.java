@@ -7,6 +7,7 @@ import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
+import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -81,7 +82,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
             throw new ForbiddenException("identify or password error");
         }
-        return optional.get();
+        return isLocked(optional.get());
     }
 
     @Override
@@ -99,7 +100,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             log.info("well, someone try to act as " + entity.getUsername());
             throw new ForbiddenException("not found user");
         }
-        return entity;
+        return isLocked(entity);
     }
 
     @Override
@@ -183,6 +184,13 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         return JSON.parseObject(user, UserEntity.class);
     }
 
+    @Override
+    public void lockUser(Long userId) {
+        UserEntity userEntity = getById(userId);
+        userEntity.setRole(UserRole.LOCKED);
+        save(userEntity);
+    }
+
     private Long fetchCount(Long userId, KeyPrefix prefix) {
         String key = CacheUtil.countKey(UserEntity.class, userId, prefix);
         String res = cache().get(key);
@@ -195,6 +203,12 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         return page.hasContent() ? page.getContent().get(0).getCreateAt() : null;
     }
 
+    private UserEntity isLocked(UserEntity entity) {
+        if (entity.getRole().equals(UserRole.LOCKED)) {
+            throw new ForbiddenException("you have been locked");
+        }
+        return entity;
+    }
     private Integer userRank(Long userId) {
         return -1;
     }

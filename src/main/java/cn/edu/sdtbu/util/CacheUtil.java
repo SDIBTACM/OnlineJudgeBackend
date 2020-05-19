@@ -20,7 +20,7 @@ public class CacheUtil {
     private static final double RATIO = 1e-6;
 
     public static Double rankListScore(int acceptedCount, int submitCount) {
-        return acceptedCount + submitCount * RATIO;
+        return acceptedCount + (1 - submitCount * RATIO);
     }
 
     public static String userSubmitCountKey(Long userId, Long problemId) {

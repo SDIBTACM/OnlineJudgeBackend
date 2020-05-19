@@ -36,7 +36,7 @@ public class RedisConfig {
             config,
             properties.getHost(),
             properties.getPort(),
-            1000,
+            properties.getMaxWaitMillis(),
             properties.getPassword());
         log.info("redis pool build success");
         log.info("redis start success, redis host: {}", AnsiOutput.toString(

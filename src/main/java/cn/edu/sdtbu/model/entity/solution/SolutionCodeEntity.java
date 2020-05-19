@@ -17,10 +17,10 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "solution_code", indexes = {
-    @Index(columnList = "solution_id", name = "unique_solution_id", unique = true)
+    @Index(columnList = "solutionId", name = "unique_solution_id", unique = true)
 })
 public class SolutionCodeEntity extends BaseEntity {
-    @Column(name = "solution_id")
+    @Column
     Long solutionId;
 
     @Lob

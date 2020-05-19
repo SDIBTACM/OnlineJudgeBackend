@@ -39,7 +39,7 @@ public class ProblemParam {
     Integer timeLimit = 1000;
     //TODO max or min value
     @ApiModelProperty(notes = "kbytes")
-    Integer memoryLimit = 1 << 10;
+    Integer memoryLimit = 1 << 9;
     Boolean specialJudge = false;
     ProblemType type = ProblemType.NORMAL;
     Boolean hide = false;

@@ -5,21 +5,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * @author Soul
+ * @author bestsort
  * @version 1.0
- * @date 2020-05-04 14:44
+ * @date 2020-05-18 18:24
  */
+
 @Data
 @Entity
-@Table(name = "_group")
+@Table(name = "user_class")
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class GroupEntity extends BaseEntity {
-    @Column(length = 64)
-    String name;
+public class UserClassEntity extends BaseEntity {
+    Long userId;
+    Long classId;
 }

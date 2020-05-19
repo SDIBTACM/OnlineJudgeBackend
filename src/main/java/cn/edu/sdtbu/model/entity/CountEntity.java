@@ -18,12 +18,12 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "count", indexes = {
-    @Index(name = "uk_count_key", columnList = "count_key", unique = true)
+    @Index(name = "uk_count_key", columnList = "countKey", unique = true)
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class CountEntity extends BaseEntity {
-    @Column(name = "count_key", nullable = false)
+    @Column(nullable = false)
     String countKey;
 
     @Column(nullable = false)

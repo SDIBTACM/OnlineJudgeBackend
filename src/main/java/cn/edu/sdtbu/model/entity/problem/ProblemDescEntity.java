@@ -16,12 +16,12 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "problem_descripton", indexes = {
-    @Index(name = "unique_problem_id", columnList = "problem_id", unique = true)}
+    @Index(name = "unique_problem_id", columnList = "problemId", unique = true)}
 )
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ProblemDescEntity extends BaseEntity {
-    @Column(name = "problem_id")
+    @Column
     private Long problemId;
 
     @Lob

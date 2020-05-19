@@ -17,13 +17,13 @@ import java.util.List;
 public class ContestDetailVO {
     String name;
 
-    Timestamp startTime;
+    Timestamp startAt;
 
     Timestamp endTime;
 
-    String manager;
+    String owner;
 
-    ContestPrivilege type;
+    ContestPrivilege privilege;
 
     ContestStatus status;
 

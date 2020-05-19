@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
@@ -19,7 +20,12 @@ import java.sql.Timestamp;
 
 @Data
 @Entity
-@Table(name = "contest")
+@Table(name = "contest", indexes = {
+    @Index(name = "idx_owner_id_start_at", columnList = "ownerId"),
+    @Index(name = "idx_owner_id_start_at", columnList = "startAt"),
+    @Index(name = "idx_privilege_start_at", columnList = "privilege"),
+    @Index(name = "idx_privilege_start_at", columnList = "startAt"),
+})
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContestEntity extends BaseEntityWithDeleteTs {

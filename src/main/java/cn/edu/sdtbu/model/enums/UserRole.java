@@ -10,6 +10,8 @@ import com.alibaba.fastjson.annotation.JSONType;
  */
 @JSONType(deserializer = IntEnumValueDeserializer.class)
 public enum UserRole implements IntValueEnum {
+    // locked, can't login
+    LOCKED(-1),
     // default role
     STUDENT(0),
     // teacher, need admin change role

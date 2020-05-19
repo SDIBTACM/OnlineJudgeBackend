@@ -20,18 +20,18 @@ import java.util.UUID;
 @Entity
 @Table(name = "user",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "delete_at"}),
-                @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "delete_at"}),
-                @UniqueConstraint(name = "uk_token_delete", columnNames = {"remember_token", "delete_at"})
+                @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "deleteAt"}),
+                @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "deleteAt"}),
+                @UniqueConstraint(name = "uk_token_delete", columnNames = {"rememberToken", "deleteAt"})
         })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntityWithDeleteTs {
 
-    @Column(name = "username", length = 128, nullable = false)
+    @Column(length = 128, nullable = false)
     String username;
 
-    @Column(name = "nickname", length = 64, nullable = false)
+    @Column(length = 64, nullable = false)
     String nickname;
 
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(length = 32, nullable = false)
     String school;
 
-    @Column(length = 128, name = "email", nullable = false)
+    @Column(length = 128, nullable = false)
     String email;
 
     @Column(nullable = false)
@@ -49,7 +49,7 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     /**
      * used UUID
      */
-    @Column(name = "remember_token", length = 36)
+    @Column(length = 36)
     String rememberToken;
 
 

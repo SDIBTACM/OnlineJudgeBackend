@@ -6,15 +6,13 @@ import lombok.Data;
 /**
  * @author bestsort
  * @version 1.0
- * @date 2020-05-06 08:44
+ * @date 2020-05-19 09:51
  */
+
 @Data
-public class ProblemSubmitParam {
-    LangType language;
-
-    Long questionId;
-
-    Boolean isContestProblem;
-
+public class SubmitCodeParam {
+    LangType type;
     String code;
+    Long problemId;
+    Long contestId;
 }

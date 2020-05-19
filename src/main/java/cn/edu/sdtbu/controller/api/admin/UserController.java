@@ -34,7 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -58,34 +57,23 @@ public class UserController {
     CacheHandler cacheHandler;
 
     @PostMapping("/bannedLogin")
-    public ResponseEntity<Void> banedUserLogin(String username, Long millisecond, HttpServletRequest request) {
+    public ResponseEntity<Void> banedUserLogin(Long userId, HttpServletRequest request) {
         UserEntity admin = (UserEntity)request.getSession().getAttribute(Const.USER_SESSION_INFO);
         if (admin == null || admin.getRole() != UserRole.ADMIN) {
             log.warn("some user try across the permissions, id is {}", RequestIpUtil.getClientIp(request));
             throw new ForbiddenException("who you are?");
         }
-
-        cacheHandler.fetchCacheStore().put(
-            CacheUtil.defaultKey(String.class, username, KeyPrefix.BANED_USER),
-            admin.getUsername(),
-            millisecond,
-            TimeUnit.MILLISECONDS
-        );
+        userService.lockUser(userId);
         Set<HttpSession> sessions = (Set<HttpSession>) context.getAttribute(Const.SESSION_SET);
         sessions.forEach(session -> {
             UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
-            if (entity != null && entity.getUsername().equals(username)) {
+            if (entity != null && entity.getId().equals(userId)) {
                 session.invalidate();
             }
         });
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/unbanLogin")
-    public ResponseEntity<Void> unbanLogin(String username) {
-        cacheHandler.fetchCacheStore().delete(CacheUtil.defaultKey(String.class, username, KeyPrefix.BANED_USER));
-        return ResponseEntity.ok(null);
-    }
 
     @GetMapping("/bannedLogin")
     public ResponseEntity<List<BannedLoginVO>> listBannedLogin() {

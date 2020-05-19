@@ -19,12 +19,12 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "contest_allow_lang", indexes = {
-    @Index(name = "idx_contest_id", columnList = "contest_id")
+    @Index(name = "idx_contest_id", columnList = "contestId")
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class AllowLangEntity extends BaseEntity {
-    @Column(name = "contest_id")
+    @Column
     Long contestId;
 
     @Column

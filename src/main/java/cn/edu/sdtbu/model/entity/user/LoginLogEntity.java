@@ -16,12 +16,12 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "login_log", indexes = {
-        @Index(name = "idx_user_id", columnList = "user_id")
+        @Index(name = "idx_user_id", columnList = "userId")
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class LoginLogEntity extends BaseEntity {
-    @Column(name = "user_id")
+    @Column
     Long userId;
 
     @Column(length = 40)

@@ -15,12 +15,12 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "contest_ip_limit", indexes = {
-    @Index(name = "uk_contest_id", columnList = "contest_id", unique = true)
+    @Index(name = "uk_contest_id", columnList = "contestId", unique = true)
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContestIpLimitEntity extends BaseEntity {
-    @Column(name = "contest_id")
+    @Column
     Long contestId;
 
     @Lob

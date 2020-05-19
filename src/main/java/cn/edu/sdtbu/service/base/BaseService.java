@@ -188,16 +188,13 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
      */
     void removeAll(@NonNull Collection<DOMAIN> domains);
 
-    /**
-     * Remove all
-     */
-    void removeAll();
 
     /**
      * save
      * @param domain must be not null
+     * @return
      */
-    void save(DOMAIN domain);
+    DOMAIN save(DOMAIN domain);
 
     /**
      * save all

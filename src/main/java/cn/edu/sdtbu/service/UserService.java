@@ -66,4 +66,6 @@ public interface UserService extends BaseService<UserEntity, Long> {
     Page<UserRankListVO> fetchRankList(Pageable pageable);
 
     UserEntity getByUsername(String username);
+
+    void lockUser(Long userId);
 }
