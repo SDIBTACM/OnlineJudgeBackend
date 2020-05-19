@@ -54,7 +54,7 @@ public class AuthTest {
         MvcResult result = mvc.perform(
                 // build request
                 MockMvcRequestBuilders.put("/api/user")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(JSON.toJSONString(userRegisterParam)))
                 // print debug info to console
                 .andDo(MockMvcResultHandlers.print())

@@ -39,8 +39,8 @@ logging:
 
 online-judge:
   url: http://localhost/ # url generate will use it
-  cache-store-type: DEFAULT
+  cache-store-type: REDIS
   debug:
-    generator-data: true
+    generator-data: false
 
 
