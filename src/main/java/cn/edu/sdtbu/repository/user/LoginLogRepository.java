@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.repository;
+package cn.edu.sdtbu.repository.user;
 
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;

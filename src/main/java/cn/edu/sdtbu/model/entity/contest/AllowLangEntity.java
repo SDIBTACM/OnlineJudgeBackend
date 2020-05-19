@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.entity.contest;
 
-import cn.edu.sdtbu.model.entity.base.BaseEntity;
+import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import cn.edu.sdtbu.model.enums.LangType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +23,7 @@ import javax.persistence.Table;
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class AllowLangEntity extends BaseEntity {
+public class AllowLangEntity extends BaseEntityWithDeleteTs {
     @Column
     Long contestId;
 

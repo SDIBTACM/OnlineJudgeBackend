@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * @version 1.0
  * @date 2020-4-6 20:49
  */
-
+@Transactional(rollbackFor = Exception.class)
 public interface BaseService<DOMAIN extends BaseEntity, ID> {
     /**
      * List All

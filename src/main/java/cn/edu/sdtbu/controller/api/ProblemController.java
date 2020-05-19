@@ -55,7 +55,7 @@ public class ProblemController {
         return ResponseEntity.ok(vo);
     }
     @PostMapping("/problem/{id}/submit")
-    public ResponseEntity<Void> submitProblem(ProblemSubmitParam param,
+    public ResponseEntity<Void> submitProblem(@RequestBody ProblemSubmitParam param,
                                               @PathVariable Long id) {
         //TODO publish event to MQ
 

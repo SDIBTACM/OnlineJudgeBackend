@@ -1,11 +1,12 @@
 package cn.edu.sdtbu.model.entity.user;
 
-import cn.edu.sdtbu.model.entity.base.BaseEntity;
+import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -16,10 +17,13 @@ import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name = "user_class")
+@Table(name = "user_class", indexes = {
+    @Index(name = "unique_class_id_delete", columnList = "classId", unique = true),
+    @Index(name = "unique_class_id_delete", columnList = "deleteAt", unique = true)
+})
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class UserClassEntity extends BaseEntity {
+public class UserClassEntity extends BaseEntityWithDeleteTs {
     Long userId;
     Long classId;
 }

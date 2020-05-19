@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.repository;
+package cn.edu.sdtbu.repository.contest;
 
 import cn.edu.sdtbu.model.entity.contest.ContestIpLimitEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;

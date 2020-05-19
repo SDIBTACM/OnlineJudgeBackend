@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.param;
+package cn.edu.sdtbu.model.param.user;
 
 import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.user.UserEntity;

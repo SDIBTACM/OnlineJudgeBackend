@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 public class BaseEntityWithDeleteTs extends BaseEntity {
-    @Column(name = "delete_at")
+    @Column
     private Timestamp deleteAt;
 
     @PrePersist

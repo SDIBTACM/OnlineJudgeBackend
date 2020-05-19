@@ -2,19 +2,20 @@ package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
+import cn.edu.sdtbu.exception.NotAcceptableException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.enums.UserRole;
-import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.model.vo.user.UserSimpleInfoVO;
-import cn.edu.sdtbu.repository.LoginLogRepository;
-import cn.edu.sdtbu.repository.UserRepository;
+import cn.edu.sdtbu.repository.user.LoginLogRepository;
+import cn.edu.sdtbu.repository.user.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
 import cn.edu.sdtbu.util.CacheUtil;
@@ -179,6 +180,9 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         if (user == null) {
             UserEntity userEntity = userRepository.getByUsernameAndDeleteAt(username, Const.TIME_ZERO);
             cache().put(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefix.USER_NAME), JSON.toJSONString(userEntity));
+            if (user == null) {
+                throw new NotFoundException("not found user : username is " + username);
+            }
             return userEntity;
         }
         return JSON.parseObject(user, UserEntity.class);
@@ -189,6 +193,34 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         UserEntity userEntity = getById(userId);
         userEntity.setRole(UserRole.LOCKED);
         save(userEntity);
+    }
+
+    @Override
+    public void changePassword(UserEntity entity, String oldPassword, String newPassword) {
+        if (entity == null) {
+            throw new ForbiddenException("who you are?");
+        }
+        if (!BCrypt.checkpw(oldPassword, entity.getPassword())) {
+            throw new ForbiddenException("old password error");
+        }
+        if (!(newPassword.length() >= 7 && newPassword.length() < 1 << 10)) {
+            throw new NotAcceptableException("password must be longer than 7 and shorter than 20");
+        }
+        entity = getById(entity.getId());
+        entity.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+        save(entity);
+    }
+
+    @Override
+    public Page<UserSimpleInfoVO> listUserByRole(UserRole role, Pageable pageable) {
+        Page<UserEntity> entities = userRepository.getAllByRoleAndAndDeleteAt(role, Const.TIME_ZERO, pageable);
+        List<UserSimpleInfoVO> list = new LinkedList<>();
+        entities.getContent().forEach(item -> {
+            UserSimpleInfoVO simpleInfoVO = new UserSimpleInfoVO();
+            SpringUtil.cloneWithoutNullVal(item, simpleInfoVO);
+            list.add(simpleInfoVO);
+        });
+        return new PageImpl<>(list, pageable, entities.getTotalElements());
     }
 
     private Long fetchCount(Long userId, KeyPrefix prefix) {

@@ -1,19 +1,15 @@
 package cn.edu.sdtbu.controller.api.admin;
 
-import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.exception.ForbiddenException;
-import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.enums.UserRole;
-import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
-import cn.edu.sdtbu.model.vo.user.BannedLoginVO;
 import cn.edu.sdtbu.model.vo.user.UserOnlineInfoVO;
+import cn.edu.sdtbu.model.vo.user.UserSimpleInfoVO;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.RequestIpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +28,6 @@ import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
@@ -44,20 +39,18 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
  */
 
 @Slf4j
-@RestController("admin-user-controller")
+@RestController
 @RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserController {
+public class UserAdminController {
     @Resource
     UserService userService;
     @Resource
     LoginLogService logService;
     @Resource
     ServletContext context;
-    @Resource
-    CacheHandler cacheHandler;
 
     @PostMapping("/bannedLogin")
-    public ResponseEntity<Void> banedUserLogin(Long userId, HttpServletRequest request) {
+    public ResponseEntity<Void> banedUserLogin(@RequestBody Long userId, HttpServletRequest request) {
         UserEntity admin = (UserEntity)request.getSession().getAttribute(Const.USER_SESSION_INFO);
         if (admin == null || admin.getRole() != UserRole.ADMIN) {
             log.warn("some user try across the permissions, id is {}", RequestIpUtil.getClientIp(request));
@@ -75,20 +68,10 @@ public class UserController {
     }
 
 
-    @GetMapping("/bannedLogin")
-    public ResponseEntity<List<BannedLoginVO>> listBannedLogin() {
-        List<BannedLoginVO> list = new LinkedList<>();
-        CacheStore<String, String> store = cacheHandler.fetchCacheStore();
-        Map<String, String> map = store.fetchAll(KeyPrefix.BANED_USER.toString());
-        map.forEach((first, second) -> {
-            BannedLoginVO loginVO = new BannedLoginVO();
-            loginVO.setBannedBy(second);
-            loginVO.setEndTime(new Timestamp(store.ttl(first)));
-            String[] buffer = first.split(CacheUtil.SEPARATOR);
-            loginVO.setUsername(buffer[buffer.length - 1]);
-            list.add(loginVO);
-        });
-        return ResponseEntity.ok(list);
+    @GetMapping("/role")
+    public ResponseEntity<Page<UserSimpleInfoVO>> listUsersByRole(UserRole role,
+                                                                  @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(userService.listUserByRole(role, pageable));
     }
 
     @GetMapping("/onlinePeopleList")

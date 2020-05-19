@@ -8,7 +8,7 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
-import cn.edu.sdtbu.repository.UserRepository;
+import cn.edu.sdtbu.repository.user.UserRepository;
 import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

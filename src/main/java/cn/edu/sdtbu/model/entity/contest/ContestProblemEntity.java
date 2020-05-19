@@ -31,6 +31,6 @@ public class ContestProblemEntity extends BaseEntity {
     String title;
 
     @Column
-    Boolean problemOrder;
+    Integer problemOrder;
 
 }

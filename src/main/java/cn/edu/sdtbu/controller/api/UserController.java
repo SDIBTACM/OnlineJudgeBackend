@@ -1,12 +1,14 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.param.user.ChangePasswordParam;
+import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.UserService;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,10 +54,11 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
     @GetMapping("/center")
-    public ResponseEntity<UserCenterVO> userCenter(String username,
+    public ResponseEntity<UserCenterVO> userCenter(@ApiParam("用户唯一标识, id 或 username") @RequestParam String user,
+                                                   @RequestParam(defaultValue = "true") Boolean isUserId,
                                                    @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
-        UserEntity userEntity = userService.getByUsername(username);
+        UserEntity userEntity = isUserId ? userService.getById(Long.parseLong(user)) : userService.getByUsername(user);
         UserCenterVO vo = userService.generatorUserCenterVO(
             problemService.fetchAllUserSubmitStatus(userEntity.getId()),
             userEntity.getId());
@@ -66,5 +69,12 @@ public class UserController {
     @GetMapping("/rank")
     public ResponseEntity<Page<UserRankListVO>> rankList(@PageableDefault(size = 50) Pageable pageable) {
         return ResponseEntity.ok(userService.fetchRankList(pageable));
+    }
+    @PatchMapping("/password")
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordParam param,
+                                               @ApiIgnore HttpSession session) {
+        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        userService.changePassword(entity, param.getOldPassword(), param.getNewPassword());
+        return ResponseEntity.ok(null);
     }
 }

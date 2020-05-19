@@ -1,4 +1,4 @@
-package cn.edu.sdtbu.model.param;
+package cn.edu.sdtbu.model.param.user;
 
 import lombok.Data;
 

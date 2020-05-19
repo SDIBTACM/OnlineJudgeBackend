@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
  * @date 2020-04-14 17:30
  */
 @Slf4j
-@Transactional(rollbackFor = Exception.class)
 public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> implements BaseService<DOMAIN, ID> {
     @Resource
     protected CacheHandler handler;

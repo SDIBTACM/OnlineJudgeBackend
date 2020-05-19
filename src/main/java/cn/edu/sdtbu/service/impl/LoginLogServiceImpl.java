@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
-import cn.edu.sdtbu.repository.LoginLogRepository;
+import cn.edu.sdtbu.repository.user.LoginLogRepository;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
 import org.springframework.data.domain.Page;

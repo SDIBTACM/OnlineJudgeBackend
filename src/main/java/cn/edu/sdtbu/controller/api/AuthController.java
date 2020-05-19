@@ -3,7 +3,7 @@ package cn.edu.sdtbu.controller.api;
 import cn.edu.sdtbu.exception.TeapotException;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.param.LoginParam;
+import cn.edu.sdtbu.model.param.user.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
 import cn.edu.sdtbu.service.UserService;
@@ -55,7 +55,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@ApiIgnore HttpServletRequest request,
-                                             @ApiIgnore HttpServletResponse response) {
+                                       @ApiIgnore HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (entity == null) {

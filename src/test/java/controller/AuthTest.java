@@ -1,8 +1,8 @@
 package controller;
 
 import cn.edu.sdtbu.Application;
-import cn.edu.sdtbu.model.param.LoginParam;
-import cn.edu.sdtbu.model.param.UserParam;
+import cn.edu.sdtbu.model.param.user.LoginParam;
+import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
 import com.alibaba.fastjson.JSON;
 import org.junit.Before;

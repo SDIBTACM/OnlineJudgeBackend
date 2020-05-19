@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.model.param;
 
 import cn.edu.sdtbu.model.enums.LangType;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -11,7 +12,9 @@ import lombok.Data;
 
 @Data
 public class SubmitCodeParam {
+    @ApiModelProperty(notes = "所提交的语言类型")
     LangType type;
+    @ApiModelProperty(notes = "代码")
     String code;
     Long problemId;
     Long contestId;

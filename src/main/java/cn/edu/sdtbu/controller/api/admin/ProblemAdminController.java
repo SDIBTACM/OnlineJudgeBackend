@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -22,12 +19,12 @@ import javax.annotation.Resource;
 @Slf4j
 @RestController("admin-problem-controller")
 @RequestMapping(value = "/api/admin/problem", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ProblemController {
+public class ProblemAdminController {
     @Resource
     private ProblemService problemService;
 
     @PutMapping
-    public ResponseEntity<Void> putProblem(@Validated ProblemParam param) {
+    public ResponseEntity<Void> putProblem(@RequestBody @Validated ProblemParam param) {
         problemService.generatorProblem(param);
         return ResponseEntity.ok().build();
     }
