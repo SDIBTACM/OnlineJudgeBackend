@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.model.entity.contest;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
-import cn.edu.sdtbu.model.enums.ContestPrivilegeEnum;
+import cn.edu.sdtbu.model.enums.ContestPrivilegeTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -28,5 +28,5 @@ public class ContestPrivilegeEntity extends BaseEntityWithDeleteTs {
     Long userId;
 
     @Column
-    ContestPrivilegeEnum type;
+    ContestPrivilegeTypeEnum type;
 }

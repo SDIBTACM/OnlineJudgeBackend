@@ -7,6 +7,7 @@ import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
+import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.base.BaseService;
 import cn.edu.sdtbu.util.CacheUtil;
 import com.alibaba.fastjson.JSON;
@@ -39,6 +40,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @Resource
     CacheHandler handler;
     @Resource
+    ProblemService problemService;
+    @Resource
     OnlineJudgeProperties properties;
     @Resource
     ApplicationContext context;
@@ -67,7 +70,9 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
                 generatorDebugData(map);
             } catch (IOException ignore) { }
         }
-
+        if (properties.getDebug().getRefreshAllProblemSolutionCount()) {
+            problemService.refreshSolutionCount(null);
+        }
         // init rank list
 
     }

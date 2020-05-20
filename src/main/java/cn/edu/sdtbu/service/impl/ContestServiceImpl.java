@@ -4,7 +4,7 @@ import cn.edu.sdtbu.exception.BadRequestException;
 import cn.edu.sdtbu.model.dto.ContestPrivilegeInfoDTO;
 import cn.edu.sdtbu.model.entity.contest.*;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.ContestPrivilegeEnum;
+import cn.edu.sdtbu.model.enums.ContestPrivilegeTypeEnum;
 import cn.edu.sdtbu.model.enums.ContestStatus;
 import cn.edu.sdtbu.model.enums.LangType;
 import cn.edu.sdtbu.model.param.ContestParam;
@@ -97,6 +97,9 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         }
         List<ContestProblemEntity> list = new LinkedList<>();
         vos.forEach(item -> {
+            // assert problem must exist
+            problemService.mustExistById(item.getId());
+
             ContestProblemEntity entity = new ContestProblemEntity();
             entity.setContestId(contestId);
             entity.setProblemId(item.getId());
@@ -122,7 +125,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
 
         userIds.forEach(allowedId -> {
             ContestPrivilegeEntity entity = new ContestPrivilegeEntity();
-            entity.setType(ContestPrivilegeEnum.ALLOW_TAKE_PART_IN);
+            entity.setType(ContestPrivilegeTypeEnum.ALLOW_TAKE_PART_IN);
             entity.setContestId(contestId);
             entity.setUserId(allowedId);
             list.add(entity);
@@ -130,7 +133,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         if (denyUsernames != null) {
             denyUsernames.forEach(deny -> {
                 ContestPrivilegeEntity entity = new ContestPrivilegeEntity();
-                entity.setType(ContestPrivilegeEnum.DENY_TAKE_PART_IN);
+                entity.setType(ContestPrivilegeTypeEnum.DENY_TAKE_PART_IN);
                 entity.setContestId(contestId);
                 entity.setUserId(userService.getByUsername(deny).getId());
                 list.add(entity);
@@ -175,6 +178,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             param.getRegisterBegin(),
             param.getRegisterEnd()
         )));
+        entity.setRule(param.getContestRule());
         return save(entity);
     }
 

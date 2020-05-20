@@ -1,6 +1,7 @@
-package cn.edu.sdtbu.aop.annotation;
+package cn.edu.sdtbu.validator.annotation;
 
-import cn.edu.sdtbu.aop.aspect.NullOrNotBlankValidator;
+
+import cn.edu.sdtbu.validator.FutureMillsValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,15 +12,12 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * @author bestsort
- */
 @Target({ElementType.FIELD})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = NullOrNotBlankValidator.class)
-public @interface NullOrNotBlank {
-    String message() default "{javax.validation.constraints.Pattern.message}";
+@Constraint(validatedBy = FutureMillsValidator.class)
+public @interface FutureMills {
+    String message() default "{javax.validation.constraints.Future.message}";
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default {};
 }

@@ -3,15 +3,24 @@ package cn.edu.sdtbu.service.impl;
 import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.CountEntity;
+import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.repository.CountRepository;
+import cn.edu.sdtbu.repository.SolutionRepository;
+import cn.edu.sdtbu.repository.user.UserRepository;
 import cn.edu.sdtbu.service.CountService;
 import cn.edu.sdtbu.util.CacheUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author bestsort
@@ -23,6 +32,31 @@ import java.util.concurrent.TimeUnit;
 public class CountServiceImpl implements CountService {
     private final CacheHandler cacheHandler;
     private final CountRepository repository;
+    @Resource
+    SolutionRepository solutionRepository;
+    @Resource
+    UserRepository userRepository;
+
+    @Override
+    public boolean refreshJudgeResultByUserId(Long userId, boolean needReturnBiggerThanMaxId) {
+        List<SolutionEntity> list = solutionRepository.findAllByOwnerId(userId);
+        Map<JudgeResult, Long> map = new HashMap<>(JudgeResult.values().length);
+        list.forEach(i -> map.put(i.getResult(), 1L + map.getOrDefault(i.getResult(),0L)));
+
+        AtomicReference<Long> total = new AtomicReference<>(0L);
+        AtomicReference<Long> accepted = new AtomicReference<>(0L);
+        map.forEach((f, r) -> {
+            setCount(CacheUtil.judgeResultCountKey(f, userId, false), r);
+            if (f.equals(JudgeResult.ACCEPT)) {
+                accepted.set(r);
+            }
+            total.set(total.get() + r);
+        });
+
+        log.info("user's solution refresh completed, id is [{}], solution count is: {}", userId, JSON.toJSONString(map));
+        return needReturnBiggerThanMaxId && (userId > userRepository.count());
+    }
+
     public CountServiceImpl(CountRepository repository, CacheHandler cacheHandler) {
         this.repository = repository;
         this.cacheHandler = cacheHandler;
@@ -62,7 +96,7 @@ public class CountServiceImpl implements CountService {
 
     @Override
     public void setCount(String key, Long val) {
-        cache().put(key, val.toString(), 1, TimeUnit.DAYS);
+        cache().put(key, val.toString(), 3, TimeUnit.DAYS);
         CountEntity entity = repository.findByCountKey(key);
         if (entity == null) {
             entity = new CountEntity();

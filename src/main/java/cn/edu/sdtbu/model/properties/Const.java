@@ -28,6 +28,7 @@ public class Const {
     public static final Cookie EMPTY_REMEMBER_TOKEN = new Cookie(REMEMBER_TOKEN, null);
     public static final long REMEMBER_TOKEN_EXPRESS_TIME = TimeUnit.DAYS.toMillis(30);
     public static final String USER_IP = "user_ip";
+    public static final String UNDEFINED = "undefined";
 
     // init
     static {

@@ -2,11 +2,13 @@ package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
-import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.param.ProblemSubmitParam;
+import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
+import cn.edu.sdtbu.service.CountService;
 import cn.edu.sdtbu.service.ProblemDescService;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.util.SpringUtil;
@@ -17,8 +19,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author bestsort
@@ -35,6 +39,8 @@ public class ProblemController {
     @Resource
     private ProblemDescService descService;
     @Resource
+    private CountService countService;
+    @Resource
     private CacheHandler handler;
 
     @GetMapping("/problems")
@@ -43,17 +49,20 @@ public class ProblemController {
     }
 
     @GetMapping("/problem/{id}")
-    public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id, Boolean fetchCount) {
-        //TODO permissions
+    public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id,
+                                                        @RequestParam(required = false) Long contestId,
+                                                        @ApiIgnore HttpSession session) {
+        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        //TODO permissions and some filed
         ProblemDescEntity descEntity = descService.getById(id);
         ProblemDescVO vo = new ProblemDescVO();
         SpringUtil.cloneWithoutNullVal(descEntity, vo);
-
-        ProblemEntity problemEntity = problemService.getById(id);
-        vo.setTitle(problemEntity.getTitle());
-
+        vo = problemService.getProblemDescVoById(vo, id, contestId, entity == null ? null : entity.getId());
         return ResponseEntity.ok(vo);
     }
+
+
+
     @PostMapping("/problem/{id}/submit")
     public ResponseEntity<Void> submitProblem(@RequestBody ProblemSubmitParam param,
                                               @PathVariable Long id) {

@@ -8,7 +8,7 @@
                     "email":"admin@mail.com",
                     "nickname":"admin",
                     "password":"password",
-                    "role":"2",
+                    "role":"ADMIN",
                     "school":"admin_school",
                     "status":"NORMAL",
                     "username":"admin"
@@ -18,7 +18,7 @@
                     "email":"teacher@mail.com",
                     "nickname":"teacher",
                     "password":"password",
-                    "role":"1",
+                    "role":"TEACHER",
                     "school":"teacher_school",
                     "status":"NORMAL",
                     "username":"teacher"
@@ -28,7 +28,7 @@
                     "email":"student@mail.com",
                     "nickname":"student",
                     "password":"password",
-                    "role":"0",
+                    "role":"STUDENT",
                     "school":"student_school",
                     "status":"NORMAL",
                     "username":"student"
@@ -38,7 +38,7 @@
                     "email":"lock@mail.com",
                     "nickname":"locked",
                     "password":"password",
-                    "role":"0",
+                    "role":"LOCKED",
                     "school":"lock_school",
                     "status":"LOCK",
                     "username":"lock"
@@ -100,56 +100,56 @@
                     "id":"1",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"0",
+                    "result":"ACCEPT",
                     "lang":"C_11"
                 },
                 {
                     "id":"2",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"1",
+                    "result":"PRESENTATION_ERROR",
                     "lang":"C_11"
                 },
                 {
                     "id":"3",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"2",
+                    "result":"WRONG_ANSWER",
                     "lang":"C_11"
                 },
                 {
                     "id":"4",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"3",
+                    "result":"TIME_LIMIT_EXCEED",
                     "lang":"C_11"
                 },
                 {
                     "id":"5",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"4",
+                    "result":"MEMORY_LIMIT_EXCEED",
                     "lang":"C_11"
                 },
                 {
                     "id":"6",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"5",
+                    "result":"OUTPUT_LIMIT_EXCEED",
                     "lang":"C_11"
                 },
                 {
                     "id":"7",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"6",
+                    "result":"RUNTIME_ERROR",
                     "lang":"C_11"
                 },
                 {
                     "id":"8",
                     "problemId":"2",
                     "ownerId":"1",
-                    "result":"0",
+                    "result":"ACCEPT",
                     "lang":"C_11"
                 }
             ]

@@ -171,7 +171,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
     @Override
     public void mustExistById(@NonNull ID id) {
         if (!existsById(id)) {
-            throw new NotFoundException(domainName + " was not exist");
+            throw new NotFoundException(domainName + " was not exist, id is " + id);
         }
     }
 

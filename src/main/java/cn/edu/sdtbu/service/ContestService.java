@@ -19,6 +19,11 @@ public interface ContestService extends BaseService<ContestEntity, Long> {
 
     void fetchDetailContestInfo(Long contestId);
 
+    /**
+     * create contest and generator other info about contest
+     * @param param contest param
+     * @param user at least the {@link cn.edu.sdtbu.model.enums.UserRole#TEACHER}
+     */
     @Transactional
     void createContest(ContestParam param, UserEntity user);
 }

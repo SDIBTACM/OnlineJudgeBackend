@@ -47,3 +47,4 @@ online-judge:
       debug:
         enable: false
         generator-data: false
+        refresh-all-problem-solution-count: false

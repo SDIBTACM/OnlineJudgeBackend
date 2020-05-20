@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.param;
 
-import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.enums.ProblemType;

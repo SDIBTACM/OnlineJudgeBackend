@@ -2,6 +2,7 @@ package cn.edu.sdtbu.model.entity.contest;
 
 import cn.edu.sdtbu.model.entity.base.BaseEntityWithDeleteTs;
 import cn.edu.sdtbu.model.enums.ContestPrivilege;
+import cn.edu.sdtbu.model.enums.ContestRule;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -49,4 +50,7 @@ public class ContestEntity extends BaseEntityWithDeleteTs {
 
     @Column
     String privilegeInfo;
+
+    @Column
+    ContestRule rule;
 }

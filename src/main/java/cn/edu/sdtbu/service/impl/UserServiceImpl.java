@@ -224,7 +224,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     }
 
     private Long fetchCount(Long userId, KeyPrefix prefix) {
-        String key = CacheUtil.countKey(UserEntity.class, userId, prefix);
+        String key = CacheUtil.defaultKey(UserEntity.class, userId, prefix);
         String res = cache().get(key);
         return StringUtils.isEmpty(res) ? countService.fetchCount(key) : Long.parseLong(res);
     }

@@ -1,10 +1,16 @@
 package cn.edu.sdtbu.model.param;
 
+import cn.edu.sdtbu.validator.annotation.FutureMills;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.enums.ContestPrivilege;
+import cn.edu.sdtbu.model.enums.ContestRule;
 import cn.edu.sdtbu.model.enums.LangType;
+import cn.edu.sdtbu.validator.annotation.NullableFutureMills;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.GroupSequence;
+import javax.validation.constraints.*;
 import java.util.List;
 
 /**
@@ -15,25 +21,42 @@ import java.util.List;
 @Data
 public class ContestParam {
 
+    @NotBlank(groups = BeforeCreate.class)
+    @NullOrNotBlank(groups = BeforeUpdate.class)
+    @Size(max = 255, groups = Default.class)
     @ApiModelProperty(notes = "比赛名称")
     String name;
 
+    @NullOrNotBlank(groups = BeforeUpdate.class)
+    @NotNull(groups = BeforeCreate.class)
+    @ApiModelProperty(notes = "赛制, ACM / OI")
+    ContestRule contestRule;
+
     String description;
 
+    @FutureMills(groups = BeforeCreate.class)
+    @NullableFutureMills(groups = BeforeUpdate.class)
     @ApiModelProperty(notes = "比赛开始时间")
     Long startAt;
 
+    @FutureMills(groups = BeforeCreate.class)
+    @NullableFutureMills(groups = BeforeUpdate.class)
     @ApiModelProperty(notes = "比赛结束时间")
     Long endBefore;
 
     @ApiModelProperty(notes = "默认为比赛结束，无需要可以不传此参数")
     Long lockRankAt;
 
+    @NullableFutureMills
     @ApiModelProperty(notes = "当 privilege = NEED_REGISTER 的时候需要此项")
     Long registerBegin;
+
+
+    @NullableFutureMills
     @ApiModelProperty(notes = "当 privilege = NEED_REGISTER 的时候需要此项")
     Long registerEnd;
 
+    @NullOrNotBlank(groups = Default.class)
     @ApiModelProperty(notes = "当 privilege = PROTECT 的时候需要此项")
     String password;
 
@@ -55,6 +78,27 @@ public class ContestParam {
     @ApiModelProperty(notes = "禁止访问比赛的用户(此list优先级最高)")
     List<String> denyUsernames;
 
+    @NotEmpty(groups = BeforeCreate.class)
     @ApiModelProperty(notes = "比赛中的题目ID")
     List<ContestProblemParam> problems;
+
+
+    @GroupSequence({Default.class, BeforeCreate.class})
+    public interface Create {
+    }
+
+    @GroupSequence({Default.class, BeforeUpdate.class})
+    public interface Update {
+
+    }
+
+
+    public interface Default {
+
+    }
+    public interface BeforeCreate {
+    }
+    public interface BeforeUpdate {
+
+    }
 }

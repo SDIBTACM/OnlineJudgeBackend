@@ -2,6 +2,7 @@ package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.param.ProblemParam;
+import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.service.base.BaseService;
@@ -18,5 +19,10 @@ public interface ProblemService extends BaseService<ProblemEntity, Long> {
 
     UserCenterVO fetchAllUserSubmitStatus(Long userId);
 
+
     void generatorProblem(ProblemParam param);
+
+    ProblemDescVO getProblemDescVoById(ProblemDescVO vo, Long id, Long contestId, Long aLong);
+
+    void refreshSolutionCount(Long problemId);
 }

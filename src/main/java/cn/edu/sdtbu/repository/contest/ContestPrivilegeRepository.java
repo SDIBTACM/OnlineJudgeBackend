@@ -5,6 +5,7 @@ import cn.edu.sdtbu.repository.base.BaseRepository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author bestsort
@@ -13,4 +14,5 @@ import java.util.List;
  */
 public interface ContestPrivilegeRepository extends BaseRepository<ContestPrivilegeEntity, Long> {
     List<ContestPrivilegeEntity> findAllByContestIdAndDeleteAt(Long contestId, Timestamp deleteAt);
+    Optional<ContestPrivilegeEntity> findByContestIdAndUserIdAndDeleteAt(Long contestId, Long userId, Timestamp deleteAt);
 }

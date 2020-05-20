@@ -1,6 +1,6 @@
-package cn.edu.sdtbu.aop.aspect;
+package cn.edu.sdtbu.validator;
 
-import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

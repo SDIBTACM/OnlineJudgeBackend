@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Spring Boot Stater
@@ -12,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @date 2020-4-6 20:17
  */
 //@EnableDebug
+@EnableScheduling
 @EnableAsync
 @EnableJpaAuditing
 @SpringBootApplication

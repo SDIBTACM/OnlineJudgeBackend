@@ -12,4 +12,5 @@ import java.util.List;
  */
 public interface SolutionRepository extends BaseRepository<SolutionEntity, Long> {
     List<SolutionEntity> findAllByOwnerId(Long ownerId);
+    List<SolutionEntity> findAllByProblemId(Long problemId);
 }

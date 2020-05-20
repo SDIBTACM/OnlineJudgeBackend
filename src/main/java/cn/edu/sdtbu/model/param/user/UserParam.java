@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.param.user;
 
-import cn.edu.sdtbu.aop.annotation.NullOrNotBlank;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.util.SpringUtil;

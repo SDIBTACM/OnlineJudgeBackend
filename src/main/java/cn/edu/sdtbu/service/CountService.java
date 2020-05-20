@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 public interface CountService {
+    boolean refreshJudgeResultByUserId(Long userId, boolean needReturnBiggerThanMaxId);
+
     /**
      * fetch total count by key, if not found, return 0
      * @param key must be not null

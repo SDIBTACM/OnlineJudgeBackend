@@ -8,6 +8,7 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.ContestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,8 @@ public class ContestAdminController {
     ContestService service;
 
     @PutMapping
-    public ResponseEntity<Void> addContest(@RequestBody(required = false) ContestParam param,
+    public ResponseEntity<Void> addContest(@RequestBody @Validated(ContestParam.Create.class)
+                                                   ContestParam param,
                                            @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (entity.getRole().getValue() < UserRole.TEACHER.getValue()) {
