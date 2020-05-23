@@ -1,8 +1,10 @@
 package cn.edu.sdtbu.controller.api.admin;
 
+import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
@@ -49,8 +51,10 @@ public class UserAdminController {
     @Resource
     ServletContext context;
 
-    @PostMapping("/bannedLogin")
-    public ResponseEntity<Void> banedUserLogin(@RequestBody Long userId, HttpServletRequest request) {
+    @PostMapping("/lockUser")
+    @SuppressWarnings("unchecked")
+    @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
+    public ResponseEntity<Void> lockUser(@RequestBody Long userId, HttpServletRequest request) {
         UserEntity admin = (UserEntity)request.getSession().getAttribute(Const.USER_SESSION_INFO);
         if (admin == null || admin.getRole() != UserRole.ADMIN) {
             log.warn("some user try across the permissions, id is {}", RequestIpUtil.getClientIp(request));
@@ -69,12 +73,15 @@ public class UserAdminController {
 
 
     @GetMapping("/role")
+    @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
     public ResponseEntity<Page<UserSimpleInfoVO>> listUsersByRole(UserRole role,
                                                                   @PageableDefault Pageable pageable) {
         return ResponseEntity.ok(userService.listUserByRole(role, pageable));
     }
 
     @GetMapping("/onlinePeopleList")
+    @SuppressWarnings("unchecked")
+    @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
     public ResponseEntity<List<UserOnlineInfoVO>> onlinePeople() {
         List<UserOnlineInfoVO> onlineUsers = new LinkedList<>();
         Set<HttpSession> sessions = (Set<HttpSession>) context.getAttribute(Const.SESSION_SET);
@@ -95,12 +102,14 @@ public class UserAdminController {
     }
 
     @GetMapping("/loginLog/{userId}")
+    @SourceSecurity(value = SecurityType.AT_LEAST_TEACHER, throwException = false)
     public ResponseEntity<Page<LoginLogEntity>> loginLog(@PathVariable Long userId,
                                                          @PageableDefault(sort = "updateAt", direction = DESC) Pageable pageable,
                                                          @ApiIgnore HttpSession session) {
         return ResponseEntity.ok(logService.select(userId, pageable));
     }
 
+    //TODO security
     @PostMapping("/{userId}")
     public ResponseEntity<UserEntity> updateUserById(
         @RequestBody @Validated(UserParam.Update.class) UserParam userParam,
@@ -110,7 +119,9 @@ public class UserAdminController {
         userEntity = userService.update(userEntity, userId);
         return ResponseEntity.ok(userEntity);
     }
+
     @GetMapping("/{userId}")
+    @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
     public ResponseEntity<UserEntity> queryUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getById(userId));
     }

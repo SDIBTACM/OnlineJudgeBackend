@@ -1,5 +1,7 @@
 package cn.edu.sdtbu.controller.api.admin;
 
+import cn.edu.sdtbu.aop.annotation.SourceSecurity;
+import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.param.ProblemParam;
 import cn.edu.sdtbu.service.ProblemService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class ProblemAdminController {
     private ProblemService problemService;
 
     @PutMapping
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     public ResponseEntity<Void> putProblem(@RequestBody @Validated ProblemParam param) {
         problemService.generatorProblem(param);
         return ResponseEntity.ok().build();

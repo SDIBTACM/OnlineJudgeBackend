@@ -13,11 +13,11 @@ public enum UserRole implements IntValueEnum {
     // locked, can't login
     LOCKED(-1),
     // default role
-    STUDENT(0),
+    STUDENT(1),
     // teacher, need admin change role
-    TEACHER(1),
+    TEACHER(2),
     // admin
-    ADMIN(2);
+    ADMIN(3);
 
     private final int value;
     @Override

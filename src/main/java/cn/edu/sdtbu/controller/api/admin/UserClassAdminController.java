@@ -1,7 +1,9 @@
 package cn.edu.sdtbu.controller.api.admin;
 
+import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.exception.UnauthorizedException;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.param.user.UserClassParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserClassesVO;
@@ -40,7 +42,7 @@ public class UserClassAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserClassesVO>> fetchAllClassesByUserId(@ApiIgnore HttpSession session) {
+    public ResponseEntity<List<UserClassesVO>> fetchAllClassesByManagerId(@ApiIgnore HttpSession session) {
         UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (userEntity != null) {
             return ResponseEntity.ok(classService.fetchAllByManagerId(userEntity.getId()));
@@ -50,8 +52,14 @@ public class UserClassAdminController {
         }
     }
     @DeleteMapping
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     public ResponseEntity<Void> deleteByClassIds(@RequestBody Collection<Long> ids) {
         classService.deleteClass(ids);
+        return ResponseEntity.ok(null);
+    }
+    @PutMapping("/append}")
+    public ResponseEntity<Void> appendUser(Long appendedUserId,
+                                           Long classIs) {
         return ResponseEntity.ok(null);
     }
 }

@@ -1,7 +1,9 @@
 package cn.edu.sdtbu.controller.api.admin;
 
+import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.model.properties.Const;
@@ -32,6 +34,7 @@ public class ContestAdminController {
     ContestService service;
 
     @PutMapping
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     public ResponseEntity<Void> addContest(@RequestBody @Validated(ContestParam.Create.class)
                                                    ContestParam param,
                                            @ApiIgnore HttpSession session) {

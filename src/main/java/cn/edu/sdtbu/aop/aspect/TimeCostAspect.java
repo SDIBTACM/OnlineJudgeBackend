@@ -23,12 +23,13 @@ public class TimeCostAspect {
     @After("execution(* cn.edu.sdtbu.controller.api..*.*(..))")
     public void around() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        assert requestAttributes != null;
+        if (requestAttributes == null) {
+            return;
+        }
         HttpServletResponse response = ((ServletRequestAttributes) requestAttributes).getResponse();
         Long before = (Long)requestAttributes.getAttribute(Const.REQUEST_START_TIMESTAMP,0);
-        long costTime = -1;
         if (before != null && response != null) {
-            costTime = System.nanoTime() - before;
+            long costTime = System.nanoTime() - before;
             response.setHeader(Const.REQUEST_COST_TIME, costTime + " ns");
         }
     }
