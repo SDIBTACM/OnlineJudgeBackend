@@ -1,11 +1,14 @@
 package cn.edu.sdtbu.model.enums;
 
+import cn.edu.sdtbu.config.IntEnumValueDeserializer;
+import com.alibaba.fastjson.annotation.JSONType;
+
 /**
  * @author bestsort
  * @version 1.0
  * @date 2020-04-21 15:31
  */
-
+@JSONType(deserializer = IntEnumValueDeserializer.class)
 public enum  LangType implements IntValueEnum {
     //format: LANG_VERSION
     /**

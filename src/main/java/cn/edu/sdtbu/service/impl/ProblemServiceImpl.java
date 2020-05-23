@@ -104,6 +104,15 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
     public ProblemDescVO getProblemDescVoById(ProblemDescVO vo, Long id, Long contestId, Long userId) {
         checkPrivilege(userId,id, contestId);
         vo = getCount(vo, id, contestId);
+        if (userId == null) {
+            vo.setIsAccepted(false);
+        } else {
+            Boolean accepted = contestId == null ?
+                solutionRepository.existsByOwnerIdAndProblemIdAndResult(userId, id, JudgeResult.ACCEPT) :
+                solutionRepository.existsByOwnerIdAndProblemIdAndContestIdAndResult(userId, id, contestId, JudgeResult.ACCEPT);
+
+            vo.setIsAccepted(accepted == null ? false : accepted);
+        }
         SpringUtil.cloneWithoutNullVal(getById(id), vo);
         return vo;
     }

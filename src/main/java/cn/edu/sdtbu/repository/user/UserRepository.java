@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -59,4 +61,6 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
      * @return token
      */
     Optional<UserEntity> findByRememberTokenAndDeleteAtEquals(String token, Timestamp deleteAt);
+
+    List<UserEntity> findAllByUsernameInAndDeleteAt(Collection<String> usernames, Timestamp deleteAt);
 }

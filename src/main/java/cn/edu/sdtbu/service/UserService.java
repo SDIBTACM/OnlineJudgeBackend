@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author bestsort
@@ -73,6 +75,6 @@ public interface UserService extends BaseService<UserEntity, Long> {
 
     void changePassword(UserEntity entity, String oldPassword, String newPassword);
 
-
+    List<UserEntity> getAllByUsername(Collection<String> usernames);
     Page<UserSimpleInfoVO> listUserByRole(UserRole role, Pageable pageable);
 }

@@ -1,7 +1,5 @@
 package cn.edu.sdtbu.model.enums;
 
-import cn.edu.sdtbu.config.IntEnumValueDeserializer;
-import com.alibaba.fastjson.annotation.JSONType;
 import org.springframework.util.Assert;
 
 import java.util.stream.Stream;
@@ -11,7 +9,6 @@ import java.util.stream.Stream;
  * @version 1.0
  * @date 2020-05-10 07:46
  */
-@JSONType(deserializer = IntEnumValueDeserializer.class)
 public interface IntValueEnum {
 
     /**

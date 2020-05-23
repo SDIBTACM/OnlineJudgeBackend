@@ -51,6 +51,13 @@ public class UserParam {
     @Null(groups = BeforeResister.class)
     private UserRole role;
 
+    public UserEntity transformToEntity() {
+        return transformToEntity(new UserEntity());
+    }
+    public UserEntity transformToEntity(UserEntity entity) {
+        SpringUtil.cloneWithoutNullVal(this, entity);
+        return entity;
+    }
 
     @GroupSequence({Default.class, BeforeResister.class})
     public interface Resister {
@@ -62,13 +69,7 @@ public class UserParam {
 
     }
 
-    public UserEntity transformToEntity() {
-        return transformToEntity(new UserEntity());
-    }
-    public UserEntity transformToEntity(UserEntity entity) {
-        SpringUtil.cloneWithoutNullVal(this, entity);
-        return entity;
-    }
+
 
     public interface Default {
 

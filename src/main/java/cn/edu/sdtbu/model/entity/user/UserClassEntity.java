@@ -19,7 +19,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_class", indexes = {
     @Index(name = "unique_class_id_delete", columnList = "classId", unique = true),
-    @Index(name = "unique_class_id_delete", columnList = "deleteAt", unique = true)
+    @Index(name = "unique_class_id_delete", columnList = "userId", unique = true),
+    @Index(name = "unique_class_id_delete", columnList = "deleteAt", unique = true),
+    @Index(name = "idx_user_id", columnList = "userId")
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)

@@ -41,7 +41,9 @@ public class SessionListener implements HttpSessionListener {
         ServletContext application = session.getServletContext();
         Set sessions = (Set) application.getAttribute(Const.SESSION_SET);
         // destroy session from set
-        sessions.remove(session);
+        if (sessions.contains(session)) {
+            sessions.remove(session);
+        }
     }
 
     @Override

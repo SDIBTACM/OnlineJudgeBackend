@@ -8,9 +8,8 @@
                     "email":"admin@mail.com",
                     "nickname":"admin",
                     "password":"password",
-                    "role":"ADMIN",
+                    "role":"2",
                     "school":"admin_school",
-                    "status":"NORMAL",
                     "username":"admin"
                 },
                 {
@@ -18,9 +17,8 @@
                     "email":"teacher@mail.com",
                     "nickname":"teacher",
                     "password":"password",
-                    "role":"TEACHER",
+                    "role":"1",
                     "school":"teacher_school",
-                    "status":"NORMAL",
                     "username":"teacher"
                 },
                 {
@@ -28,9 +26,8 @@
                     "email":"student@mail.com",
                     "nickname":"student",
                     "password":"password",
-                    "role":"STUDENT",
+                    "role":"0",
                     "school":"student_school",
-                    "status":"NORMAL",
                     "username":"student"
                 },
                 {
@@ -38,9 +35,8 @@
                     "email":"lock@mail.com",
                     "nickname":"locked",
                     "password":"password",
-                    "role":"LOCKED",
+                    "role":"-1",
                     "school":"lock_school",
-                    "status":"LOCK",
                     "username":"lock"
                 }
             ]
@@ -100,57 +96,57 @@
                     "id":"1",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"ACCEPT",
-                    "lang":"C_11"
+                    "result":"0",
+                    "lang":"0"
                 },
                 {
                     "id":"2",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"PRESENTATION_ERROR",
-                    "lang":"C_11"
+                    "result":"1",
+                    "lang":"0"
                 },
                 {
                     "id":"3",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"WRONG_ANSWER",
-                    "lang":"C_11"
+                    "result":"2",
+                    "lang":"0"
                 },
                 {
                     "id":"4",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"TIME_LIMIT_EXCEED",
-                    "lang":"C_11"
+                    "result":"3",
+                    "lang":"0"
                 },
                 {
                     "id":"5",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"MEMORY_LIMIT_EXCEED",
-                    "lang":"C_11"
+                    "result":"4",
+                    "lang":"0"
                 },
                 {
                     "id":"6",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"OUTPUT_LIMIT_EXCEED",
-                    "lang":"C_11"
+                    "result":"5",
+                    "lang":"0"
                 },
                 {
                     "id":"7",
                     "problemId":"1",
                     "ownerId":"1",
-                    "result":"RUNTIME_ERROR",
-                    "lang":"C_11"
+                    "result":"6",
+                    "lang":"0"
                 },
                 {
                     "id":"8",
                     "problemId":"2",
                     "ownerId":"1",
-                    "result":"ACCEPT",
-                    "lang":"C_11"
+                    "result":"0",
+                    "lang":"0"
                 }
             ]
         }

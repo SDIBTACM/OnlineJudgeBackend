@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 
@@ -152,21 +153,24 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public Page<UserRankListVO> fetchRankList(Pageable pageable) {
-        List<UserRankListDTO> list = new LinkedList<>();
         //TODO init rank list from db
         long total = cache().count(KeyPrefix.USERS_RANK_LIST_DTO.toString());
         Collection<String> caches = cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false);
+        List<UserRankListDTO> list = JSON.parseArray(caches.toString(), UserRankListDTO.class);
 
-        for (String s : caches) {
-            list.add(JSON.parseObject(s, UserRankListDTO.class));
-        }
+        Map<Long, UserEntity> userEntities = getByIds(list.stream()
+            .map(UserRankListDTO::getId)
+            .collect(Collectors.toList()), Pageable.unpaged())
+            .getContent().stream()
+            .collect(Collectors.toMap(UserEntity::getId, u -> u));
+
         List<UserRankListVO> vos = new ArrayList<>(list.size());
         list.forEach(item -> {
             UserRankListVO rankListVO = new UserRankListVO();
             rankListVO.setAcceptedCount(item.getAcceptedCount());
             rankListVO.setSubmitCount(item.getSubmitCount());
             rankListVO.setId(item.getId());
-            UserEntity entity = getById(item.getId());
+            UserEntity entity = userEntities.get(item.getId());
             rankListVO.setNickname(entity.getNickname());
             rankListVO.setUsername(entity.getUsername());
             vos.add(rankListVO);
@@ -180,7 +184,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         if (user == null) {
             UserEntity userEntity = userRepository.getByUsernameAndDeleteAt(username, Const.TIME_ZERO);
             cache().put(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefix.USER_NAME), JSON.toJSONString(userEntity));
-            if (user == null) {
+            if (userEntity == null) {
                 throw new NotFoundException("not found user : username is " + username);
             }
             return userEntity;
@@ -209,6 +213,11 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         entity = getById(entity.getId());
         entity.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         save(entity);
+    }
+
+    @Override
+    public List<UserEntity> getAllByUsername(Collection<String> usernames) {
+        return userRepository.findAllByUsernameInAndDeleteAt(usernames, Const.TIME_ZERO);
     }
 
     @Override
