@@ -5,7 +5,7 @@ import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.RequestIpUtil;
+import cn.edu.sdtbu.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +34,7 @@ public class RequestInitFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         UserEntity userEntity = (UserEntity) request.getSession().getAttribute(Const.USER_SESSION_INFO);
-        request.getSession().setAttribute(Const.USER_IP, RequestIpUtil.getClientIp(request));
+        request.getSession().setAttribute(Const.USER_IP, RequestUtil.getClientIp(request));
         // add necessary attribute
         request.setAttribute(Const.REQUEST_START_TIMESTAMP, System.nanoTime());
         // add user info
@@ -42,7 +42,7 @@ public class RequestInitFilter implements Filter {
             for (Cookie cookie : request.getCookies()) {
                 if (Const.REMEMBER_TOKEN.equals(cookie.getName())) {
                     try {
-                        userEntity = userService.login(cookie.getValue(), RequestIpUtil.getClientIp(request));
+                        userEntity = userService.login(cookie.getValue(), RequestUtil.getClientIp(request));
                         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
                         log.debug("user {} login by cookie", userEntity.getUsername());
                     } catch (ForbiddenException | NotFoundException e) {

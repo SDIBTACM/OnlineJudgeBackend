@@ -42,5 +42,7 @@ public class SolutionEntity extends BaseEntity {
     @Column
     Long similarAt;
     @Column
-    Integer similarPercent;
+    Long similarPercent;
+    @Column
+    Integer codeLength;
 }

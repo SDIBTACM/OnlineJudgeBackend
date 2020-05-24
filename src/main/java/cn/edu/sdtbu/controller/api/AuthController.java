@@ -7,7 +7,7 @@ import cn.edu.sdtbu.model.param.user.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.RequestIpUtil;
+import cn.edu.sdtbu.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,12 +41,12 @@ public class AuthController {
     public ResponseEntity<UserLoginInfoVO> login(@RequestBody LoginParam loginParam,
                                                  @ApiIgnore HttpServletRequest request,
                                                  @ApiIgnore HttpServletResponse response) {
-        UserEntity userEntity = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestIpUtil.getClientIp(request));
+        UserEntity userEntity = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestUtil.getClientIp(request));
         log.debug("{} is login", userEntity);
         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
         if (loginParam.getRemember()) {
             Cookie rememberTokenCookie = new Cookie(Const.REMEMBER_TOKEN,
-                userService.generateRememberToken(userEntity, RequestIpUtil.getClientIp(request)));
+                userService.generateRememberToken(userEntity, RequestUtil.getClientIp(request)));
             rememberTokenCookie.setPath("/");
             response.addCookie(rememberTokenCookie);
         }

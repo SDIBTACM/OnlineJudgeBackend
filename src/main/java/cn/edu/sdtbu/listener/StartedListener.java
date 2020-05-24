@@ -51,9 +51,13 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @Override
     public void onApplicationEvent(@NonNull ApplicationStartedEvent event) {
         init();
-        log.info("Online Judge V{} start success, click url to view document {}",
+        log.info("Online Judge V{} start success, click url to view [ swagger ] document {}",
                 Const.ONLINE_JUDGE_VERSION,
                 AnsiOutput.toString(AnsiColor.BLUE, "http://localhost:8080/swagger-ui.html"));
+
+        log.info("Online Judge V{} start success, click url to view [ knife4j ] document {}",
+            Const.ONLINE_JUDGE_VERSION,
+            AnsiOutput.toString(AnsiColor.BLUE, "http://localhost:8080/doc.html"));
     }
 
     @SuppressWarnings("unchecked")

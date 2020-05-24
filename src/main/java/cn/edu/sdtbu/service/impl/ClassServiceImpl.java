@@ -6,6 +6,7 @@ import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.user.UserClassParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.base.BaseUserVO;
+import cn.edu.sdtbu.model.vo.user.UserClassListNode;
 import cn.edu.sdtbu.model.vo.user.UserClassesVO;
 import cn.edu.sdtbu.repository.user.ClassRepository;
 import cn.edu.sdtbu.repository.user.UserClassRepository;
@@ -16,13 +17,12 @@ import cn.edu.sdtbu.util.SpringUtil;
 import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author bestsort
@@ -65,42 +65,19 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
     }
 
     @Override
-    public List<UserClassesVO> fetchAllByManagerId(Long managerId) {
+    public List<UserClassListNode> fetchAllByManagerId(Long managerId) {
         // classes
         List<ClassEntity> list = classRepository.findAllByOwnerIdAndDeleteAt(managerId, Const.TIME_ZERO);
-
-        // fetch classes' user
-        List<UserClassEntity> classEntities = userClassRepository.findAllByClassIdIn(
-            list.stream().map(ClassEntity::getId).collect(Collectors.toList())
-        );
-
-        // <UserId, UserEntity> map
-        Map<Long, UserEntity> userEntities = userService.getByIds(
-            classEntities.stream().map(UserClassEntity::getUserId).collect(Collectors.toSet()),
-            Pageable.unpaged())
-            .getContent().stream().collect(Collectors.toMap(UserEntity::getId, entity -> entity));
-        // <ClassId, List<BaseUserVO>> map
-        Map<Long, LinkedList<BaseUserVO>> baseUsers = new HashMap<>(list.size());
-        classEntities.forEach(i -> {
-            LinkedList<BaseUserVO> buffer = baseUsers.get(i.getClassId());
-            if (buffer == null) {
-                buffer = new LinkedList<>();
-            }
-            BaseUserVO vo = new BaseUserVO();
-            SpringUtil.cloneWithoutNullVal(userEntities.get(i.getUserId()), vo);
-            buffer.add(vo);
-            baseUsers.put(i.getClassId(), buffer);
-        });
-
-        List<UserClassesVO> res = new LinkedList<>();
+        List<UserClassListNode> userClassListNodes = new LinkedList<>();
+        UserClassEntity exampleCase = new UserClassEntity();
         list.forEach(i -> {
-            UserClassesVO vo = new UserClassesVO();
-            vo.setId(i.getId());
-            vo.setName(i.getName());
-            vo.setUsersInfo(baseUsers.get(i.getId()));
-            res.add(vo);
+            exampleCase.setClassId(i.getId());
+            UserClassListNode buffer = new UserClassListNode();
+            SpringUtil.cloneWithoutNullVal(i, buffer);
+            buffer.setTotal(userClassRepository.count(Example.of(exampleCase)));
+            userClassListNodes.add(buffer);
         });
-        return res;
+        return userClassListNodes;
     }
 
     @Override
@@ -110,6 +87,12 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
         classEntities.forEach(i -> i.setDeleteAt(now));
         classRepository.saveAll(classEntities);
     }
+
+    @Override
+    public void appendUser(List<Long> userIds, Long classId, UserEntity userEntity) {
+
+    }
+
     @Resource
     UserService userService;
     @Resource

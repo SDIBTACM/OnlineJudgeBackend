@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.config;
 
 import cn.edu.sdtbu.model.properties.Const;
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 
 @Configuration
+@EnableKnife4j
 @EnableSwagger2
 public class SwaggerConfig {
     @Bean

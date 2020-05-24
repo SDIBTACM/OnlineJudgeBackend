@@ -30,7 +30,7 @@ public class TimeCostAspect {
         Long before = (Long)requestAttributes.getAttribute(Const.REQUEST_START_TIMESTAMP,0);
         if (before != null && response != null) {
             long costTime = System.nanoTime() - before;
-            response.setHeader(Const.REQUEST_COST_TIME, costTime + " ns");
+            response.setHeader(Const.REQUEST_COST_TIME, String.format("%.3f ms", 1.0 * costTime / 1e6));
         }
     }
     //@annotation(cn.edu.sdtbu.aop.annotation.Debug)

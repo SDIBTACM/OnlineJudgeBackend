@@ -36,7 +36,7 @@ public class ContestAdminController {
     @PutMapping
     @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     public ResponseEntity<Void> addContest(@RequestBody @Validated(ContestParam.Create.class)
-                                                   ContestParam param,
+                                           ContestParam param,
                                            @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (entity.getRole().getValue() < UserRole.TEACHER.getValue()) {

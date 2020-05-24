@@ -12,7 +12,7 @@ import cn.edu.sdtbu.model.vo.user.UserOnlineInfoVO;
 import cn.edu.sdtbu.model.vo.user.UserSimpleInfoVO;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
-import cn.edu.sdtbu.util.RequestIpUtil;
+import cn.edu.sdtbu.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +57,7 @@ public class UserAdminController {
     public ResponseEntity<Void> lockUser(@RequestBody Long userId, HttpServletRequest request) {
         UserEntity admin = (UserEntity)request.getSession().getAttribute(Const.USER_SESSION_INFO);
         if (admin == null || admin.getRole() != UserRole.ADMIN) {
-            log.warn("some user try across the permissions, id is {}", RequestIpUtil.getClientIp(request));
+            log.warn("some user try across the permissions, id is {}", RequestUtil.getClientIp(request));
             throw new ForbiddenException("who you are?");
         }
         userService.lockUser(userId);

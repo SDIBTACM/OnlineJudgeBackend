@@ -16,5 +16,7 @@ public class UserClassesVO {
 
     String name;
 
+    Boolean isOwner;
+
     List<BaseUserVO> usersInfo;
 }

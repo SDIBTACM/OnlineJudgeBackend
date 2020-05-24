@@ -1,9 +1,13 @@
 package cn.edu.sdtbu.util;
 
+import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.properties.Const;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,7 +19,7 @@ import java.util.Arrays;
  * @date 2020-04-11 00:19
  */
 @Component
-public class RequestIpUtil {
+public class RequestUtil {
 
     static private String[] TRUST_PROXIES_IPS;
 
@@ -24,6 +28,13 @@ public class RequestIpUtil {
         TRUST_PROXIES_IPS = ipStr.trim().split(" *, *");
     }
 
+    public static UserEntity fetchUserEntityFromSession(boolean nullable, HttpSession session) {
+        UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        if (!nullable && userEntity == null) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+        return userEntity;
+    }
     /**
     Try to get the remote addr even server behind a proxy
      */

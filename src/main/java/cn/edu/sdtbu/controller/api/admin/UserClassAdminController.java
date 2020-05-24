@@ -6,8 +6,12 @@ import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.param.user.UserClassParam;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.vo.user.UserClassListNode;
 import cn.edu.sdtbu.model.vo.user.UserClassesVO;
 import cn.edu.sdtbu.service.ClassService;
+import cn.edu.sdtbu.util.RequestUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +28,7 @@ import java.util.List;
  * @date 2020-05-21 11:53
  */
 @RestController
+@Api(tags = "class相关-管理")
 @RequestMapping("/api/admin/class")
 public class UserClassAdminController {
     @Resource
@@ -42,7 +47,7 @@ public class UserClassAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserClassesVO>> fetchAllClassesByManagerId(@ApiIgnore HttpSession session) {
+    public ResponseEntity<List<UserClassListNode>> fetchAllClassesByManagerId(@ApiIgnore HttpSession session) {
         UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (userEntity != null) {
             return ResponseEntity.ok(classService.fetchAllByManagerId(userEntity.getId()));
@@ -51,15 +56,27 @@ public class UserClassAdminController {
             throw new UnauthorizedException("log in plz");
         }
     }
+
+    @GetMapping("/{classId}")
+    @ApiOperation(value = "获取班级内成员信息", notes = "用于获取class id所对应的班级成员, 班级所有者/Admin有管理权")
+    public ResponseEntity<UserClassesVO> fetchAllUserByClassId(@PathVariable("classId") Long classId,
+                                                        @ApiIgnore HttpSession session) {
+        return null;
+    }
+
     @DeleteMapping
     @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
-    public ResponseEntity<Void> deleteByClassIds(@RequestBody Collection<Long> ids) {
+    public ResponseEntity<Void> deleteByClassIds(@RequestBody Collection<Long> ids,
+                                                 @ApiIgnore HttpSession session) {
         classService.deleteClass(ids);
         return ResponseEntity.ok(null);
     }
     @PutMapping("/append}")
-    public ResponseEntity<Void> appendUser(Long appendedUserId,
-                                           Long classIs) {
+    public ResponseEntity<Void> appendUser(List<Long> userIds,
+                                           Long classId,
+                                           @ApiIgnore HttpSession session) {
+        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
+        classService.appendUser(userIds, classId, userEntity);
         return ResponseEntity.ok(null);
     }
 }
