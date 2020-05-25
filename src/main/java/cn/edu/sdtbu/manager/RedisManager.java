@@ -1,9 +1,10 @@
 package cn.edu.sdtbu.manager;
 
 import org.springframework.data.domain.Pageable;
+import redis.clients.jedis.Tuple;
 
-import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public interface RedisManager {
     String get(String key);
     Map<String, String> fetchAll(String prefix);
-    Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less);
+    Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean less);
     void delete(String key);
     void put(String key, String value, long timeOut, TimeUnit timeUnit);
     void inc(String key, int stepLength);
@@ -23,4 +24,6 @@ public interface RedisManager {
     Long totalElementOfList(String key);
 
     Long ttl(String key);
+
+    Long zRank(String key, String member, boolean less);
 }

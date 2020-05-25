@@ -5,6 +5,7 @@ import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.properties.Const;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.util.Pair;
 
@@ -21,7 +22,7 @@ public class CacheUtil {
     public static final String COUNT_PREFIX = "count";
     private static final double RATIO = 1e-6;
 
-    public static Double rankListScore(int acceptedCount, int submitCount) {
+    public static Double rankListScore(Long acceptedCount, Long submitCount) {
         return acceptedCount + (1 - submitCount * RATIO);
     }
 
@@ -42,6 +43,16 @@ public class CacheUtil {
 
     public static String defaultKey(Class<?> clazz, Object arg, Object prefix) {
         return prefix + SEPARATOR + clazz.getSimpleName() + SEPARATOR + arg;
+    }
+
+    public static Set<String> defaultKeys(Class<?> clazz, Collection<Object> args, KeyPrefix prefix) {
+        Set<String> strings = new HashSet<>();
+        if (CollectionUtils.isEmpty(args)) {
+            return strings;
+        }
+        String buffer = prefix + SEPARATOR + clazz.getSimpleName() + SEPARATOR;
+        args.forEach(i -> strings.add(buffer + i));
+        return strings;
     }
 
     public static String judgeResultCountKey(JudgeResult result, Long userId, boolean fetchAll) {

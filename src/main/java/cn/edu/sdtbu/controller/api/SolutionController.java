@@ -6,10 +6,12 @@ import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.SubmitCodeParam;
+import cn.edu.sdtbu.model.query.SolutionQuery;
 import cn.edu.sdtbu.model.vo.SolutionListNode;
 import cn.edu.sdtbu.model.vo.TokenVO;
 import cn.edu.sdtbu.service.SolutionService;
 import cn.edu.sdtbu.util.RequestUtil;
+import cn.edu.sdtbu.util.SpringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -39,12 +41,14 @@ public class SolutionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SolutionListNode>> listSubmitByPage(SolutionEntity query,
+    public ResponseEntity<Page<SolutionListNode>> listSubmitByPage(SolutionQuery query,
                                                                    @PageableDefault(size = 30) Pageable pageable,
                                                                    @ApiIgnore HttpSession session) {
         UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(true, session);
+        SolutionEntity queryEntity = new SolutionEntity();
+        SpringUtil.cloneWithoutNullVal(query, queryEntity);
         return ResponseEntity.ok(solutionService
-            .listSubmit(query, userEntity == null ? UserRole.STUDENT : userEntity.getRole(), pageable));
+            .listSubmit(queryEntity, userEntity == null ? UserRole.STUDENT : userEntity.getRole(), pageable));
     }
 
 

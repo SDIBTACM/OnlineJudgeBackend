@@ -16,5 +16,5 @@ public class UserSimpleInfoVO extends BaseUserVO {
     String school;
     String email;
     UserRole role;
-    Integer rank;
+    Long rank;
 }

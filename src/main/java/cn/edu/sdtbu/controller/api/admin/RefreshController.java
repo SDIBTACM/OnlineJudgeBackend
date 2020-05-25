@@ -2,7 +2,7 @@ package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.model.enums.SecurityType;
-import cn.edu.sdtbu.service.ProblemService;
+import cn.edu.sdtbu.service.RefreshService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +18,19 @@ import javax.annotation.Resource;
 @RequestMapping("/api/admin/refresh")
 public class RefreshController {
     @Resource
-    ProblemService problemService;
+    RefreshService refreshService;
 
     @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
-    @GetMapping("/problemSolutionCount")
-    public ResponseEntity<Void> refreshProblemSolutionCount(@RequestParam(required = false) Long problemId) {
-        problemService.refreshSolutionCount(problemId);
+    @PostMapping("/problemSolutionCount")
+    public ResponseEntity<Void> refreshProblemSolutionCount(Long problemId) {
+        refreshService.refreshSolutionCount(problemId);
+        return ResponseEntity.ok(null);
+    }
+
+    @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
+    @PostMapping("/refreshRankList")
+    public ResponseEntity<Void> refreshRankList(Boolean reloadCount) {
+        refreshService.refreshRankList(reloadCount);
         return ResponseEntity.ok(null);
     }
 }

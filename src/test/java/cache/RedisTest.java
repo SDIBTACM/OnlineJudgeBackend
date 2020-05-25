@@ -12,9 +12,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit4.SpringRunner;
+import redis.clients.jedis.Tuple;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
@@ -44,8 +46,8 @@ public class RedisTest {
         }
         manager.sortedListAdd("test_list", map);
         Pageable pageable = PageRequest.of(1, 2);
-        Collection<String> collection = manager.fetchRanksByPage("test_list", pageable, false);
-        for (String item : collection) {
+        Set<Tuple> collection = manager.fetchRanksByPage("test_list", pageable, false);
+        for (Tuple item : collection) {
             System.out.println(item);
         }
     }

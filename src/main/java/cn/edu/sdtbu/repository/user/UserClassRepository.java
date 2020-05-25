@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface UserClassRepository extends BaseRepository<UserClassEntity, Long> {
     List<UserClassEntity> findAllByClassIdAndDeleteAt(Long classId, Timestamp deleteAt);
-    List<UserClassEntity> findAllByClassIdInAndAndDeleteAt(Collection<Long> classIds, Timestamp deleteAt);
+    List<UserClassEntity> findAllByClassIdInAndDeleteAt(Collection<Long> classIds, Timestamp deleteAt);
     List<UserClassEntity> findAllByClassIdIn(Collection<Long> ids);
 }

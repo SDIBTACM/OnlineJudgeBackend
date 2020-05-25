@@ -129,7 +129,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
                                       Long contestId) {
         Set<Long> userIds = new TreeSet<>();
         if (CollectionUtils.isNotEmpty(classIds)) {
-            userClassRepository.findAllByClassIdInAndAndDeleteAt(classIds, Const.TIME_ZERO)
+            userClassRepository.findAllByClassIdInAndDeleteAt(classIds, Const.TIME_ZERO)
                 .forEach(item -> userIds.add(item.getUserId()));
         }
         if (CollectionUtils.isNotEmpty(allowUsernames)) {

@@ -5,12 +5,14 @@ import cn.edu.sdtbu.service.CacheService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Tuple;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,7 +42,7 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     }
 
     @Override
-    public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
+    public Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
         return null;
     }
 
@@ -80,12 +82,17 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
     }
 
     @Override
-    public long count(String key) {
-        return 0;
+    public Long count(String key) {
+        return 0L;
     }
 
     @Override
     public Long ttl(String key) {
+        return null;
+    }
+
+    @Override
+    public Long zRank(String key, String member, boolean less) {
         return null;
     }
 }

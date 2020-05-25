@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.model.dto;
 
 import lombok.Data;
+import redis.clients.jedis.Tuple;
 
 /**
  * @author bestsort
@@ -14,4 +15,13 @@ public class UserRankListDTO {
     Integer acceptedCount;
 
     Integer submitCount;
+
+    public static UserRankListDTO converByTuple(Tuple tuple) {
+        UserRankListDTO dto = new UserRankListDTO();
+        double score = tuple.getScore();
+        dto.setAcceptedCount((int) score);
+        dto.setId(Long.parseLong(tuple.getElement()));
+        dto.setSubmitCount((int) ((score - (int) score) * 1e6));
+        return dto;
+    }
 }

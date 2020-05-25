@@ -16,11 +16,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * @author bestsort
@@ -37,6 +39,11 @@ public class CountServiceImpl implements CountService {
     @Resource
     UserRepository userRepository;
 
+    @Override
+    public Map<String, Long> fetchByKeyLike(String key) {
+        return repository.findAllByCountKeyLike(key).stream().collect(
+            Collectors.toMap(CountEntity::getCountKey, CountEntity::getTotal));
+    }
     @Override
     public boolean refreshJudgeResultByUserId(Long userId, boolean needReturnBiggerThanMaxId) {
         List<SolutionEntity> list = solutionRepository.findAllByOwnerId(userId);
@@ -105,6 +112,13 @@ public class CountServiceImpl implements CountService {
         entity.setTotal(val);
         save(entity);
     }
+
+    @Override
+    public Map<String, Long> fetchCountByKeys(Collection<String> keys) {
+        return repository.findAllByCountKeyIn(keys).stream().collect(
+            Collectors.toMap(CountEntity::getCountKey, CountEntity::getTotal));
+    }
+
     private void save(CountEntity entity) {
         repository.saveAndFlush(entity);
     }

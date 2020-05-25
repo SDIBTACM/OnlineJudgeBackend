@@ -3,6 +3,9 @@ package cn.edu.sdtbu.service;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  * @author bestsort
  * @version 1.0
@@ -10,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 public interface CountService {
+    Map<String, Long> fetchByKeyLike(String key);
+
     boolean refreshJudgeResultByUserId(Long userId, boolean needReturnBiggerThanMaxId);
 
     /**
@@ -30,4 +35,5 @@ public interface CountService {
     @Async
     void setCount(String key, Long val);
 
+    Map<String, Long> fetchCountByKeys(Collection<String> keys);
 }

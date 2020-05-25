@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author bestsort
@@ -44,19 +45,42 @@ import java.util.*;
 public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long> implements ProblemService {
 
     @Override
-    public Page<ProblemSimpleListVO> listSimpleLists(Pageable pageable) {
+    public Page<ProblemSimpleListVO> listSimpleLists(UserEntity user, Pageable pageable) {
         Page<ProblemEntity> problemEntities = listAll(pageable);
         List<ProblemSimpleListVO> listVOList = new LinkedList<>();
+        List<Long> problemIds = problemEntities.getContent()
+            .stream().map(ProblemEntity::getId).collect(Collectors.toList());
+
+        // generator all will be used keys
+        Set<String> keys = CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefix.PROBLEM_TOTAL_ACCEPT);
+        keys.addAll(CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefix.PROBLEM_TOTAL_SUBMIT));
+        keys.addAll(CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefix.PROBLEM_TOTAL_SUBMIT_PEOPLE));
+        Map<String, Long> allCountInfo = countService.fetchCountByKeys(keys);
+
+        Set<Long> isAccepted = new HashSet<>();
+        if (user != null) {
+            isAccepted = solutionRepository.findAllByOwnerIdAndResultAndProblemIdIn(user.getId(), JudgeResult.ACCEPT, problemIds)
+                .stream()
+                .map(SolutionEntity::getProblemId)
+                .collect(Collectors.toSet());
+        }
+
         for (ProblemEntity entity : problemEntities.getContent()) {
-            ProblemSimpleListVO buffer = new ProblemSimpleListVO();
-            SpringUtil.cloneWithoutNullVal(entity, buffer);
-            buffer.setProblemId(entity.getId());
-            //TODO real data
-            buffer.setAcCount(0L);
-            buffer.setSubmitCount(0L);
-            buffer.setIsAccepted(System.currentTimeMillis() % 3 == 1);
-            buffer.setLastSubmit(TimeUtil.now());
-            buffer.setSubmitPeopleCount(0L);
+            String acCountKey = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefix.PROBLEM_TOTAL_ACCEPT);
+            String submitCountKye = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefix.PROBLEM_TOTAL_SUBMIT);
+            String submitPeopleCountKey = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefix.PROBLEM_TOTAL_SUBMIT_PEOPLE);
+
+            ProblemSimpleListVO buffer = new ProblemSimpleListVO(
+                entity.getId(),
+                entity.getTitle(),
+                allCountInfo.getOrDefault(acCountKey, 0L),
+                allCountInfo.getOrDefault(submitCountKye, 0L),
+                allCountInfo.getOrDefault(submitPeopleCountKey, 0L),
+                isAccepted.contains(entity.getId()),
+                user != null && (UserRole.ADMIN.equals(user.getRole()) || user.getId().equals(entity.getOwnerId())) ? false : entity.getHide(),
+                //TODO fetch last submit
+                TimeUtil.now()
+                );
             listVOList.add(buffer);
         }
         return new PageImpl<>(listVOList, pageable, problemEntities.getTotalElements());
@@ -117,33 +141,6 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         return vo;
     }
 
-    @Override
-    public void refreshSolutionCount(Long problemId) {
-        List<SolutionEntity> solutions;
-        if (problemId == null) {
-            solutions = solutionRepository.findAll();
-        } else {
-            solutions = solutionRepository.findAllByProblemId(problemId);
-        }
-        Map<Long, Long> accepted = new HashMap<>();
-        Map<Long, Long> submitted = new HashMap<>();
-
-        solutions.forEach(i -> {
-            if (i.getResult().equals(JudgeResult.ACCEPT)) {
-                accepted.put(i.getProblemId(), accepted.getOrDefault(i.getProblemId(), 0L) + 1);
-            }
-            submitted.put(i.getProblemId(), submitted.getOrDefault(i.getProblemId(), 0L) + 1);
-        });
-        submitted.forEach((f,s) -> {
-            countService.setCount(CacheUtil.defaultKey(
-                ProblemEntity.class, f, KeyPrefix.PROBLEM_TOTAL_ACCEPT), accepted.getOrDefault(f, 0L));
-            countService.setCount(CacheUtil.defaultKey(
-                ProblemEntity.class, f, KeyPrefix.PROBLEM_TOTAL_SUBMIT), s);
-
-        });
-        log.info("problem solution count refresh completed, problem id is {}",
-            problemId == null ? "all" : problemId);
-    }
 
     private void checkPrivilege(Long userId,Long problemId, Long contestId) {
         List<Pair<Class<?>, String>> list = new LinkedList<>();

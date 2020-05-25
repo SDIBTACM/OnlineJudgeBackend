@@ -48,3 +48,4 @@ online-judge:
         enable: false
         generator-data: false
         refresh-all-problem-solution-count: false
+        refresh-rank-list: false

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author bestsort
  * @version 1.0
@@ -29,4 +32,8 @@ public interface CountRepository extends BaseRepository<CountEntity, Long> {
     @Modifying
     @Query("update CountEntity set total = total + :step where countKey = :count_key")
     void incByStep(@Param("count_key") String key, @Param("step") Long step);
+
+    List<CountEntity> findAllByCountKeyIn(Collection<String> keys);
+
+    List<CountEntity> findAllByCountKeyLike(String keyPrefix);
 }

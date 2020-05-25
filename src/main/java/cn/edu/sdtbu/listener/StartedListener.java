@@ -3,13 +3,10 @@ package cn.edu.sdtbu.listener;
 import cn.edu.sdtbu.debug.DebugUtil;
 import cn.edu.sdtbu.debug.GeneratorFakeData;
 import cn.edu.sdtbu.handler.CacheHandler;
-import cn.edu.sdtbu.model.dto.UserRankListDTO;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
-import cn.edu.sdtbu.service.ProblemService;
+import cn.edu.sdtbu.service.RefreshService;
 import cn.edu.sdtbu.service.base.BaseService;
-import cn.edu.sdtbu.util.CacheUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -25,7 +22,8 @@ import org.springframework.lang.NonNull;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * after application start need to do
@@ -40,7 +38,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @Resource
     CacheHandler handler;
     @Resource
-    ProblemService problemService;
+    RefreshService refreshService;
     @Resource
     OnlineJudgeProperties properties;
     @Resource
@@ -75,7 +73,11 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             } catch (IOException ignore) { }
         }
         if (properties.getDebug().getRefreshAllProblemSolutionCount()) {
-            problemService.refreshSolutionCount(null);
+            refreshService.refreshSolutionCount(null);
+        }
+        //refresh rank list
+        if (properties.getDebug().getRefreshRankList()) {
+            refreshService.refreshRankList(true);
         }
         // init rank list
 
@@ -84,21 +86,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     private void generatorDebugData(HashMap<Class<?>, BaseService<?, ?>> map) throws IOException {
         String json = DebugUtil.loadDebugData();
 
-        /******************************              generator virtual rank list    ***********************************************/
+        // generator all fake data
         generatorFakeData.generatorAll(105);
-        Map<String, Double> rankValues = new TreeMap<>();
-        Random random = new Random();
-        for (int i = 1;i <= 100; i++) {
-            int acceptedCount = random.nextInt(300);
-            int submit = random.nextInt(500) + acceptedCount;
-            UserRankListDTO rankListVO = new UserRankListDTO();
-            rankListVO.setId((long) i);
-            rankListVO.setSubmitCount(submit);
-            rankListVO.setAcceptedCount(acceptedCount);
-            rankValues.put(JSON.toJSONString(rankListVO), CacheUtil.rankListScore(acceptedCount, submit));
-        }
-        handler.fetchCacheStore().delete(KeyPrefix.USERS_RANK_LIST_DTO.toString());
-        handler.fetchCacheStore().sortedListAdd(KeyPrefix.USERS_RANK_LIST_DTO.toString(), rankValues);
 
         /**************************************** virtual rank list generator finished **********************************************/
         // parse JSON string and save to database

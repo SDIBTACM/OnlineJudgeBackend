@@ -7,6 +7,8 @@ import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * @author bestsort
  * @version 1.0
@@ -14,4 +16,6 @@ import org.springframework.data.domain.Pageable;
  */
 public interface SolutionService extends BaseService<SolutionEntity, Long> {
     Page<SolutionListNode> listSubmit(SolutionEntity query, UserRole role, Pageable pageable);
+
+    List<SolutionEntity> findAllByProblemId(Long problemId);
 }

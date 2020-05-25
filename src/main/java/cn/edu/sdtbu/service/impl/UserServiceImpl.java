@@ -61,7 +61,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         centerVO.setLastLogin(lastLogin(userId));
         UserSimpleInfoVO simpleInfoVO = new UserSimpleInfoVO();
         SpringUtil.cloneWithoutNullVal(getById(userId), simpleInfoVO);
-        simpleInfoVO.setRank(userRank(userId));
+        simpleInfoVO.setRank(cache().zRank(KeyPrefix.USERS_RANK_LIST_DTO.toString(), userId + "", false));
         centerVO.setUserInfo(simpleInfoVO);
         return centerVO;
     }
@@ -155,8 +155,9 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     public Page<UserRankListVO> fetchRankList(Pageable pageable) {
         //TODO init rank list from db
         long total = cache().count(KeyPrefix.USERS_RANK_LIST_DTO.toString());
-        Collection<String> caches = cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false);
-        List<UserRankListDTO> list = JSON.parseArray(caches.toString(), UserRankListDTO.class);
+        List<UserRankListDTO> list = new LinkedList<>();
+        cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false)
+            .forEach(i -> list.add(UserRankListDTO.converByTuple(i)));
 
         Map<Long, UserEntity> userEntities = getByIds(list.stream()
             .map(UserRankListDTO::getId)
@@ -249,8 +250,5 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             throw new ForbiddenException("you have been locked");
         }
         return entity;
-    }
-    private Integer userRank(Long userId) {
-        return -1;
     }
 }

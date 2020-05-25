@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Tuple;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,7 +43,7 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     }
 
     @Override
-    public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
+    public Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
         return manager.fetchRanksByPage(listName, pageable, less);
     }
 
@@ -84,12 +86,17 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     }
 
     @Override
-    public long count(String key) {
+    public Long count(String key) {
         return manager.totalElementOfList(key);
     }
 
     @Override
     public Long ttl(String key) {
         return manager.ttl(key);
+    }
+
+    @Override
+    public Long zRank(String key, String member, boolean less) {
+        return manager.zRank(key, member, less);
     }
 }

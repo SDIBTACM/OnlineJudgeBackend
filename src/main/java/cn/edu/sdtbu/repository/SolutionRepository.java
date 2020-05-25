@@ -4,6 +4,7 @@ import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
 public interface SolutionRepository extends BaseRepository<SolutionEntity, Long> {
     List<SolutionEntity> findAllByOwnerId(Long ownerId);
     List<SolutionEntity> findAllByProblemId(Long problemId);
+    List<SolutionEntity> findAllByOwnerIdAndResultAndProblemIdIn(Long userId, JudgeResult result, Collection<Long> problemIds);
     Boolean existsByOwnerIdAndProblemIdAndContestIdAndResult(Long userId, Long problemId, Long contestId, JudgeResult result);
     Boolean existsByOwnerIdAndProblemIdAndResult(Long userId, Long problemId, JudgeResult result);
 }

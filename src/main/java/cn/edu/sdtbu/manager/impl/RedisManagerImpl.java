@@ -5,10 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Tuple;
 import redis.clients.jedis.params.SetParams;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -80,13 +80,13 @@ public class RedisManagerImpl implements RedisManager {
     }
 
     @Override
-    public Collection<String> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
+    public Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
         try (Jedis jedis = pool.getResource()) {
             long start = pageable.getOffset();
             long stop = start + pageable.getPageSize() - 1;
             return less ?
-                jedis.zrange(listName, start, stop) :
-                jedis.zrevrange(listName, start, stop);
+                jedis.zrangeWithScores(listName, start, stop) :
+                jedis.zrevrangeWithScores(listName, start, stop);
         }
     }
 
@@ -101,6 +101,13 @@ public class RedisManagerImpl implements RedisManager {
     public Long ttl(String key) {
         try (Jedis jedis = pool.getResource()) {
             return jedis.ttl(key);
+        }
+    }
+
+    @Override
+    public Long zRank(String key, String member, boolean less) {
+        try (Jedis jedis = pool.getResource()) {
+            return 1 + (less ? jedis.zrank(key, member) : jedis.zrevrank(key, member));
         }
     }
 }

@@ -12,4 +12,5 @@ public class DebugProperties {
     private Boolean enable = false;
     private Boolean generatorData = false;
     private Boolean refreshAllProblemSolutionCount = false;
+    private Boolean refreshRankList = false;
 }

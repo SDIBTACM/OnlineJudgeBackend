@@ -4,10 +4,12 @@ import cn.edu.sdtbu.model.enums.CacheStoreType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
+import redis.clients.jedis.Tuple;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -49,7 +51,7 @@ public interface CacheStore<K, V> {
      * @param lesserFirst lesser first if {true} or greater first
      * @return JSON string list
      */
-    Collection<V> fetchRanksByPage(String listName, Pageable pageable, boolean lesserFirst);
+    Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean lesserFirst);
 
     /**
      * get val or return default value when val is null
@@ -116,7 +118,9 @@ public interface CacheStore<K, V> {
 
     Map<K, V> fetchAll(String prefix);
 
-    long count(String key);
+    Long count(String key);
 
     Long ttl(String key);
+
+    Long zRank(String key, String member, boolean less);
 }

@@ -59,4 +59,9 @@ public class SolutionServiceImpl extends AbstractBaseService<SolutionEntity, Lon
         });
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
+
+    @Override
+    public List<SolutionEntity> findAllByProblemId(Long problemId) {
+        return solutionRepository.findAllByProblemId(problemId);
+    }
 }

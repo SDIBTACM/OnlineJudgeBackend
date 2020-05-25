@@ -61,7 +61,7 @@ public interface UserRepository extends BaseRepository<UserEntity, Long> {
      * @return token
      */
     Optional<UserEntity> findByRememberTokenAndDeleteAtEquals(String token, Timestamp deleteAt);
-
+    List<UserEntity> findAllByDeleteAt(Timestamp deleteAt);
     List<UserEntity> findAllByUsernameInAndDeleteAt(Collection<String> usernames, Timestamp deleteAt);
     List<UserEntity> findAllByIdInAndDeleteAt(Collection<Long> ids, Timestamp deleteAt);
 }

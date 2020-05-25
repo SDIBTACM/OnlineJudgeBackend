@@ -9,6 +9,7 @@ import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.service.CountService;
 import cn.edu.sdtbu.service.ProblemDescService;
 import cn.edu.sdtbu.service.ProblemService;
+import cn.edu.sdtbu.util.RequestUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,8 +41,10 @@ public class ProblemController {
     private CountService countService;
 
     @GetMapping("/problems")
-    public ResponseEntity<Page<ProblemSimpleListVO>> listProblems(@PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(problemService.listSimpleLists(pageable));
+    public ResponseEntity<Page<ProblemSimpleListVO>> listProblems(@PageableDefault Pageable pageable,
+                                                                  @ApiIgnore HttpSession session) {
+        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(true, session);
+        return ResponseEntity.ok(problemService.listSimpleLists(userEntity, pageable));
     }
 
     @GetMapping("/problem/{id}")
