@@ -31,7 +31,7 @@ public class RequestUtil {
     public static UserEntity fetchUserEntityFromSession(boolean nullable, HttpSession session) {
         UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (!nullable && userEntity == null) {
-            throw new UnauthorizedException("Unauthorized");
+            throw new UnauthorizedException();
         }
         return userEntity;
     }

@@ -1,11 +1,11 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.exception.TeapotException;
-import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.user.LoginParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
+import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class AuthController {
     @Resource
     UserService userService;
     @Resource
-    CacheHandler handler;
+    LoginLogService loginLogService;
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginInfoVO> login(@RequestBody LoginParam loginParam,
@@ -61,6 +61,7 @@ public class AuthController {
         if (entity == null) {
             throw new TeapotException("would you have a teapot?");
         }
+        loginLogService.logout(entity.getId());
         session.invalidate();
         response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
         return ResponseEntity.ok().build();

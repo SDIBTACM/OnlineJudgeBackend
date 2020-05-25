@@ -4,6 +4,7 @@ import cn.edu.sdtbu.exception.BadRequestException;
 import cn.edu.sdtbu.model.dto.ContestPrivilegeInfoDTO;
 import cn.edu.sdtbu.model.entity.contest.*;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.ContestPrivilege;
 import cn.edu.sdtbu.model.enums.ContestPrivilegeTypeEnum;
 import cn.edu.sdtbu.model.enums.ContestStatus;
 import cn.edu.sdtbu.model.enums.LangType;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author bestsort
@@ -44,12 +46,24 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         Page<ContestEntity> contestPage = listAll(page);
         List<ContestEntity> list = contestPage.getContent();
         List<ContestsVO> content = new LinkedList<>();
+        boolean notLogin = userEntity == null;
+        Map<Long, Boolean> contestIdMap = new HashMap<>();
+        if (!notLogin) {
+            contestIdMap = privilegeRepository.findAllByContestIdInAndUserIdAndDeleteAt(
+                list.stream().map(ContestEntity::getId).collect(Collectors.toSet()),
+                userEntity.getId(),
+                Const.TIME_ZERO
+            ).stream().collect(Collectors.toMap(ContestPrivilegeEntity::getContestId, i -> true));
+        }
         Timestamp now = TimeUtil.now();
+        final Map<Long, Boolean> finalContestIdMap = contestIdMap;
         list.forEach(item -> {
             ContestsVO vo = new ContestsVO();
             SpringUtil.cloneWithoutNullVal(item, vo);
-            //TODO privilege
-            vo.setAllowed(true);
+
+            vo.setAllowed(notLogin ? item.getPrivilege().equals(ContestPrivilege.PUBLIC) :
+                finalContestIdMap.getOrDefault(item.getId(), item.getOwnerId().equals(userEntity.getId())));
+
             vo.setOwner(userService.getById(item.getOwnerId()).getUsername());
             if (now.before(item.getStartAt())) {
                 vo.setStatus(ContestStatus.PENDING);
@@ -97,7 +111,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         }
         List<ContestProblemEntity> list = new LinkedList<>();
         vos.forEach(item -> {
-            // assert problem must exist
+            // problem must exist
             problemService.mustExistById(item.getId());
 
             ContestProblemEntity entity = new ContestProblemEntity();

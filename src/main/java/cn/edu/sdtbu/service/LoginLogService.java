@@ -4,6 +4,7 @@ import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * @author bestsort
@@ -25,4 +26,7 @@ public interface LoginLogService extends BaseService<LoginLogEntity, Long> {
      * @return result
      */
     Page<LoginLogEntity> select(Long userId, Pageable pageable);
+
+    @Async
+    void logout(Long userId);
 }

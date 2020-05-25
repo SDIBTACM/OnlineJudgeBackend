@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(BaseException.class)
+    @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleCustomExceptions(BaseException e) {
         log.debug("request id {}, exception type: {}, http status: {}, message: {}",
             fetchRequestId(), e.getClass(), e.getStatus(),e.getErrorData());

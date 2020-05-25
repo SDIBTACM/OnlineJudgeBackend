@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
@@ -20,8 +21,13 @@ import javax.persistence.Table;
 @Entity
 @ToString
 @EqualsAndHashCode(callSuper = true)
-//TODO index
-@Table(name = "solution")
+@Table(name = "solution", indexes = {
+    @Index(name = "idx_owner_id", columnList = "ownerId"),
+    @Index(name = "idx_problem_id", columnList = "problemId"),
+    @Index(name = "idx_contest_id", columnList = "contestId"),
+
+
+})
 public class SolutionEntity extends BaseEntity {
     @Column
     Long ownerId;

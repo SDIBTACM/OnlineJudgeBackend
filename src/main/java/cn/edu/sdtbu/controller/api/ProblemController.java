@@ -1,9 +1,7 @@
 package cn.edu.sdtbu.controller.api;
 
-import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.param.ProblemSubmitParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
@@ -40,8 +38,6 @@ public class ProblemController {
     private ProblemDescService descService;
     @Resource
     private CountService countService;
-    @Resource
-    private CacheHandler handler;
 
     @GetMapping("/problems")
     public ResponseEntity<Page<ProblemSimpleListVO>> listProblems(@PageableDefault Pageable pageable) {
@@ -53,7 +49,6 @@ public class ProblemController {
                                                         @RequestParam(required = false) Long contestId,
                                                         @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
-        //TODO permissions and some filed
         ProblemDescEntity descEntity = descService.getById(id);
         ProblemDescVO vo = new ProblemDescVO();
         SpringUtil.cloneWithoutNullVal(descEntity, vo);
@@ -69,18 +64,5 @@ public class ProblemController {
         //TODO publish event to MQ
 
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/problem/status")
-    public ResponseEntity<JudgeResult> checkJudgeStatus(String token) {
-        //TODO current limiting( up to N visits per unit time )
-        try {
-            return ResponseEntity.ok(
-                JudgeResult.valueOf(
-                    handler.fetchCacheStore().get(token)
-            ));
-        } catch (IllegalArgumentException ignore) {
-            return ResponseEntity.ok(JudgeResult.PENDING);
-        }
     }
 }

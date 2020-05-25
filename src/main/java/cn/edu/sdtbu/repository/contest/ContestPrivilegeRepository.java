@@ -4,6 +4,7 @@ import cn.edu.sdtbu.model.entity.contest.ContestPrivilegeEntity;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +16,5 @@ import java.util.Optional;
 public interface ContestPrivilegeRepository extends BaseRepository<ContestPrivilegeEntity, Long> {
     List<ContestPrivilegeEntity> findAllByContestIdAndDeleteAt(Long contestId, Timestamp deleteAt);
     Optional<ContestPrivilegeEntity> findByContestIdAndUserIdAndDeleteAt(Long contestId, Long userId, Timestamp deleteAt);
+    List<ContestPrivilegeEntity> findAllByContestIdInAndUserIdAndDeleteAt(Collection<Long> contestIds, Long userId, Timestamp deleteAt);
 }

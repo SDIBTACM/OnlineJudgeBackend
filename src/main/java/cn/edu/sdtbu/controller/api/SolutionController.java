@@ -1,7 +1,9 @@
 package cn.edu.sdtbu.controller.api;
 
+import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.SubmitCodeParam;
 import cn.edu.sdtbu.model.vo.SolutionListNode;
@@ -28,6 +30,9 @@ import javax.servlet.http.HttpSession;
 public class SolutionController {
     @Resource
     SolutionService solutionService;
+    @Resource
+    private CacheHandler handler;
+
     @PutMapping("/submit")
     public ResponseEntity<TokenVO> submitCode(@RequestBody SubmitCodeParam param) {
         return ResponseEntity.ok(null);
@@ -40,5 +45,19 @@ public class SolutionController {
         UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(true, session);
         return ResponseEntity.ok(solutionService
             .listSubmit(query, userEntity == null ? UserRole.STUDENT : userEntity.getRole(), pageable));
+    }
+
+
+    @GetMapping("/status")
+    public ResponseEntity<JudgeResult> checkJudgeStatus(String token) {
+        //TODO current limiting( up to N visits per unit time )
+        try {
+            return ResponseEntity.ok(
+                JudgeResult.valueOf(
+                    handler.fetchCacheStore().get(token)
+                ));
+        } catch (IllegalArgumentException ignore) {
+            return ResponseEntity.ok(JudgeResult.PENDING);
+        }
     }
 }

@@ -69,7 +69,7 @@ public class UserClassAdminController {
     public ResponseEntity<Void> deleteByClassIds(@RequestBody Collection<Long> ids,
                                                  @ApiIgnore HttpSession session) {
         classService.deleteClass(ids);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.noContent().build();
     }
     @PutMapping("/append}")
     public ResponseEntity<Void> appendUser(List<Long> userIds,
@@ -77,6 +77,6 @@ public class UserClassAdminController {
                                            @ApiIgnore HttpSession session) {
         UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
         classService.appendUser(userIds, classId, userEntity);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.noContent().build();
     }
 }

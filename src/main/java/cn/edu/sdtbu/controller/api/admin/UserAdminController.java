@@ -2,6 +2,7 @@ package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.exception.ForbiddenException;
+import cn.edu.sdtbu.exception.UnauthorizedException;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
@@ -109,11 +110,16 @@ public class UserAdminController {
         return ResponseEntity.ok(logService.select(userId, pageable));
     }
 
-    //TODO security
     @PostMapping("/{userId}")
+    @SourceSecurity(SecurityType.STUDENT_OR_LOGIN)
     public ResponseEntity<UserEntity> updateUserById(
         @RequestBody @Validated(UserParam.Update.class) UserParam userParam,
-        @PathVariable Long userId) {
+        @PathVariable Long userId,
+        @ApiIgnore HttpSession session) {
+        UserEntity entity = RequestUtil.fetchUserEntityFromSession(false, session);
+        if (entity.getRole() != UserRole.ADMIN && !entity.getId().equals(userId)) {
+            throw new UnauthorizedException();
+        }
         UserEntity userEntity = userParam.transformToEntity();
         userEntity.setId(userId);
         userEntity = userService.update(userEntity, userId);

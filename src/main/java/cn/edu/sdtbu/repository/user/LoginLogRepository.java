@@ -19,4 +19,5 @@ public interface LoginLogRepository extends BaseRepository<LoginLogEntity, Long>
      * @return  result
      */
     Page<LoginLogEntity> findAllByUserId(@NonNull Long userId, @NonNull Pageable pageable);
+    LoginLogEntity findFirstByUserIdOrderByCreateAtDesc(Long userId);
 }
