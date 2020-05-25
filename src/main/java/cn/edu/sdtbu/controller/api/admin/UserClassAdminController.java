@@ -34,6 +34,7 @@ public class UserClassAdminController {
     @Resource
     ClassService classService;
     @PutMapping
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     public ResponseEntity<UserClassesVO> createClass(@Validated(UserClassParam.Create.class)
                                                      @RequestBody(required = false) UserClassParam param,
                                                      @ApiIgnore HttpSession session) {
@@ -47,6 +48,7 @@ public class UserClassAdminController {
     }
 
     @GetMapping
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     public ResponseEntity<List<UserClassListNode>> fetchAllClassesByManagerId(@ApiIgnore HttpSession session) {
         UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (userEntity != null) {
@@ -58,10 +60,12 @@ public class UserClassAdminController {
     }
 
     @GetMapping("/{classId}")
+    @SourceSecurity(SecurityType.STUDENT_OR_LOGIN)
     @ApiOperation(value = "获取班级内成员信息", notes = "用于获取class id所对应的班级成员, 班级所有者/Admin有管理权")
     public ResponseEntity<UserClassesVO> fetchAllUserByClassId(@PathVariable("classId") Long classId,
                                                         @ApiIgnore HttpSession session) {
-        return null;
+        UserEntity user = RequestUtil.fetchUserEntityFromSession(true, session);
+        return ResponseEntity.ok(classService.fetchUsersByClassId(classId, user));
     }
 
     @DeleteMapping
@@ -71,12 +75,22 @@ public class UserClassAdminController {
         classService.deleteClass(ids);
         return ResponseEntity.noContent().build();
     }
-    @PutMapping("/append}")
-    public ResponseEntity<Void> appendUser(List<Long> userIds,
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
+    @PutMapping("/user")
+    public ResponseEntity<Void> appendUser(@RequestBody List<Long> userIds,
                                            Long classId,
                                            @ApiIgnore HttpSession session) {
         UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
         classService.appendUser(userIds, classId, userEntity);
+        return ResponseEntity.noContent().build();
+    }
+    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
+    @DeleteMapping("/user")
+    public ResponseEntity<Void> removeUserByIds(@RequestBody List<Long> userIds,
+                                                Long classId,
+                                                @ApiIgnore HttpSession session) {
+        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
+        classService.removeUser(userIds, classId, userEntity);
         return ResponseEntity.noContent().build();
     }
 }

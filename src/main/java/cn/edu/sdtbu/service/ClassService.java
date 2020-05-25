@@ -23,4 +23,8 @@ public interface ClassService extends BaseService<ClassEntity, Long> {
     void deleteClass(Collection<Long> classIds);
 
     void appendUser(List<Long> userIds, Long classId, UserEntity userEntity);
+
+    UserClassesVO fetchUsersByClassId(Long classId, UserEntity user);
+
+    void removeUser(List<Long> userIds, Long classId, UserEntity userEntity);
 }

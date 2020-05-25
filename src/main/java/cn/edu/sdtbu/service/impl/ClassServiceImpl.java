@@ -1,8 +1,10 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.exception.UnauthorizedException;
 import cn.edu.sdtbu.model.entity.user.ClassEntity;
 import cn.edu.sdtbu.model.entity.user.UserClassEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserClassParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.base.BaseUserVO;
@@ -18,11 +20,13 @@ import cn.edu.sdtbu.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author bestsort
@@ -60,7 +64,8 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
             });
         }
         userClassRepository.saveAll(userClassEntities);
-
+        vo.setIsOwner(true);
+        log.info("created class [{}] by [{}]", param.getName(), manager.getUsername());
         return vo;
     }
 
@@ -70,6 +75,7 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
         List<ClassEntity> list = classRepository.findAllByOwnerIdAndDeleteAt(managerId, Const.TIME_ZERO);
         List<UserClassListNode> userClassListNodes = new LinkedList<>();
         UserClassEntity exampleCase = new UserClassEntity();
+        exampleCase.setDeleteAt(Const.TIME_ZERO);
         list.forEach(i -> {
             exampleCase.setClassId(i.getId());
             UserClassListNode buffer = new UserClassListNode();
@@ -90,7 +96,51 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
 
     @Override
     public void appendUser(List<Long> userIds, Long classId, UserEntity userEntity) {
+        isClassManager(classId, userEntity, true);
+        Set<Long> existIds = userClassRepository.findAllByClassIdAndDeleteAt(classId, Const.TIME_ZERO)
+            .stream().map(UserClassEntity::getUserId).collect(Collectors.toSet());
 
+        List<UserClassEntity> list = new LinkedList<>();
+        userIds.stream().filter(i -> !existIds.contains(i)).collect(Collectors.toList()).forEach(i -> {
+            UserClassEntity classEntity = new UserClassEntity();
+            classEntity.setClassId(classId);
+            classEntity.setUserId(i);
+            list.add(classEntity);
+        });
+        userClassRepository.saveAll(list);
+    }
+
+    @Override
+    public UserClassesVO fetchUsersByClassId(Long classId, UserEntity user) {
+        Set<Long> users = userClassRepository.findAllByClassIdAndDeleteAt(classId, Const.TIME_ZERO).stream()
+            .map(UserClassEntity::getUserId).collect(Collectors.toSet());
+        UserClassesVO vo = new UserClassesVO();
+        vo.setIsOwner(isClassManager(classId, user, false));
+        vo.setName(getById(classId).getName());
+        vo.setId(classId);
+        List<BaseUserVO> baseUsers = new LinkedList<>();
+        userService.getByIds(users, Pageable.unpaged()).getContent()
+            .forEach(i -> baseUsers.add(BaseUserVO.fetchBaseFromEntity(i)));
+        vo.setUsersInfo(baseUsers);
+        return vo;
+    }
+
+    @Override
+    public void removeUser(List<Long> userIds, Long classId, UserEntity userEntity) {
+        isClassManager(classId, userEntity, true);
+        Timestamp now = TimeUtil.now();
+        List<UserClassEntity> users = userClassRepository.findAllByClassIdAndDeleteAt(classId, Const.TIME_ZERO);
+        users.stream().filter(item -> userIds.contains(item.getUserId())).collect(Collectors.toList())
+            .forEach(i -> i.setDeleteAt(now));
+        userClassRepository.saveAll(users);
+    }
+
+    private boolean isClassManager(Long classId, UserEntity user, boolean throwException) {
+        boolean res = user != null && (user.getRole() == UserRole.ADMIN || classId.equals(getById(classId).getOwnerId()));
+        if (throwException && !res) {
+            throw new UnauthorizedException();
+        }
+        return res;
     }
 
     @Resource
