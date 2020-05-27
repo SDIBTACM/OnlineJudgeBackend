@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "online-judge.debug.generator-data",
+      "type": "java.lang.Boolean",
+      "description": "generator fake user and fake problems."
+    },
+    {
+      "name": "online-judge.debug.refresh-all-problem-solution-count",
+      "type": "java.lang.Boolean",
+      "description": "refresh problem solution count when application start."
+    },
+    {
+      "name": "online-judge.debug.refresh-rank-list",
+      "type": "java.lang.Boolean",
+      "description": "refresh rank list, user solution statistic and load them to cache when application start."
+    }
+  ] }

@@ -105,8 +105,7 @@ public class UserAdminController {
     @GetMapping("/loginLog/{userId}")
     @SourceSecurity(value = SecurityType.AT_LEAST_TEACHER, throwException = false)
     public ResponseEntity<Page<LoginLogEntity>> loginLog(@PathVariable Long userId,
-                                                         @PageableDefault(sort = "updateAt", direction = DESC) Pageable pageable,
-                                                         @ApiIgnore HttpSession session) {
+                                                         @PageableDefault(sort = "updateAt", direction = DESC) Pageable pageable) {
         return ResponseEntity.ok(logService.select(userId, pageable));
     }
 

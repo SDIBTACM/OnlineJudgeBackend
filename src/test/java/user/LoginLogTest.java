@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -21,21 +22,27 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
+@ActiveProfiles("test")
 public class LoginLogTest {
     @Autowired
     LoginLogService logService;
     @Test
-    public void LoginTest(){
+    public void LoginTest() throws InterruptedException {
         Sort sort = Sort.unsorted();
-        logService.login(1L, "127.0.0.1");
+        loginLogout(1L, "127.0.0.1");
         Pageable pageable = PageRequest.of(0, 10, sort);
         Page<LoginLogEntity> page = logService.select(1L, pageable);
-        assert 1 == page.getTotalElements();
 
+        assert 1 <= page.getTotalElements();
         for (int i = 0; i < 11; i++) {
-            logService.login(2L, "127.0.0.1");
+            loginLogout(2L, "127.0.0.1");
         }
         page = logService.select(2L, pageable);
-        assert 10 == pageable.getPageSize();
+        assert 10 <= page.getTotalElements();
+    }
+    private void loginLogout(Long userId, String ip) throws InterruptedException {
+        logService.login(userId, ip);
+        Thread.sleep(1000);
+        logService.logout(userId);
     }
 }

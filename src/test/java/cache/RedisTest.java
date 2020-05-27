@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.data.util.Pair;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.Tuple;
 
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
+@ActiveProfiles("test")
 public class RedisTest {
     @Autowired
     RedisManager manager;

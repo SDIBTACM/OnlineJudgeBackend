@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +20,7 @@ import static org.junit.Assert.assertEquals;
  * @date 2020-04-11 02:55
  */
 @RunWith(Parameterized.class)
+@ActiveProfiles("test")
 public class IpUnitTest {
     private boolean result;
     private String ip;

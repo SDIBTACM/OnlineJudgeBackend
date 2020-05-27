@@ -9,6 +9,7 @@ import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Collection;
 
 /**
  * login | logout | reset password
@@ -42,6 +44,22 @@ public class AuthController {
                                                  @ApiIgnore HttpServletRequest request,
                                                  @ApiIgnore HttpServletResponse response) {
         UserEntity userEntity = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestUtil.getClientIp(request));
+        Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
+        boolean firstHeader = true;
+
+        // use [SameSite] header to prevent CSRF
+        // Strict -> Prohibit third-party cookies completely
+        // Lax -> Prohibit third-party cookies, except GET method to navigate to the target url
+        // there can be multiple Set-Cookie attributes
+        for (String header : headers) {
+            if (firstHeader) {
+                response.setHeader(HttpHeaders.SET_COOKIE, String.format("%s; %s", header, "SameSite=Lax"));
+                firstHeader = false;
+                continue;
+            }
+            response.addHeader(HttpHeaders.SET_COOKIE, String.format("%s; %s", header, "SameSite=Lax"));
+        }
+
         log.debug("{} is login", userEntity);
         request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
         if (loginParam.getRemember()) {

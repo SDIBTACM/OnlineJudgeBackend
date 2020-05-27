@@ -32,6 +32,8 @@ public interface UserService extends BaseService<UserEntity, Long> {
      */
     boolean addUser(UserParam userRegisterParam);
 
+    void userMustNotExist(UserParam ao);
+
     /**
      * use email or username as identify and login with password
      * @param identify username or email

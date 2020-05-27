@@ -17,7 +17,7 @@ import java.util.*;
  * @date 2020-05-02 14:23
  */
 public class CacheUtil {
-    public static final String SEPARATOR = "::";
+    public static final String SEPARATOR = ":";
     public static final String NOT_DEFINED_PREFIX = "not_defined_prefix";
     public static final String COUNT_PREFIX = "count";
     private static final double RATIO = 1e-6;

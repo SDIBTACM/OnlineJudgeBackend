@@ -1,5 +1,7 @@
 package cn.edu.sdtbu.model.properties;
 
+import com.google.common.net.HttpHeaders;
+
 import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +31,8 @@ public class Const {
     public static final long REMEMBER_TOKEN_EXPRESS_TIME = TimeUnit.DAYS.toMillis(30);
     public static final String USER_IP = "user_ip";
     public static final String UNDEFINED = "undefined";
+    public static final String ADMIN_TOKEN_HEADER_NAME = "ADMIN-" + HttpHeaders.AUTHORIZATION;
+    public final static String API_ACCESS_KEY_HEADER_NAME = "API-" + HttpHeaders.AUTHORIZATION;
 
     // init
     static {

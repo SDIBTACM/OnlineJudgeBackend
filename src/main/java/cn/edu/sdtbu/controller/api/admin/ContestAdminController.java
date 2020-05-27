@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
-import cn.edu.sdtbu.exception.ForbiddenException;
+import cn.edu.sdtbu.exception.UnauthorizedException;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.enums.UserRole;
@@ -40,7 +40,7 @@ public class ContestAdminController {
                                            @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         if (entity.getRole().getValue() < UserRole.TEACHER.getValue()) {
-            throw new ForbiddenException("would you want to fly?");
+            throw new UnauthorizedException();
         }
         service.createContest(param, entity);
         return ResponseEntity.ok(null);

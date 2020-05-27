@@ -69,13 +69,19 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public boolean addUser(UserParam ao) {
-        if (countByUserNameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
-            throw new ExistException("user name or email is registered");
-        }
         // Use BCrypt for other language service
         ao.setPassword(BCrypt.hashpw(ao.getPassword(), BCrypt.gensalt()));
         save(ao.transformToEntity(UserEntity.getDefaultValue()));
         return true;
+    }
+
+    @Override
+    public void userMustNotExist(UserParam ao) {
+        if (cache().get(CacheUtil.defaultKey(String.class, ao.getEmail(), KeyPrefix.REGISTERED_EMAIL)) != null ||
+            cache().get(CacheUtil.defaultKey(String.class, ao.getUsername(), KeyPrefix.REGISTERED_USERNAME)) != null ||
+            countByUserNameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
+            throw new ExistException("该账户中的username/email已被使用。若此账号还未激活，请30分钟后重新注册.");
+        }
     }
 
     @Override

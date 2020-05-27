@@ -1,3 +1,4 @@
+
 spring:
   mail:
     host:
@@ -27,6 +28,8 @@ spring:
     encoding:
       charset: UTF-8
 online-judge:
-  cache-store-type: DEFAULT
+  cache-store-type: REDIS
   debug:
     generator-data: false
+    refresh-all-problem-solution-count: true
+    refresh-rank-list: true

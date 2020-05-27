@@ -39,7 +39,7 @@ public class LoginLogServiceImpl extends AbstractBaseService<LoginLogEntity, Lon
     public Page<LoginLogEntity> select(Long userId, Pageable pageable) {
         Page<LoginLogEntity> page = repository.findAllByUserId(userId, pageable);
         List<LoginLogEntity> loginLogEntities = page.getContent().stream().filter(
-            i -> !i.getLogoutTime().equals(i.getCreateAt())
+            i -> !i.getCreateAt().equals(i.getLogoutTime())
         ).collect(Collectors.toList());
         return new PageImpl<>(loginLogEntities, pageable, page.getTotalElements());
     }
