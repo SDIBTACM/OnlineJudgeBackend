@@ -1,14 +1,4 @@
 spring:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-
-  mail:
-    host:
-    port:
-    username:
-    password:
-
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/onlinejudge?useUnicode=true&characterEncoding=UTF-8
     username: root
@@ -22,25 +12,28 @@ spring:
           db-type: mysql
           log-slow-sql: true
           slow-sql-millis: 2000
-
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    password:
+  mail:
+    host:
+    port:
+    username:
+    password:
   jpa:
     database: mysql
     show-sql: false
     hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      ddl-auto: create-drop
 
-  http:
-    encoding:
-      charset: UTF-8
-
+  proxy:
+    trusts: "127.0.0.1/8,::1/128"
 logging:
   path:
-
 online-judge:
-  url: http://localhost/ # url generate will use it
   cache-store-type: REDIS
   debug:
     generator-data: false
-
-
+    refresh-all-problem-solution-count: false
+    refresh-rank-list: false

@@ -8,4 +8,5 @@ OnlineJudgeBackend.iml
 
 # Runtime config
 config/application.yml
-config/application.yml.test
+config/application-test.yml
+
