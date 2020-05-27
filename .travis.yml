@@ -9,7 +9,7 @@ services:
   - redis
 
 before_script:
-  - cp config/application.yml.test config/application-test.yml
+  - cp config/application.yml.test config/application.yml
   - wget https://repo.mysql.com/mysql-apt-config_0.8.15-1_all.deb
   - sudo dpkg -i mysql-apt-config_0.8.15-1_all.deb
   - sudo apt-get update -q

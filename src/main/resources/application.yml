@@ -1,10 +1,4 @@
-
 spring:
-  mail:
-    host:
-    port:
-    username:
-    password:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/onlinejudge?useUnicode=true&characterEncoding=UTF-8
     username: root
@@ -18,17 +12,42 @@ spring:
           db-type: mysql
           log-slow-sql: true
           slow-sql-millis: 2000
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 
+    max-total: 4
+    max-idle: 4
+    min-idle: 4
+    max-wait-millis: 1000
+
+  mail:
+    host:
+    port:
+    username:
+    password:
+
   jpa:
     database: mysql
     show-sql: false
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+
   http:
     encoding:
       charset: UTF-8
+
 online-judge:
+  # url generate will use it
+  url: http://localhost:8080
   cache-store-type: REDIS
+  
+  mail:
+    title: "Online Judge"
+    send-by: "ACM Group"
+
   debug:
     generator-data: false
     refresh-all-problem-solution-count: true
