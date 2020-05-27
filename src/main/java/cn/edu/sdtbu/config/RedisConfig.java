@@ -4,6 +4,7 @@ import cn.edu.sdtbu.model.properties.RedisProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,9 @@ public class RedisConfig {
         config.setMaxIdle(properties.getMaxIdle());
         config.setMaxWaitMillis(properties.getMaxWaitMillis());
         config.setMinIdle(properties.getMinIdle());
+        if (StringUtils.isEmpty(properties.getPassword())) {
+            properties.setPassword(null);
+        }
         JedisPool pool = new JedisPool(
             config,
             properties.getHost(),
