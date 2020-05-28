@@ -86,9 +86,6 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     private void generatorDebugData(HashMap<Class<?>, BaseService<?, ?>> map) throws IOException {
         String json = DebugUtil.loadDebugData();
 
-        // generator all fake data
-        generatorFakeData.generatorAll(105);
-
         /**************************************** virtual rank list generator finished **********************************************/
         // parse JSON string and save to database
         JSONArray array = JSON.parseObject(json).getJSONArray(DebugUtil.ALL_DATA);
@@ -114,6 +111,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             log.info("debug data generator success, class -> [{}], data -> {}",
                 clazz.getName(), JSON.toJSONString(lst));
         }
+        // generator all fake data
+        generatorFakeData.generatorAll(105);
     }
 }
 

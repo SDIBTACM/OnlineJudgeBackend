@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -110,15 +111,21 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             throw new BadRequestException("please chose at least a problem");
         }
         List<ContestProblemEntity> list = new LinkedList<>();
+        AtomicInteger order = new AtomicInteger(1);
+
         vos.forEach(item -> {
             // problem must exist
             problemService.mustExistById(item.getId());
 
             ContestProblemEntity entity = new ContestProblemEntity();
             entity.setContestId(contestId);
+            if (item.getId() == null) {
+                throw new BadRequestException("problem id must not be empty");
+            }
             entity.setProblemId(item.getId());
-            entity.setProblemOrder(item.getOrder());
-            entity.setTitle(item.getTitle());
+            entity.setProblemOrder(order.getAndIncrement());
+            entity.setTitle(item.getTitle() == null ?
+                problemService.getById(item.getId()).getTitle() : item.getTitle());
             list.add(entity);
         });
         contestProblemRepository.saveAll(list);

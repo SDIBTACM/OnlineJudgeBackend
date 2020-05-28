@@ -5,6 +5,7 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
 import cn.edu.sdtbu.service.ContestService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,7 +32,7 @@ public class ContestController {
     ContestService service;
 
     @GetMapping("/all")
-    public ResponseEntity<Page<ContestsVO>> getContestById(
+    public ResponseEntity<Page<ContestsVO>> listContestByPage(
         @PageableDefault(size = 15, direction = Sort.Direction.ASC, sort = "startAt") Pageable page,
         @ApiIgnore HttpSession session) {
         //TODO just fetch allowed
@@ -39,8 +40,10 @@ public class ContestController {
         return ResponseEntity.ok(service.fetchContests(userEntity, page));
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<ContestDetailVO> getWithProblemList(@PathVariable("id") Long contestId) {
+    @ApiOperation("暂未实现")
+    public ResponseEntity<ContestDetailVO> getContestDetailById(@PathVariable("id") Long contestId) {
         service.fetchDetailContestInfo(contestId);
         return null;
     }

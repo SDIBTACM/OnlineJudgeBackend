@@ -10,6 +10,7 @@ import com.alibaba.fastjson.annotation.JSONType;
  */
 @JSONType(deserializer = IntEnumValueDeserializer.class)
 public enum  ContestPrivilege implements IntValueEnum {
+    REGISTERED(-1),
     PUBLIC(0),
     NEED_REGISTER(1),
     PROTECT(2),

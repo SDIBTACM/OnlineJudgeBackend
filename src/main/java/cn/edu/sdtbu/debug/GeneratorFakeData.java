@@ -3,18 +3,24 @@ package cn.edu.sdtbu.debug;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.ContestPrivilege;
+import cn.edu.sdtbu.model.enums.ContestRule;
 import cn.edu.sdtbu.model.enums.UserRole;
+import cn.edu.sdtbu.model.param.ContestParam;
+import cn.edu.sdtbu.model.param.ContestProblemParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
 import cn.edu.sdtbu.repository.user.UserRepository;
+import cn.edu.sdtbu.service.ContestService;
 import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author bestsort
@@ -29,13 +35,16 @@ public class GeneratorFakeData {
     @Resource
     UserRepository userRepository;
     @Resource
+    ContestService contestService;
+    @Resource
     ProblemRepository problemRepository;
     @Resource
     ProblemDescRepository descRepository;
 
     public void generatorAll(int total) {
-        generatorProblem(total);
         generatorUsers(total, true);
+        generatorProblem(total);
+        generatorContest();
     }
 
     public void generatorProblem(int total) {
@@ -66,7 +75,18 @@ public class GeneratorFakeData {
         descRepository.saveAll(descEntities);
     }
 
-    public List<UserEntity> generatorUsers(int total, boolean save2Db) {
+    public void generatorContest() {
+        long nowMills = System.currentTimeMillis();
+        UserEntity entity = userRepository.findById(1L).get();
+        List<ContestParam> params = new LinkedList<>();
+        params.add(generatorCommon(nowMills, true));
+        params.add(generatorCommon(nowMills, false));
+        params.add(generatorNeedRegisterContest(generatorCommon(nowMills, true), nowMills));
+        params.add(generatorOIContest(generatorCommon(nowMills, true)));
+        params.add(generatorProtectedContest(generatorCommon(nowMills, true)));
+        params.forEach(i -> contestService.createContest(i, entity));
+    }
+    public void generatorUsers(int total, boolean save2Db) {
         int offset = properties.getDebug().getGeneratorData() ? 5 : 1;
         HashSet<String> nameSet = new HashSet<>();
         while (nameSet.size() != total) {
@@ -95,6 +115,35 @@ public class GeneratorFakeData {
         if (save2Db) {
             userRepository.saveAll(userEntities);
         }
-        return userEntities;
+    }
+
+    private ContestParam generatorNeedRegisterContest(ContestParam param, long now) {
+        param.setPrivilege(ContestPrivilege.NEED_REGISTER);
+        param.setRegisterBegin(now);
+        param.setRegisterEnd(param.getStartAt());
+        return param;
+    }
+
+    private ContestParam generatorProtectedContest(ContestParam param) {
+        param.setPassword("password");
+        param.setPrivilege(ContestPrivilege.PROTECT);
+        return param;
+    }
+    private ContestParam generatorOIContest(ContestParam param) {
+        param.setContestRule(ContestRule.OI);
+        return param;
+    }
+    private ContestParam generatorCommon(long now, boolean isRunning) {
+        ContestParam param = new ContestParam();
+        param.setName(faker.name().title());
+        param.setContestRule(ContestRule.ACM);
+        param.setDescription("need register");
+        param.setEndBefore(now + TimeUnit.HOURS.toMillis(3));
+        param.setStartAt(now + (isRunning ? 0 : TimeUnit.HOURS.toMillis(1)));
+        param.setPrivilege(ContestPrivilege.PUBLIC);
+        List<ContestProblemParam> problems = new LinkedList<>();
+        problems.add(new ContestProblemParam(1L, null));
+        param.setProblems(problems);
+        return param;
     }
 }

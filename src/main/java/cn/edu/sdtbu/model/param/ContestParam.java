@@ -24,27 +24,27 @@ public class ContestParam {
     @NotBlank(groups = BeforeCreate.class)
     @NullOrNotBlank(groups = BeforeUpdate.class)
     @Size(max = 255, groups = Default.class)
-    @ApiModelProperty(notes = "比赛名称")
+    @ApiModelProperty(notes = "必须, 比赛名称")
     String name;
 
     @NullOrNotBlank(groups = BeforeUpdate.class)
     @NotNull(groups = BeforeCreate.class)
-    @ApiModelProperty(notes = "赛制, ACM / OI")
+    @ApiModelProperty(notes = "必须, 赛制, ACM / OI")
     ContestRule contestRule;
 
     String description;
 
     @FutureMills(groups = BeforeCreate.class)
     @NullableFutureMills(groups = BeforeUpdate.class)
-    @ApiModelProperty(notes = "比赛开始时间")
+    @ApiModelProperty(notes = "必须,比赛开始时间(ms)")
     Long startAt;
 
     @FutureMills(groups = BeforeCreate.class)
     @NullableFutureMills(groups = BeforeUpdate.class)
-    @ApiModelProperty(notes = "比赛结束时间")
+    @ApiModelProperty(notes = "必须, 比赛结束时间(ms)")
     Long endBefore;
 
-    @ApiModelProperty(notes = "默认为比赛结束，无需要可以不传此参数")
+    @ApiModelProperty(notes = "非必须,默认为比赛结束")
     Long lockRankAt;
 
     @NullableFutureMills
@@ -60,26 +60,26 @@ public class ContestParam {
     @ApiModelProperty(notes = "当 privilege = PROTECT 的时候需要此项")
     String password;
 
-    @ApiModelProperty(notes = "比赛类型")
+    @ApiModelProperty(notes = "必须,比赛类型")
     ContestPrivilege privilege;
 
-    @ApiModelProperty(notes = "允许访问比赛的班级id")
+    @ApiModelProperty(notes = "非必须,允许访问比赛的班级id")
     List<Long> classIds;
 
-    @ApiModelProperty(notes = "除允许班级外允许访问比赛的用户名")
+    @ApiModelProperty(notes = "非必须,除允许班级外允许访问比赛的用户名")
     List<String> allowUsernames;
 
-    @ApiModelProperty(notes = "允许使用的语言类型, 为空可使用所有")
+    @ApiModelProperty(notes = "非必须,允许使用的语言类型, 为空可使用所有")
     List<LangType> allowLang;
-    @ApiModelProperty(notes = "允许访问比赛的ip地址")
+    @ApiModelProperty(notes = "非必须,允许访问比赛的ip地址")
     List<String> allowIps;
-    @ApiModelProperty(notes = "禁止访问比赛的ip地址")
+    @ApiModelProperty(notes = "非必须,禁止访问比赛的ip地址")
     List<String> denyIps;
-    @ApiModelProperty(notes = "禁止访问比赛的用户(此list优先级最高)")
+    @ApiModelProperty(notes = "非必须,禁止访问比赛的用户(此list优先级最高)")
     List<String> denyUsernames;
 
     @NotEmpty(groups = BeforeCreate.class)
-    @ApiModelProperty(notes = "比赛中的题目ID")
+    @ApiModelProperty(notes = "必须,比赛中的题目ID")
     List<ContestProblemParam> problems;
 
 

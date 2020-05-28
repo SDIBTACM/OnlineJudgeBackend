@@ -6,5 +6,5 @@ package cn.edu.sdtbu.model.enums;
  * @date 2020-05-15 14:37
  */
 public enum  ContestStatus {
-    PENDING, RUNNING, ENDED;
+    PENDING, RUNNING, ENDED,REGISTERING;
 }
