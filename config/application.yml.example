@@ -42,8 +42,11 @@ spring:
 online-judge:
   # url generate will use it
   url: http://localhost:8080
-  cache-store-type: REDIS
-  
+  cache:
+    cache-store-type: REDIS
+    default-expire-time-unit: MINUTES
+    default-null-object-expire: 5
+    default-expire: 60
   mail:
     title: "Online Judge"
     send-by: "ACM Group"

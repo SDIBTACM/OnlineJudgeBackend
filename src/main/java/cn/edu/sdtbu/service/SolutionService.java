@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.service;
 
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.vo.SolutionListNode;
 import cn.edu.sdtbu.service.base.BaseService;
@@ -18,4 +19,12 @@ public interface SolutionService extends BaseService<SolutionEntity, Long> {
     Page<SolutionListNode> listSubmit(SolutionEntity query, UserRole role, Pageable pageable);
 
     List<SolutionEntity> findAllByProblemId(Long problemId);
+
+    Boolean existsByOwnerIdAndProblemIdAndResult(Long userId, Long id, JudgeResult accept);
+
+    Boolean existsByOwnerIdAndProblemIdAndContestIdAndResult(Long userId, Long id, Long contestId, JudgeResult accept);
+
+    List<SolutionEntity> findAllByOwnerId(Long userId);
+
+    List<SolutionEntity> findAllByOwnerIdAndResultAndProblemIdIn(Long id, JudgeResult accept, List<Long> problemIds);
 }

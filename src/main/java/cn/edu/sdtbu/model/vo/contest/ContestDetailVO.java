@@ -17,9 +17,11 @@ import java.util.List;
 public class ContestDetailVO {
     String name;
 
+    String description;
+
     Timestamp startAt;
 
-    Timestamp endTime;
+    Timestamp endBefore;
 
     String owner;
 

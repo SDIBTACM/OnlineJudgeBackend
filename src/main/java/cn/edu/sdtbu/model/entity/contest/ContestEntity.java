@@ -53,4 +53,7 @@ public class ContestEntity extends BaseEntityWithDeleteTs {
 
     @Column
     ContestRule rule;
+
+    @Column(length = 1024)
+    String description;
 }

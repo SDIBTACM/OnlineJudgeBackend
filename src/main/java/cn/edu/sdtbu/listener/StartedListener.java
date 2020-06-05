@@ -61,7 +61,7 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
     @SuppressWarnings("unchecked")
     private void init() {
         // init cache
-        handler.init(context, properties.getCacheStoreType());
+        handler.init(context, properties.getCache().getCacheStoreType());
 
         // init debug data
         if (properties.getDebug().getGeneratorData()) {

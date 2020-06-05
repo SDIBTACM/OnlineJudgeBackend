@@ -63,7 +63,7 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
 
     @Override
     public CacheStoreType getCacheType() {
-        return CacheStoreType.DEFAULT;
+        return CacheStoreType.MEMORY;
     }
 
     @Override

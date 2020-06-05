@@ -10,7 +10,7 @@ public enum  CacheStoreType {
     /**
      * use default(db)
      */
-    DEFAULT,
+    MEMORY,
     /**
      * use redis
      */

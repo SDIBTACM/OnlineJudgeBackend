@@ -49,13 +49,12 @@ public class ProblemController {
 
     @GetMapping("/problem/{id}")
     public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id,
-                                                        @RequestParam(required = false) Long contestId,
                                                         @ApiIgnore HttpSession session) {
         UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         ProblemDescEntity descEntity = descService.getById(id);
         ProblemDescVO vo = new ProblemDescVO();
         SpringUtil.cloneWithoutNullVal(descEntity, vo);
-        vo = problemService.getProblemDescVoById(vo, id, contestId, entity == null ? null : entity.getId());
+        vo = problemService.getProblemDescVoById(vo, id, null, entity == null ? null : entity.getId());
         return ResponseEntity.ok(vo);
     }
 

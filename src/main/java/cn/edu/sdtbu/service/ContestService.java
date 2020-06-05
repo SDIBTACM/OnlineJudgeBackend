@@ -3,6 +3,8 @@ package cn.edu.sdtbu.service;
 import cn.edu.sdtbu.model.entity.contest.ContestEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.ContestParam;
+import cn.edu.sdtbu.model.vo.ProblemDescVO;
+import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ContestService extends BaseService<ContestEntity, Long> {
     Page<ContestsVO> fetchContests(UserEntity userEntity, Pageable page);
 
-    void fetchDetailContestInfo(Long contestId);
+    ContestDetailVO fetchDetailContestInfo(long contestId, Long userId);
 
     /**
      * create contest and generator other info about contest
@@ -26,4 +28,5 @@ public interface ContestService extends BaseService<ContestEntity, Long> {
      */
     @Transactional
     void createContest(ContestParam param, UserEntity user);
+    ProblemDescVO getContestProblemDesc(long contest, int order, Long userId);
 }

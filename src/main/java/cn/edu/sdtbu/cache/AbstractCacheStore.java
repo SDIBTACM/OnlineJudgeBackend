@@ -1,8 +1,10 @@
 package cn.edu.sdtbu.cache;
 
+import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -14,10 +16,9 @@ import java.util.function.Supplier;
  * @date 2020-04-22 15:59
  */
 public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
-    /**
-     * default expire : 60 minutes
-     */
-    static final long DEFAULT_EXPIRE = 60;
+
+    @Resource
+    OnlineJudgeProperties properties;
     //@Resource
     //ApplicationEventPublisher applicationEventPublisher;
 
@@ -58,7 +59,13 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
         }
         // put to db
         // put to cache middleware
-        putInternal(key, value, DEFAULT_EXPIRE, TimeUnit.MINUTES);
+        if (value != null) {
+            putInternal(key, value, properties.getCache().getDefaultExpire(),
+                properties.getCache().getDefaultExpireTimeUnit());
+        } else {
+            putInternal(key, value, properties.getCache().getDefaultNullObjectExpire(),
+                properties.getCache().getDefaultExpireTimeUnit());
+        }
     }
 
     @Override

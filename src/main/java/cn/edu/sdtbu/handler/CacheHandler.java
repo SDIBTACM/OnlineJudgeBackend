@@ -18,11 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class CacheHandler {
     private final ConcurrentHashMap<CacheStoreType, CacheStore<String, String>> cacheMap = new ConcurrentHashMap<>();
-    private static CacheStoreType STRATEGY = CacheStoreType.DEFAULT;
+    private static CacheStoreType STRATEGY = CacheStoreType.MEMORY;
 
     /**
      * Please don't use constructor method replace {@link #init(ApplicationContext)} to init {@link #cacheMap}
-     * It will cause the missing some implement. similar problems have been found in {@link CacheStoreType#DEFAULT}
+     * It will cause the missing some implement. similar problems have been found in {@link CacheStoreType#MEMORY}
      * @param context application context to fetch {@link CacheStore} implement
      */
     public void init(ApplicationContext context, CacheStoreType type) {

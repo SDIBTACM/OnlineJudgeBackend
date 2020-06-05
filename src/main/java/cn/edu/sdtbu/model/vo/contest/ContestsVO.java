@@ -19,6 +19,7 @@ public class ContestsVO {
     @ApiModelProperty(notes = "比赛名称")
     String name;
 
+    @ApiModelProperty(notes = "比赛状态")
     ContestStatus status;
 
     ContestPrivilege privilege;
@@ -28,6 +29,8 @@ public class ContestsVO {
 
     @ApiModelProperty(notes = "比赛开始时间")
     Timestamp startAt;
+    @ApiModelProperty(notes = "比赛结束时间")
+    Timestamp endBefore;
 
     @ApiModelProperty(notes = "当前用户是否被允许参与该场比赛")
     Boolean allowed;

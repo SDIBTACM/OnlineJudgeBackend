@@ -9,9 +9,11 @@ import lombok.Data;
  */
 @Data
 public class ContestProblemVO {
-    Long id;
+    Integer order;
 
     String title;
+
+    Boolean isAccepted;
 
     Long acCount;
 

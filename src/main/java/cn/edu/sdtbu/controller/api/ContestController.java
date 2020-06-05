@@ -1,10 +1,14 @@
 package cn.edu.sdtbu.controller.api;
 
+import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
 import cn.edu.sdtbu.service.ContestService;
+import cn.edu.sdtbu.util.RequestUtil;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,9 +46,21 @@ public class ContestController {
 
 
     @GetMapping("/{id}")
-    @ApiOperation("暂未实现")
-    public ResponseEntity<ContestDetailVO> getContestDetailById(@PathVariable("id") Long contestId) {
-        service.fetchDetailContestInfo(contestId);
-        return null;
+    @ApiOperation("获取contest详情")
+    public ResponseEntity<ContestDetailVO> getContestDetailById(@PathVariable("id") Long contestId,
+                                                                @ApiIgnore HttpSession session) {
+        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(true, session);
+        return ResponseEntity.ok(service.fetchDetailContestInfo(contestId, userEntity == null ? null : userEntity.getId()));
+    }
+
+    @GetMapping("/problem")
+    @ApiOperation("获取contest内problem详细信息")
+    @SourceSecurity(SecurityType.STUDENT_OR_LOGIN)
+    public ResponseEntity<ProblemDescVO> getProblemDesc(Long contestId,
+                                                        Integer order,
+                                                        @ApiIgnore HttpSession session) {
+        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
+        ProblemDescVO vo = service.getContestProblemDesc(contestId, order, userEntity == null ? null : userEntity.getId());
+        return ResponseEntity.ok(vo);
     }
 }

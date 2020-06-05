@@ -2,6 +2,7 @@ package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.SolutionListNode;
@@ -63,5 +64,25 @@ public class SolutionServiceImpl extends AbstractBaseService<SolutionEntity, Lon
     @Override
     public List<SolutionEntity> findAllByProblemId(Long problemId) {
         return solutionRepository.findAllByProblemId(problemId);
+    }
+
+    @Override
+    public Boolean existsByOwnerIdAndProblemIdAndResult(Long userId, Long id, JudgeResult accept) {
+        return solutionRepository.existsByOwnerIdAndProblemIdAndResult(userId, id, accept);
+    }
+
+    @Override
+    public Boolean existsByOwnerIdAndProblemIdAndContestIdAndResult(Long userId, Long id, Long contestId, JudgeResult accept) {
+        return solutionRepository.existsByOwnerIdAndProblemIdAndContestIdAndResult(userId, id, contestId, accept);
+    }
+
+    @Override
+    public List<SolutionEntity> findAllByOwnerId(Long userId) {
+        return solutionRepository.findAllByOwnerId(userId);
+    }
+
+    @Override
+    public List<SolutionEntity> findAllByOwnerIdAndResultAndProblemIdIn(Long id, JudgeResult accept, List<Long> problemIds) {
+        return solutionRepository.findAllByOwnerIdAndResultAndProblemIdIn(id, accept, problemIds);
     }
 }

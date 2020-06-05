@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.BadRequestException;
+import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.dto.ContestPrivilegeInfoDTO;
 import cn.edu.sdtbu.model.entity.contest.*;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
@@ -11,11 +12,13 @@ import cn.edu.sdtbu.model.enums.LangType;
 import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.model.param.ContestProblemParam;
 import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestProblemVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
 import cn.edu.sdtbu.repository.contest.*;
 import cn.edu.sdtbu.repository.user.UserClassRepository;
+import cn.edu.sdtbu.service.ContestProblemService;
 import cn.edu.sdtbu.service.ContestService;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.UserService;
@@ -42,6 +45,16 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long> implements ContestService {
+
+    @Override
+    public ProblemDescVO getContestProblemDesc(long contest, int order, Long userId) {
+        ContestProblemEntity entity = contestProblemService.getContestProblem(contest, order);
+        if (entity == null) {
+            throw new NotFoundException("problem not found");
+        }
+        return problemService.getProblemDescVoById(new ProblemDescVO(), entity.getProblemId(), contest, userId);
+    }
+
     @Override
     public Page<ContestsVO> fetchContests(UserEntity userEntity, Pageable page) {
         Page<ContestEntity> contestPage = listAll(page);
@@ -56,7 +69,6 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
                 Const.TIME_ZERO
             ).stream().collect(Collectors.toMap(ContestPrivilegeEntity::getContestId, i -> true));
         }
-        Timestamp now = TimeUtil.now();
         final Map<Long, Boolean> finalContestIdMap = contestIdMap;
         list.forEach(item -> {
             ContestsVO vo = new ContestsVO();
@@ -66,24 +78,49 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
                 finalContestIdMap.getOrDefault(item.getId(), item.getOwnerId().equals(userEntity.getId())));
 
             vo.setOwner(userService.getById(item.getOwnerId()).getUsername());
-            if (now.before(item.getStartAt())) {
-                vo.setStatus(ContestStatus.PENDING);
-            } else if (now.after(item.getEndBefore())) {
-                vo.setStatus(ContestStatus.ENDED);
-            } else {
-                vo.setStatus(ContestStatus.RUNNING);
-            }
+            vo.setStatus(getContestStatus(item.getStartAt(), item.getEndBefore()));
             content.add(vo);
         });
         return new PageImpl<>(content, page, contestPage.getTotalElements());
     }
 
     @Override
-    public void fetchDetailContestInfo(Long contestId) {
+    public ContestDetailVO fetchDetailContestInfo(long contestId, Long userId) {
         ContestDetailVO vo = new ContestDetailVO();
-        SpringUtil.cloneWithoutNullVal(getById(contestId), vo);
+        ContestEntity entity = getById(contestId);
+        SpringUtil.cloneWithoutNullVal(entity, vo);
+        UserEntity owner = userService.getById(entity.getOwnerId());
+        vo.setOwner(owner.getNickname());
+        vo.setStatus(getContestStatus(entity.getStartAt(), entity.getEndBefore()));
+
+        // set problems and submit/accepted count
         List<ContestProblemVO> problems = new LinkedList<>();
-        // TODO finish
+        List<ContestProblemEntity> problemEntities = contestProblemService.listAllContestProblems(contestId);
+        List<ContestResultEntity> contestResults = contestResultRepository.findAllByContestId(contestId);
+        Map<Long, Long> submitCount = new HashMap<>();
+        Map<Long, Long> acceptedCount = new HashMap<>();
+        Map<Long, Boolean> userIsAccepted = new HashMap<>();
+        contestResults.forEach(i -> {
+            submitCount.put(i.getContestProblemId(), i.getSubmitCount() + submitCount.getOrDefault(i.getContestProblemId(), 0L));
+            if (!i.getAcAt().equals(Const.TIME_ZERO)) {
+                acceptedCount.put(i.getContestProblemId(), 1L + acceptedCount.getOrDefault(i.getContestProblemId(), 0L));
+                if (i.getUserId().equals(userId)) {
+                    userIsAccepted.put(i.getContestProblemId(), true);
+                }
+            }
+        });
+
+        problemEntities.forEach(i -> {
+            ContestProblemVO contestProblemVO = new ContestProblemVO();
+            contestProblemVO.setTitle(i.getTitle());
+            contestProblemVO.setOrder(i.getProblemOrder());
+            contestProblemVO.setAcCount(acceptedCount.getOrDefault(i.getProblemId(), 0L));
+            contestProblemVO.setSubmitCount(submitCount.getOrDefault(i.getProblemId(), 0L));
+            contestProblemVO.setIsAccepted(userIsAccepted.getOrDefault(i.getProblemId(), false));
+            problems.add(contestProblemVO);
+        });
+        vo.setProblems(problems);
+        return vo;
     }
 
     @Override
@@ -203,6 +240,15 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         return save(entity);
     }
 
+    private ContestStatus getContestStatus(Timestamp start, Timestamp end) {
+        Timestamp now = TimeUtil.now();
+        if (now.before(start)) {
+            return  ContestStatus.PENDING;
+        } else if (now.after(end)) {
+            return ContestStatus.ENDED;
+        }
+        return ContestStatus.RUNNING;
+    }
     private boolean collectionsIsEmpty(Collection... collections) {
         for (Collection collection : collections) {
             if (CollectionUtils.isNotEmpty(collection)) {
@@ -215,6 +261,10 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
     ContestProblemRepository contestProblemRepository;
     @Resource
     ContestIpLimitRepository ipLimitRepository;
+    @Resource
+    ContestProblemService contestProblemService;
+    @Resource
+    ContestResultRepository contestResultRepository;
     @Resource
     ProblemService problemService;
     @Resource

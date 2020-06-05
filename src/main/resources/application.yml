@@ -42,7 +42,6 @@ spring:
 online-judge:
   # url generate will use it
   url: http://localhost:8080
-  cache-store-type: REDIS
   
   mail:
     title: "Online Judge"
@@ -52,3 +51,5 @@ online-judge:
     generator-data: false
     refresh-all-problem-solution-count: true
     refresh-rank-list: true
+  cache:
+    cache-store-type: REDIS

@@ -13,12 +13,9 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
-import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
-import cn.edu.sdtbu.repository.SolutionRepository;
 import cn.edu.sdtbu.repository.contest.ContestPrivilegeRepository;
-import cn.edu.sdtbu.service.ContestService;
-import cn.edu.sdtbu.service.ProblemService;
+import cn.edu.sdtbu.service.*;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
 import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
@@ -59,7 +56,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
 
         Set<Long> isAccepted = new HashSet<>();
         if (user != null) {
-            isAccepted = solutionRepository.findAllByOwnerIdAndResultAndProblemIdIn(user.getId(), JudgeResult.ACCEPT, problemIds)
+            isAccepted = solutionService.findAllByOwnerIdAndResultAndProblemIdIn(user.getId(), JudgeResult.ACCEPT, problemIds)
                 .stream()
                 .map(SolutionEntity::getProblemId)
                 .collect(Collectors.toSet());
@@ -88,7 +85,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
 
     @Override
     public UserCenterVO fetchAllUserSubmitStatus(Long userId) {
-        List<SolutionEntity> list = solutionRepository.findAllByOwnerId(userId);
+        List<SolutionEntity> list = solutionService.findAllByOwnerId(userId);
         List<Long> accepted = new LinkedList<>();
         List<Long> unsolved = new LinkedList<>();
         Map<JudgeResult, Long> resultMap = new TreeMap<>();
@@ -121,7 +118,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
     @Override
     public void generatorProblem(ProblemParam param) {
         create(param.transformToEntity());
-        descRepository.saveAndFlush(param.transFormToDescEntity());
+        descService.save(param.transFormToDescEntity());
     }
 
     @Override
@@ -131,16 +128,14 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         if (userId == null) {
             vo.setIsAccepted(false);
         } else {
-            Boolean accepted = contestId == null ?
-                solutionRepository.existsByOwnerIdAndProblemIdAndResult(userId, id, JudgeResult.ACCEPT) :
-                solutionRepository.existsByOwnerIdAndProblemIdAndContestIdAndResult(userId, id, contestId, JudgeResult.ACCEPT);
-
-            vo.setIsAccepted(accepted == null ? false : accepted);
+            vo.setIsAccepted(contestId == null ?
+                solutionService.existsByOwnerIdAndProblemIdAndResult(userId, id, JudgeResult.ACCEPT) :
+                solutionService.existsByOwnerIdAndProblemIdAndContestIdAndResult(userId, id, contestId, JudgeResult.ACCEPT));
         }
         SpringUtil.cloneWithoutNullVal(getById(id), vo);
+        SpringUtil.cloneWithoutNullVal(descService.getById(id), vo);
         return vo;
     }
-
 
     private void checkPrivilege(Long userId,Long problemId, Long contestId) {
         List<Pair<Class<?>, String>> list = new LinkedList<>();
@@ -229,19 +224,19 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         return vo;
     }
 
-    private final ProblemDescRepository descRepository;
-    private final SolutionRepository solutionRepository;
+    @Resource
+    ProblemDescService descService;
+    @Resource
+    SolutionService solutionService;
+    @Resource
+    ContestProblemService contestProblemService;
     @Resource
     ContestPrivilegeRepository contestPrivilegeRepository;
 
     @Resource
     ContestService contestService;
 
-    protected ProblemServiceImpl(ProblemDescRepository descRepository,
-                                 ProblemRepository repository,
-                                 SolutionRepository solutionRepository) {
+    protected ProblemServiceImpl(ProblemRepository repository) {
         super(repository);
-        this.descRepository = descRepository;
-        this.solutionRepository = solutionRepository;
     }
 }

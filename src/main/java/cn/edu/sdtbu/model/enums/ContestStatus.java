@@ -6,5 +6,28 @@ package cn.edu.sdtbu.model.enums;
  * @date 2020-05-15 14:37
  */
 public enum  ContestStatus {
-    PENDING, RUNNING, ENDED,REGISTERING;
+    /**
+     * 赛前
+     */
+    PENDING,
+    /**
+     * 赛时
+     */
+    RUNNING,
+    /**
+     * 赛后
+     */
+    ENDED,
+    /**
+     * 开放注册中(可注册)
+     */
+    REGISTERING,
+    /**
+     * 注册被驳回
+     */
+    REJECTED,
+    /**
+     * 已注册
+     */
+    REGISTERED;
 }

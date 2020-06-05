@@ -24,5 +24,4 @@ public interface ProblemService extends BaseService<ProblemEntity, Long> {
     void generatorProblem(ProblemParam param);
 
     ProblemDescVO getProblemDescVoById(ProblemDescVO vo, Long id, Long contestId, Long aLong);
-
 }
