@@ -13,9 +13,7 @@ import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.model.param.ContestProblemParam;
 import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
-import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
-import cn.edu.sdtbu.model.vo.contest.ContestProblemVO;
-import cn.edu.sdtbu.model.vo.contest.ContestsVO;
+import cn.edu.sdtbu.model.vo.contest.*;
 import cn.edu.sdtbu.repository.contest.*;
 import cn.edu.sdtbu.repository.user.UserClassRepository;
 import cn.edu.sdtbu.service.ContestProblemService;
@@ -35,6 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -97,15 +96,15 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         List<ContestProblemVO> problems = new LinkedList<>();
         List<ContestProblemEntity> problemEntities = contestProblemService.listAllContestProblems(contestId);
         List<ContestResultEntity> contestResults = contestResultRepository.findAllByContestId(contestId);
-        Map<Long, Long> submitCount = new HashMap<>();
-        Map<Long, Long> acceptedCount = new HashMap<>();
-        Map<Long, Boolean> userIsAccepted = new HashMap<>();
+        Map<Integer, Long> submitCount = new HashMap<>();
+        Map<Integer, Long> acceptedCount = new HashMap<>();
+        Map<Integer, Boolean> userIsAccepted = new HashMap<>();
         contestResults.forEach(i -> {
-            submitCount.put(i.getContestProblemId(), i.getSubmitCount() + submitCount.getOrDefault(i.getContestProblemId(), 0L));
+            submitCount.put(i.getProblemOrder(), i.getSubmitCount() + submitCount.getOrDefault(i.getProblemOrder(), 0L));
             if (!i.getAcAt().equals(Const.TIME_ZERO)) {
-                acceptedCount.put(i.getContestProblemId(), 1L + acceptedCount.getOrDefault(i.getContestProblemId(), 0L));
+                acceptedCount.put(i.getProblemOrder(), 1L + acceptedCount.getOrDefault(i.getProblemOrder(), 0L));
                 if (i.getUserId().equals(userId)) {
-                    userIsAccepted.put(i.getContestProblemId(), true);
+                    userIsAccepted.put(i.getProblemOrder(), true);
                 }
             }
         });
@@ -114,9 +113,9 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             ContestProblemVO contestProblemVO = new ContestProblemVO();
             contestProblemVO.setTitle(i.getTitle());
             contestProblemVO.setOrder(i.getProblemOrder());
-            contestProblemVO.setAcCount(acceptedCount.getOrDefault(i.getProblemId(), 0L));
-            contestProblemVO.setSubmitCount(submitCount.getOrDefault(i.getProblemId(), 0L));
-            contestProblemVO.setIsAccepted(userIsAccepted.getOrDefault(i.getProblemId(), false));
+            contestProblemVO.setAcCount(acceptedCount.getOrDefault(i.getProblemOrder(), 0L));
+            contestProblemVO.setSubmitCount(submitCount.getOrDefault(i.getProblemOrder(), 0L));
+            contestProblemVO.setIsAccepted(userIsAccepted.getOrDefault(i.getProblemOrder(), false));
             problems.add(contestProblemVO);
         });
         vo.setProblems(problems);
@@ -143,6 +142,75 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
 
     }
 
+    @Override
+    public Page<StandingNodeVO> getStandings(long contestId) {
+        List<ContestResultEntity> results = contestResultRepository.findAllByContestId(contestId);
+        Timestamp startTime = getById(contestId).getStartAt();
+        Map<Long, StandingNodeVO> nodeVOMap = fetchProblemResMap(results, startTime.getTime());
+        Map<Long, UserEntity> users = userService.getByIds(nodeVOMap.keySet(), Pageable.unpaged()).getContent()
+            .stream().collect(Collectors.toMap(UserEntity::getId, i -> i));
+        List<StandingNodeVO> res = new LinkedList<>(nodeVOMap.values());
+        res.sort((o1, o2) -> {
+            if (o1.getSolved().equals(o2.getSolved())) {
+                return (int) (o1.getPenalty() - o2.getPenalty());
+            }
+            return o2.getSolved() - o1.getSolved();
+        });
+        res.forEach(i -> {
+            UserEntity user = users.get(i.getUserId());
+            if (user == null) {
+                throw new NotFoundException("not found user, id is " + i.getUserId());
+            }
+            i.setUsername(user.getUsername());
+            i.setNickname(user.getNickname());
+        });
+        return new PageImpl<>(res);
+    }
+
+    /**
+     *
+     * @param resultEntities all contest results(indexed by contestId)
+     * @return <userId, StandingNode> map
+     */
+    private Map<Long, StandingNodeVO> fetchProblemResMap(List<ContestResultEntity> resultEntities, long contestStartTime) {
+        // <userId, problemSubmitResult>
+        Map<Long, LinkedList<StandingProblemNodeVO>> problemResMap = new HashMap<>();
+        // <userId, standingNode>
+        Map<Long, StandingNodeVO> res = new HashMap<>();
+        resultEntities.forEach(i -> {
+            StandingNodeVO nodeVO = res.get(i.getUserId());
+            if (nodeVO == null) {
+                nodeVO = new StandingNodeVO();
+            }
+            // Accepted this problem
+            nodeVO.setUserId(i.getUserId());
+            if (!i.getAcAt().equals(Const.TIME_ZERO)) {
+                nodeVO.setSolved((nodeVO.getSolved() == null ? 0 : nodeVO.getSolved()) + 1);
+                nodeVO.setPenalty((nodeVO.getPenalty() == null ? 0L : nodeVO.getPenalty()) +
+                    i.getAcAt().getTime() - contestStartTime + i.getSubmitCount() * TimeUnit.MINUTES.toMillis(20));
+            }
+            LinkedList<StandingProblemNodeVO> list = problemResMap.get(i.getUserId());
+            if (list == null) {
+                list = new LinkedList<>();
+            }
+            StandingProblemNodeVO standingProblemNodeVO = new StandingProblemNodeVO();
+            if (!i.getAcAt().equals(Const.TIME_ZERO)) {
+                standingProblemNodeVO.setAcAt(i.getAcAt().getTime() - contestStartTime);
+            }
+            standingProblemNodeVO.setOrder(i.getProblemOrder());
+            standingProblemNodeVO.setSubmitCount(i.getSubmitCount());
+            list.add(standingProblemNodeVO);
+            problemResMap.put(i.getUserId(), list);
+            res.put(i.getUserId(), nodeVO);
+        });
+        problemResMap.forEach((f, s) -> {
+            StandingNodeVO vo = res.get(f);
+            s.sort(Comparator.comparingInt(StandingProblemNodeVO::getOrder));
+            vo.setProblemResults(s);
+            res.put(f, vo);
+        });
+        return res;
+    }
     private void saveContestProblem(List<ContestProblemParam> vos, Long contestId) {
         if (CollectionUtils.isEmpty(vos)) {
             throw new BadRequestException("please chose at least a problem");

@@ -6,6 +6,7 @@ import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
+import cn.edu.sdtbu.model.vo.contest.StandingNodeVO;
 import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,4 +30,6 @@ public interface ContestService extends BaseService<ContestEntity, Long> {
     @Transactional
     void createContest(ContestParam param, UserEntity user);
     ProblemDescVO getContestProblemDesc(long contest, int order, Long userId);
+
+    Page<StandingNodeVO> getStandings(long contestId);
 }

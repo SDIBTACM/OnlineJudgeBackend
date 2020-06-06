@@ -18,12 +18,11 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "contest_result")
-
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContestResultEntity extends BaseEntity {
     @Column
-    Long contestProblemId;
+    Integer problemOrder;
 
     @Column
     Long userId;

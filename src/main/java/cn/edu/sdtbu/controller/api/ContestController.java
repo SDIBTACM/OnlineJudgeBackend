@@ -7,6 +7,7 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
+import cn.edu.sdtbu.model.vo.contest.StandingNodeVO;
 import cn.edu.sdtbu.service.ContestService;
 import cn.edu.sdtbu.util.RequestUtil;
 import io.swagger.annotations.ApiOperation;
@@ -62,5 +63,10 @@ public class ContestController {
         UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
         ProblemDescVO vo = service.getContestProblemDesc(contestId, order, userEntity == null ? null : userEntity.getId());
         return ResponseEntity.ok(vo);
+    }
+    @GetMapping("/standing/{contestId}")
+    @ApiOperation("根据contestId获取当场比赛排行榜")
+    public ResponseEntity<Page<StandingNodeVO>> getStandings(@PathVariable Long contestId) {
+        return ResponseEntity.ok(service.getStandings(contestId));
     }
 }

@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.debug;
 
+import cn.edu.sdtbu.model.entity.contest.ContestResultEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
@@ -12,8 +13,10 @@ import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
+import cn.edu.sdtbu.repository.contest.ContestResultRepository;
 import cn.edu.sdtbu.repository.user.UserRepository;
 import cn.edu.sdtbu.service.ContestService;
+import cn.edu.sdtbu.util.TimeUtil;
 import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
@@ -40,11 +43,23 @@ public class GeneratorFakeData {
     ProblemRepository problemRepository;
     @Resource
     ProblemDescRepository descRepository;
-
+    @Resource
+    ContestResultRepository contestResultRepository;
     public void generatorAll(int total) {
         generatorUsers(total, true);
         generatorProblem(total);
         generatorContest();
+        generatorContestResult();
+    }
+
+    private void generatorContestResult() {
+        ContestResultEntity entity = new ContestResultEntity();
+        entity.setAcAt(TimeUtil.now());
+        entity.setContestId(1L);
+        entity.setProblemOrder(1);
+        entity.setUserId(1L);
+        entity.setSubmitCount(2L);
+        contestResultRepository.save(entity);
     }
 
     public void generatorProblem(int total) {
