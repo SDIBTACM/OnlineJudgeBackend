@@ -40,7 +40,6 @@ public class ContestController {
     public ResponseEntity<Page<ContestsVO>> listContestByPage(
         @PageableDefault(size = 15, direction = Sort.Direction.ASC, sort = "startAt") Pageable page,
         @ApiIgnore HttpSession session) {
-        //TODO just fetch allowed
         UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
         return ResponseEntity.ok(service.fetchContests(userEntity, page));
     }

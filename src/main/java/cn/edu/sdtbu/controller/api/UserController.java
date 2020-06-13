@@ -1,12 +1,10 @@
 package cn.edu.sdtbu.controller.api;
 
-import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.manager.MailManager;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.KeyPrefix;
-import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.param.user.ChangePasswordParam;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.properties.Const;
@@ -55,7 +53,6 @@ public class UserController {
     @Resource
     ServletContext context;
 
-    @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
     @GetMapping("/onlinePeople")
     public ResponseEntity<Integer> onlinePeopleCount() {
         return ResponseEntity.ok(((Set) context.getAttribute(Const.SESSION_SET)).size());
