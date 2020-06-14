@@ -5,7 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 /**
@@ -16,7 +19,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "login_log", indexes = {
-        @Index(name = "idx_user_id", columnList = "userId")
+    @Index(name = "idx_user_id", columnList = "userId")
 })
 @ToString
 @EqualsAndHashCode(callSuper = true)

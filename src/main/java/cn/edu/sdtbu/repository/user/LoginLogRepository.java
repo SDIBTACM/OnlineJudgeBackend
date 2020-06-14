@@ -14,10 +14,12 @@ import org.springframework.lang.NonNull;
 public interface LoginLogRepository extends BaseRepository<LoginLogEntity, Long> {
     /**
      * find all login log
-     * @param userId    id
-     * @param pageable  paging rules
-     * @return  result
+     *
+     * @param userId   id
+     * @param pageable paging rules
+     * @return result
      */
     Page<LoginLogEntity> findAllByUserId(@NonNull Long userId, @NonNull Pageable pageable);
+
     LoginLogEntity findFirstByUserIdOrderByCreateAtDesc(Long userId);
 }

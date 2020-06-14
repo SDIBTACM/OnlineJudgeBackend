@@ -30,25 +30,25 @@ import javax.persistence.Table;
 })
 public class SolutionEntity extends BaseEntity {
     @Column
-    Long ownerId;
+    Long        ownerId;
     @Column
-    Long problemId;
+    Long        problemId;
     @Column
-    Long contestId;
+    Long        contestId;
     @Column
-    String hash;
+    String      hash;
     @Column
-    LangType lang;
+    LangType    lang;
     @Column
     JudgeResult result;
     @Column
-    Integer timeUsed;
+    Integer     timeUsed;
     @Column
-    Integer memoryUsed;
+    Integer     memoryUsed;
     @Column
-    Long similarAt;
+    Long        similarAt;
     @Column
-    Long similarPercent;
+    Long        similarPercent;
     @Column
-    Integer codeLength;
+    Integer     codeLength;
 }

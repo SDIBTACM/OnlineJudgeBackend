@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class OptionEntity extends BaseEntity {
-    @Column(name = "option_key",length = 64)
+    @Column(name = "option_key", length = 64)
     String key;
 
     @Lob

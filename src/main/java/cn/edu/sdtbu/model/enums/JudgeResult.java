@@ -29,11 +29,13 @@ public enum JudgeResult implements IntValueEnum {
     FAILED_OTHER(9);
 
     private final int value;
+
+    JudgeResult(int value) {
+        this.value = value;
+    }
+
     @Override
     public int getValue() {
         return value;
-    }
-    JudgeResult(int value) {
-        this.value = value;
     }
 }

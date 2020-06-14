@@ -2,6 +2,8 @@ package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.BadRequestException;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.dto.ContestPrivilegeInfoDTO;
 import cn.edu.sdtbu.model.entity.contest.*;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
@@ -11,7 +13,6 @@ import cn.edu.sdtbu.model.enums.ContestStatus;
 import cn.edu.sdtbu.model.enums.LangType;
 import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.model.param.ContestProblemParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.contest.*;
 import cn.edu.sdtbu.repository.contest.*;
@@ -45,27 +46,50 @@ import java.util.stream.Collectors;
 @Service
 public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long> implements ContestService {
 
+    @Resource
+    ContestProblemRepository   contestProblemRepository;
+    @Resource
+    ContestIpLimitRepository   ipLimitRepository;
+    @Resource
+    ContestProblemService      contestProblemService;
+    @Resource
+    ContestResultRepository    contestResultRepository;
+    @Resource
+    ProblemService             problemService;
+    @Resource
+    UserService                userService;
+    @Resource
+    UserClassRepository        userClassRepository;
+    @Resource
+    ContestAllowLangRepository allowLangRepository;
+    @Resource
+    ContestPrivilegeRepository privilegeRepository;
+
+    protected ContestServiceImpl(ContestRepository repository) {
+        super(repository);
+    }
+
     @Override
     public ProblemDescVO getContestProblemDesc(long contest, int order, Long userId) {
         ContestProblemEntity entity = contestProblemService.getContestProblem(contest, order);
         if (entity == null) {
-            throw new NotFoundException("problem not found");
+            throw ExceptionConstant.NOT_FOUND;
         }
         return problemService.getProblemDescVoById(new ProblemDescVO(), entity.getProblemId(), contest, userId);
     }
 
     @Override
     public Page<ContestsVO> fetchContests(UserEntity userEntity, Pageable page) {
-        Page<ContestEntity> contestPage = listAll(page);
-        List<ContestEntity> list = contestPage.getContent();
-        List<ContestsVO> content = new LinkedList<>();
-        boolean notLogin = userEntity == null;
-        Map<Long, Boolean> contestIdMap = new HashMap<>();
+        Page<ContestEntity> contestPage  = listAll(page);
+        List<ContestEntity> list         = contestPage.getContent();
+        List<ContestsVO>    content      = new LinkedList<>();
+        boolean             notLogin     = userEntity == null;
+        Map<Long, Boolean>  contestIdMap = new HashMap<>();
         if (!notLogin) {
             contestIdMap = privilegeRepository.findAllByContestIdInAndUserIdAndDeleteAt(
                 list.stream().map(ContestEntity::getId).collect(Collectors.toSet()),
                 userEntity.getId(),
-                Const.TIME_ZERO
+                OnlineJudgeConstant.TIME_ZERO
             ).stream().collect(Collectors.toMap(ContestPrivilegeEntity::getContestId, i -> true));
         }
         final Map<Long, Boolean> finalContestIdMap = contestIdMap;
@@ -85,23 +109,23 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
 
     @Override
     public ContestDetailVO fetchDetailContestInfo(long contestId, Long userId) {
-        ContestDetailVO vo = new ContestDetailVO();
-        ContestEntity entity = getById(contestId);
+        ContestDetailVO vo     = new ContestDetailVO();
+        ContestEntity   entity = getById(contestId);
         SpringUtil.cloneWithoutNullVal(entity, vo);
         UserEntity owner = userService.getById(entity.getOwnerId());
         vo.setOwner(owner.getNickname());
         vo.setStatus(getContestStatus(entity.getStartAt(), entity.getEndBefore()));
 
         // set problems and submit/accepted count
-        List<ContestProblemVO> problems = new LinkedList<>();
+        List<ContestProblemVO>     problems        = new LinkedList<>();
         List<ContestProblemEntity> problemEntities = contestProblemService.listAllContestProblems(contestId);
-        List<ContestResultEntity> contestResults = contestResultRepository.findAllByContestId(contestId);
-        Map<Integer, Long> submitCount = new HashMap<>();
-        Map<Integer, Long> acceptedCount = new HashMap<>();
-        Map<Integer, Boolean> userIsAccepted = new HashMap<>();
+        List<ContestResultEntity>  contestResults  = contestResultRepository.findAllByContestId(contestId);
+        Map<Integer, Long>         submitCount     = new HashMap<>();
+        Map<Integer, Long>         acceptedCount   = new HashMap<>();
+        Map<Integer, Boolean>      userIsAccepted  = new HashMap<>();
         contestResults.forEach(i -> {
             submitCount.put(i.getProblemOrder(), i.getSubmitCount() + submitCount.getOrDefault(i.getProblemOrder(), 0L));
-            if (!i.getAcAt().equals(Const.TIME_ZERO)) {
+            if (!i.getAcAt().equals(OnlineJudgeConstant.TIME_ZERO)) {
                 acceptedCount.put(i.getProblemOrder(), 1L + acceptedCount.getOrDefault(i.getProblemOrder(), 0L));
                 if (i.getUserId().equals(userId)) {
                     userIsAccepted.put(i.getProblemOrder(), true);
@@ -144,8 +168,8 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
 
     @Override
     public Page<StandingNodeVO> getStandings(long contestId) {
-        List<ContestResultEntity> results = contestResultRepository.findAllByContestId(contestId);
-        Timestamp startTime = getById(contestId).getStartAt();
+        List<ContestResultEntity> results   = contestResultRepository.findAllByContestId(contestId);
+        Timestamp                 startTime = getById(contestId).getStartAt();
         Map<Long, StandingNodeVO> nodeVOMap = fetchProblemResMap(results, startTime.getTime());
         Map<Long, UserEntity> users = userService.getByIds(nodeVOMap.keySet(), Pageable.unpaged()).getContent()
             .stream().collect(Collectors.toMap(UserEntity::getId, i -> i));
@@ -168,7 +192,6 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
     }
 
     /**
-     *
      * @param resultEntities all contest results(indexed by contestId)
      * @return <userId, StandingNode> map
      */
@@ -184,7 +207,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             }
             // Accepted this problem
             nodeVO.setUserId(i.getUserId());
-            if (!i.getAcAt().equals(Const.TIME_ZERO)) {
+            if (!i.getAcAt().equals(OnlineJudgeConstant.TIME_ZERO)) {
                 nodeVO.setSolved((nodeVO.getSolved() == null ? 0 : nodeVO.getSolved()) + 1);
                 nodeVO.setPenalty((nodeVO.getPenalty() == null ? 0L : nodeVO.getPenalty()) +
                     i.getAcAt().getTime() - contestStartTime + i.getSubmitCount() * TimeUnit.MINUTES.toMillis(20));
@@ -194,7 +217,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
                 list = new LinkedList<>();
             }
             StandingProblemNodeVO standingProblemNodeVO = new StandingProblemNodeVO();
-            if (!i.getAcAt().equals(Const.TIME_ZERO)) {
+            if (!i.getAcAt().equals(OnlineJudgeConstant.TIME_ZERO)) {
                 standingProblemNodeVO.setAcAt(i.getAcAt().getTime() - contestStartTime);
             }
             standingProblemNodeVO.setOrder(i.getProblemOrder());
@@ -211,12 +234,13 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         });
         return res;
     }
+
     private void saveContestProblem(List<ContestProblemParam> vos, Long contestId) {
         if (CollectionUtils.isEmpty(vos)) {
             throw new BadRequestException("please chose at least a problem");
         }
-        List<ContestProblemEntity> list = new LinkedList<>();
-        AtomicInteger order = new AtomicInteger(1);
+        List<ContestProblemEntity> list  = new LinkedList<>();
+        AtomicInteger              order = new AtomicInteger(1);
 
         vos.forEach(item -> {
             // problem must exist
@@ -235,13 +259,14 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         });
         contestProblemRepository.saveAll(list);
     }
+
     private void saveContestPrivilege(List<Long> classIds,
                                       List<String> allowUsernames,
                                       List<String> denyUsernames,
                                       Long contestId) {
         Set<Long> userIds = new TreeSet<>();
         if (CollectionUtils.isNotEmpty(classIds)) {
-            userClassRepository.findAllByClassIdInAndDeleteAt(classIds, Const.TIME_ZERO)
+            userClassRepository.findAllByClassIdInAndDeleteAt(classIds, OnlineJudgeConstant.TIME_ZERO)
                 .forEach(item -> userIds.add(item.getUserId()));
         }
         if (CollectionUtils.isNotEmpty(allowUsernames)) {
@@ -269,9 +294,10 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             privilegeRepository.saveAll(list);
         }
     }
+
     private void saveLangTypes(List<LangType> types, Long contestId) {
         // clear old settings
-        List<AllowLangEntity> allowLangEntities = allowLangRepository.findAllByContestIdAndDeleteAt(contestId, Const.TIME_ZERO);
+        List<AllowLangEntity> allowLangEntities = allowLangRepository.findAllByContestIdAndDeleteAt(contestId, OnlineJudgeConstant.TIME_ZERO);
         allowLangEntities.forEach(item -> item.setDeleteAt(TimeUtil.now()));
         allowLangRepository.saveAll(allowLangEntities);
 
@@ -283,13 +309,14 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
         }
         for (LangType type : types) {
             AllowLangEntity entity = new AllowLangEntity();
-            entity.setDeleteAt(Const.TIME_ZERO);
+            entity.setDeleteAt(OnlineJudgeConstant.TIME_ZERO);
             entity.setContestId(contestId);
             entity.setLang(type);
             list.add(entity);
         }
         allowLangRepository.saveAll(list);
     }
+
     private ContestEntity saveContestEntity(ContestParam param, UserEntity user) {
         ContestEntity entity = new ContestEntity();
 
@@ -311,12 +338,13 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
     private ContestStatus getContestStatus(Timestamp start, Timestamp end) {
         Timestamp now = TimeUtil.now();
         if (now.before(start)) {
-            return  ContestStatus.PENDING;
+            return ContestStatus.PENDING;
         } else if (now.after(end)) {
             return ContestStatus.ENDED;
         }
         return ContestStatus.RUNNING;
     }
+
     private boolean collectionsIsEmpty(Collection... collections) {
         for (Collection collection : collections) {
             if (CollectionUtils.isNotEmpty(collection)) {
@@ -324,26 +352,5 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             }
         }
         return false;
-    }
-    @Resource
-    ContestProblemRepository contestProblemRepository;
-    @Resource
-    ContestIpLimitRepository ipLimitRepository;
-    @Resource
-    ContestProblemService contestProblemService;
-    @Resource
-    ContestResultRepository contestResultRepository;
-    @Resource
-    ProblemService problemService;
-    @Resource
-    UserService userService;
-    @Resource
-    UserClassRepository userClassRepository;
-    @Resource
-    ContestAllowLangRepository allowLangRepository;
-    @Resource
-    ContestPrivilegeRepository privilegeRepository;
-    protected ContestServiceImpl(ContestRepository repository) {
-        super(repository);
     }
 }

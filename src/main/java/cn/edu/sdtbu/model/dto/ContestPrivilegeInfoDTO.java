@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ContestPrivilegeInfoDTO {
     String password;
-    Long registerBegin;
-    Long registerEnd;
+    Long   registerBegin;
+    Long   registerEnd;
 }

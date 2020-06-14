@@ -33,12 +33,13 @@ public class UserClassParam {
     }
 
 
-
     public interface Default {
 
     }
+
     public interface BeforeCreate {
     }
+
     public interface BeforeUpdate {
 
     }

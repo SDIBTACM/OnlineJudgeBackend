@@ -22,6 +22,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = NullableFutureMillsValidator.class)
 public @interface NullableFutureMills {
     String message() default "{javax.validation.constraints.Future.message}";
-    Class<?>[] groups() default { };
+
+    Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

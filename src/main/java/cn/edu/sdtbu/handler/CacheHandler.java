@@ -17,12 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 public class CacheHandler {
-    private final ConcurrentHashMap<CacheStoreType, CacheStore<String, String>> cacheMap = new ConcurrentHashMap<>();
-    private static CacheStoreType STRATEGY = CacheStoreType.MEMORY;
+    private static CacheStoreType                                                STRATEGY = CacheStoreType.MEMORY;
+    private final  ConcurrentHashMap<CacheStoreType, CacheStore<String, String>> cacheMap = new ConcurrentHashMap<>();
 
     /**
      * Please don't use constructor method replace {@link #init(ApplicationContext)} to init {@link #cacheMap}
      * It will cause the missing some implement. similar problems have been found in {@link CacheStoreType#MEMORY}
+     *
      * @param context application context to fetch {@link CacheStore} implement
      */
     public void init(ApplicationContext context, CacheStoreType type) {
@@ -30,9 +31,6 @@ public class CacheHandler {
             this.cacheMap.put(cacheStore.getCacheType(), cacheStore);
         }
         setStrategy(type);
-    }
-    public void setStrategy(CacheStoreType strategy) {
-        setStrategy(strategy, strategy != STRATEGY);
     }
 
     private void setStrategy(CacheStoreType strategy, boolean isChanged) {
@@ -47,9 +45,13 @@ public class CacheHandler {
         return STRATEGY.toString();
     }
 
+    public void setStrategy(CacheStoreType strategy) {
+        setStrategy(strategy, strategy != STRATEGY);
+    }
+
     public CacheStore<String, String> fetchCacheStore() {
         CacheStore<String, String> store = cacheMap.get(STRATEGY);
-        Assert.notNull(store,"cache storage not found");
-        return  store;
+        Assert.notNull(store, "cache storage not found");
+        return store;
     }
 }

@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.debug;
 
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.contest.ContestResultEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
@@ -9,7 +10,6 @@ import cn.edu.sdtbu.model.enums.ContestRule;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.model.param.ContestProblemParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.repository.ProblemDescRepository;
 import cn.edu.sdtbu.repository.ProblemRepository;
@@ -34,17 +34,18 @@ import java.util.concurrent.TimeUnit;
 public class GeneratorFakeData {
     Faker faker = new Faker(Locale.CHINA);
     @Resource
-    OnlineJudgeProperties properties;
+    OnlineJudgeProperties   properties;
     @Resource
-    UserRepository userRepository;
+    UserRepository          userRepository;
     @Resource
-    ContestService contestService;
+    ContestService          contestService;
     @Resource
-    ProblemRepository problemRepository;
+    ProblemRepository       problemRepository;
     @Resource
-    ProblemDescRepository descRepository;
+    ProblemDescRepository   descRepository;
     @Resource
     ContestResultRepository contestResultRepository;
+
     public void generatorAll(int total) {
         generatorUsers(total, true);
         generatorProblem(total);
@@ -91,9 +92,9 @@ public class GeneratorFakeData {
     }
 
     public void generatorContest() {
-        long nowMills = System.currentTimeMillis();
-        UserEntity entity = userRepository.findById(1L).get();
-        List<ContestParam> params = new LinkedList<>();
+        long               nowMills = System.currentTimeMillis();
+        UserEntity         entity   = userRepository.findById(1L).get();
+        List<ContestParam> params   = new LinkedList<>();
         params.add(generatorCommon(nowMills, true));
         params.add(generatorCommon(nowMills, false));
         params.add(generatorNeedRegisterContest(generatorCommon(nowMills, true), nowMills));
@@ -101,8 +102,9 @@ public class GeneratorFakeData {
         params.add(generatorProtectedContest(generatorCommon(nowMills, true)));
         params.forEach(i -> contestService.createContest(i, entity));
     }
+
     public void generatorUsers(int total, boolean save2Db) {
-        int offset = properties.getDebug().getGeneratorData() ? 5 : 1;
+        int             offset  = properties.getDebug().getGeneratorData() ? 5 : 1;
         HashSet<String> nameSet = new HashSet<>();
         while (nameSet.size() != total) {
             nameSet.add(faker.company().name());
@@ -111,7 +113,7 @@ public class GeneratorFakeData {
         while (emailSet.size() != total) {
             emailSet.add(faker.internet().emailAddress());
         }
-        Iterator<String> iterator = nameSet.iterator();
+        Iterator<String> iterator      = nameSet.iterator();
         Iterator<String> emailIterator = emailSet.iterator();
 
         List<UserEntity> userEntities = new LinkedList<>();
@@ -124,7 +126,7 @@ public class GeneratorFakeData {
             userEntity.setRole(UserRole.STUDENT);
             userEntity.setSchool("school");
             userEntity.setId((long) i);
-            userEntity.setDeleteAt(Const.TIME_ZERO);
+            userEntity.setDeleteAt(OnlineJudgeConstant.TIME_ZERO);
             userEntities.add(userEntity);
         }
         if (save2Db) {
@@ -144,10 +146,12 @@ public class GeneratorFakeData {
         param.setPrivilege(ContestPrivilege.PROTECT);
         return param;
     }
+
     private ContestParam generatorOIContest(ContestParam param) {
         param.setContestRule(ContestRule.OI);
         return param;
     }
+
     private ContestParam generatorCommon(long now, boolean isRunning) {
         ContestParam param = new ContestParam();
         param.setName(faker.name().title());

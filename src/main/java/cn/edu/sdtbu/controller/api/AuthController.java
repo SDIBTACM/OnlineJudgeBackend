@@ -1,9 +1,9 @@
 package cn.edu.sdtbu.controller.api;
 
-import cn.edu.sdtbu.exception.TeapotException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.user.LoginParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
 import cn.edu.sdtbu.service.LoginLogService;
 import cn.edu.sdtbu.service.UserService;
@@ -26,6 +26,7 @@ import java.util.Collection;
 
 /**
  * login | logout | reset password
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-12 07:18
@@ -35,7 +36,7 @@ import java.util.Collection;
 @RequestMapping(value = "/api/auth")
 public class AuthController {
     @Resource
-    UserService userService;
+    UserService     userService;
     @Resource
     LoginLogService loginLogService;
 
@@ -43,9 +44,9 @@ public class AuthController {
     public ResponseEntity<UserLoginInfoVO> login(@RequestBody LoginParam loginParam,
                                                  @ApiIgnore HttpServletRequest request,
                                                  @ApiIgnore HttpServletResponse response) {
-        UserEntity userEntity = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestUtil.getClientIp(request));
-        Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
-        boolean firstHeader = true;
+        UserEntity         userEntity  = userService.login(loginParam.getIdentify(), loginParam.getPassword(), RequestUtil.getClientIp(request));
+        Collection<String> headers     = response.getHeaders(HttpHeaders.SET_COOKIE);
+        boolean            firstHeader = true;
 
         // use [SameSite] header to prevent CSRF
         // Strict -> Prohibit third-party cookies completely
@@ -61,9 +62,9 @@ public class AuthController {
         }
 
         log.debug("{} is login", userEntity);
-        request.getSession().setAttribute(Const.USER_SESSION_INFO, userEntity);
+        request.getSession().setAttribute(WebContextConstant.USER_SESSION_INFO, userEntity);
         if (loginParam.getRemember()) {
-            Cookie rememberTokenCookie = new Cookie(Const.REMEMBER_TOKEN,
+            Cookie rememberTokenCookie = new Cookie(WebContextConstant.REMEMBER_TOKEN,
                 userService.generateRememberToken(userEntity, RequestUtil.getClientIp(request)));
             rememberTokenCookie.setPath("/");
             response.addCookie(rememberTokenCookie);
@@ -75,13 +76,13 @@ public class AuthController {
     public ResponseEntity<Void> logout(@ApiIgnore HttpServletRequest request,
                                        @ApiIgnore HttpServletResponse response) {
         HttpSession session = request.getSession(false);
-        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserEntity  entity  = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
         if (entity == null) {
-            throw new TeapotException("would you have a teapot?");
+            throw ExceptionConstant.TEAPOT;
         }
         loginLogService.logout(entity.getId());
         session.invalidate();
-        response.addCookie(Const.EMPTY_REMEMBER_TOKEN);
+        response.addCookie(WebContextConstant.EMPTY_REMEMBER_TOKEN);
         return ResponseEntity.ok().build();
     }
 }

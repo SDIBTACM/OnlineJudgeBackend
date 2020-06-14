@@ -3,8 +3,8 @@ package cn.edu.sdtbu.service.base;
 import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.handler.CacheHandler;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.entity.base.BaseEntity;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.repository.base.BaseRepository;
 import cn.edu.sdtbu.service.CountService;
 import cn.edu.sdtbu.util.CacheUtil;
@@ -35,15 +35,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> implements BaseService<DOMAIN, ID> {
+    private final String domainName;
+    private final BaseRepository<DOMAIN, ID> repository;
     @Resource
     protected CacheHandler handler;
-
     @Resource
     protected CountService countService;
-
-    private final String domainName;
-
-    private final BaseRepository<DOMAIN, ID> repository;
 
     protected AbstractBaseService(BaseRepository<DOMAIN, ID> repository) {
         this.repository = repository;
@@ -51,8 +48,6 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
         Class<DOMAIN> domainClass = (Class<DOMAIN>) fetchType();
         domainName = domainClass.getSimpleName();
     }
-
-
 
 
     /**
@@ -113,7 +108,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
      */
     @NonNull
     @Override
-    public List<DOMAIN> listAllByIds(Collection<ID> ids,@NonNull Sort sort) {
+    public List<DOMAIN> listAllByIds(Collection<ID> ids, @NonNull Sort sort) {
         Assert.notNull(sort, "Sort info must not be null");
 
         return CollectionUtils.isEmpty(ids) ? Collections.emptyList() : repository.findAllByIdIn(ids, sort);
@@ -221,7 +216,7 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
     public DOMAIN update(@NonNull DOMAIN domain, ID id) {
         Assert.notNull(domain, domainName + " data must not be null");
         Assert.notNull(id, id + " data must not be null");
-        DOMAIN entity  = getById(id);
+        DOMAIN entity = getById(id);
         SpringUtil.cloneWithoutNullVal(domain, entity);
         return save(entity);
     }
@@ -380,8 +375,9 @@ public abstract class AbstractBaseService<DOMAIN extends BaseEntity, ID> impleme
     }
 
     protected String key(Class<?> clazz, Object args) {
-        return CacheUtil.defaultKey(clazz, args, KeyPrefix.ENTITY);
+        return CacheUtil.defaultKey(clazz, args, KeyPrefixConstant.ENTITY);
     }
+
     protected Class<?> fetchClass() {
         try {
             return Class.forName(fetchType().getTypeName());

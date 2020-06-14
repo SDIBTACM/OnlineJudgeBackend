@@ -29,11 +29,14 @@ import java.util.Set;
 @Slf4j
 public class SpringUtil {
 
+    private static final ExpressionParser                          PARSER     = new SpelExpressionParser();
+    private static final LocalVariableTableParameterNameDiscoverer DISCOVERER = new LocalVariableTableParameterNameDiscoverer();
+
     /**
      * filter NULL value when bean property clone
      */
     private static String[] getNullPropertyNames(Object source) {
-        final BeanWrapper src = new BeanWrapperImpl(source);
+        final BeanWrapper               src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
         Set<String> emptyNames = new HashSet<>();
@@ -74,10 +77,8 @@ public class SpringUtil {
         return applicationContext.getBean(name, clazz);
     }
 
-    private static final ExpressionParser PARSER = new SpelExpressionParser();
-    private static final LocalVariableTableParameterNameDiscoverer DISCOVERER = new LocalVariableTableParameterNameDiscoverer();
     public static String parseSpel(Method method, Object[] arguments, String spel) {
-        String[] params = DISCOVERER.getParameterNames(method);
+        String[]          params  = DISCOVERER.getParameterNames(method);
         EvaluationContext context = new StandardEvaluationContext();
         for (int len = 0; len < Objects.requireNonNull(params).length; len++) {
             context.setVariable(params[len], arguments[len]);
@@ -86,7 +87,7 @@ public class SpringUtil {
             Expression expression = PARSER.parseExpression(spel);
             return expression.getValue(context, String.class);
         } catch (Exception e) {
-            log.debug("Method[ {} ] used SpEL parse {} failed(args:[{}]), used default key",method, arguments, spel);
+            log.debug("Method[ {} ] used SpEL parse {} failed(args:[{}]), used default key", method, arguments, spel);
             return Arrays.toString(arguments);
         }
     }

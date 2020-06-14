@@ -2,9 +2,9 @@ package cn.edu.sdtbu.aop.aspect;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
 import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
-import cn.edu.sdtbu.model.properties.Const;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -36,8 +36,8 @@ public class SecurityAspect {
     @Around("@annotation(cn.edu.sdtbu.aop.annotation.SourceSecurity)")
     public Object before(ProceedingJoinPoint point) throws Throwable {
         SourceSecurity security = fetchAnnotation(point, SourceSecurity.class);
-        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
-        SecurityType type = security.value();
+        UserEntity     entity   = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
+        SecurityType   type     = security.value();
         if (!type.equals(SecurityType.NONE)) {
             if (entity == null || type.getValue() > entity.getRole().getValue()) {
                 if (security.throwException()) {
@@ -50,8 +50,9 @@ public class SecurityAspect {
         }
         return point.proceed();
     }
+
     private <T extends Annotation> T fetchAnnotation(JoinPoint point, Class<T> annotationClass) {
-        return ((MethodSignature)point.getSignature())
+        return ((MethodSignature) point.getSignature())
             .getMethod()
             .getAnnotation(annotationClass);
     }

@@ -12,6 +12,7 @@ import java.util.UUID;
 
 /**
  * user entity
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 20:40
@@ -19,11 +20,11 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "user",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "deleteAt"}),
-                @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "deleteAt"}),
-                @UniqueConstraint(name = "uk_token_delete", columnNames = {"rememberToken", "deleteAt"})
-        })
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uk_username_delete", columnNames = {"username", "deleteAt"}),
+        @UniqueConstraint(name = "uk_email_delete", columnNames = {"email", "deleteAt"}),
+        @UniqueConstraint(name = "uk_token_delete", columnNames = {"rememberToken", "deleteAt"})
+    })
 @ToString
 @EqualsAndHashCode(callSuper = true)
 public class UserEntity extends BaseEntityWithDeleteTs {
@@ -58,10 +59,12 @@ public class UserEntity extends BaseEntityWithDeleteTs {
         userEntity.setRole(UserRole.STUDENT);
         return userEntity;
     }
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);
     }
+
     @PrePersist
     protected void prePersist() {
         rememberToken = UUID.randomUUID().toString();

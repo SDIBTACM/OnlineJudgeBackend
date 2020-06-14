@@ -4,13 +4,15 @@ import cn.edu.sdtbu.exception.ExistException;
 import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotAcceptableException;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.model.vo.user.UserSimpleInfoVO;
@@ -35,8 +37,6 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
-
 
 /**
  * @author bestsort
@@ -48,7 +48,7 @@ import static cn.edu.sdtbu.model.properties.Const.REMEMBER_TOKEN_EXPRESS_TIME;
 @Slf4j
 public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> implements UserService {
     private final LoginLogRepository loginLogRepository;
-    private final UserRepository userRepository;
+    private final UserRepository     userRepository;
 
     public UserServiceImpl(LoginLogRepository loginLogRepository, UserRepository userRepository) {
         super(userRepository);
@@ -61,7 +61,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         centerVO.setLastLogin(lastLogin(userId));
         UserSimpleInfoVO simpleInfoVO = new UserSimpleInfoVO();
         SpringUtil.cloneWithoutNullVal(getById(userId), simpleInfoVO);
-        simpleInfoVO.setRank(cache().zRank(KeyPrefix.USERS_RANK_LIST_DTO.toString(), userId + "", false));
+        simpleInfoVO.setRank(cache().zRank(KeyPrefixConstant.USERS_RANK_LIST_DTO, userId + "", false));
         centerVO.setUserInfo(simpleInfoVO);
         return centerVO;
     }
@@ -77,8 +77,8 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public void userMustNotExist(UserParam ao) {
-        if (cache().get(CacheUtil.defaultKey(String.class, ao.getEmail(), KeyPrefix.REGISTERED_EMAIL)) != null ||
-            cache().get(CacheUtil.defaultKey(String.class, ao.getUsername(), KeyPrefix.REGISTERED_USERNAME)) != null ||
+        if (cache().get(CacheUtil.defaultKey(String.class, ao.getEmail(), KeyPrefixConstant.REGISTERED_EMAIL)) != null ||
+            cache().get(CacheUtil.defaultKey(String.class, ao.getUsername(), KeyPrefixConstant.REGISTERED_USERNAME)) != null ||
             countByUserNameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
             throw new ExistException("该账户中的username/email已被使用。若此账号还未激活，请30分钟后重新注册.");
         }
@@ -86,7 +86,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public UserEntity login(String identify, String password, String requestIp) {
-        Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(identify, Const.TIME_ZERO);
+        Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(identify, OnlineJudgeConstant.TIME_ZERO);
         if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
             throw new ForbiddenException("identify or password error");
         }
@@ -97,16 +97,16 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     public UserEntity login(String rememberToken, String requestIp) throws ForbiddenException, NotFoundException {
         DecodedJWT jwtUnVerify = JWT.decode(rememberToken);
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
-                jwtUnVerify.getClaim("username").asString(), Const.TIME_ZERO);
-        UserEntity entity = optional.orElseThrow(() -> new NotFoundException("who are you"));
+            jwtUnVerify.getClaim("username").asString(), OnlineJudgeConstant.TIME_ZERO);
+        UserEntity entity = optional.orElseThrow(() -> ExceptionConstant.UNAUTHORIZED);
 
-        Algorithm algorithm = Algorithm.HMAC512(entity.getPassword() + entity.getRememberToken());
-        JWTVerifier verifier = JWT.require(algorithm).build();
+        Algorithm   algorithm = Algorithm.HMAC512(entity.getPassword() + entity.getRememberToken());
+        JWTVerifier verifier  = JWT.require(algorithm).build();
         try {
             verifier.verify(rememberToken);
         } catch (Exception e) {
             log.info("well, someone try to act as " + entity.getUsername());
-            throw new ForbiddenException("not found user");
+            throw ExceptionConstant.UNAUTHORIZED;
         }
         return isLocked(entity);
     }
@@ -123,12 +123,12 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             .withSubject("oh, it's you")
             .withIssuer("cn.edu.sdtbu.acm.UserService.remember")
             .withIssuedAt(new Date(System.currentTimeMillis()))
-            .withExpiresAt(new Date(System.currentTimeMillis() + REMEMBER_TOKEN_EXPRESS_TIME))
+            .withExpiresAt(new Date(System.currentTimeMillis() + WebContextConstant.REMEMBER_TOKEN_EXPRESS_TIME))
             .sign(algorithm);
     }
 
     public int countByUserNameOrEmail(String name, String email) {
-        return userRepository.countByUserNameOrEmail(name, email, Const.TIME_ZERO);
+        return userRepository.countByUserNameOrEmail(name, email, OnlineJudgeConstant.TIME_ZERO);
     }
 
 
@@ -149,20 +149,20 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public Long fetchSubmitCount(Long userId) {
-        return fetchCount(userId, KeyPrefix.TOTAL_SUBMIT_COUNT);
+        return fetchCount(userId, KeyPrefixConstant.TOTAL_SUBMIT_COUNT);
     }
 
     @Override
     public Long fetchAcceptedCount(Long userId) {
-        return fetchCount(userId, KeyPrefix.USER_ACCEPTED_COUNT);
+        return fetchCount(userId, KeyPrefixConstant.USER_ACCEPTED_COUNT);
     }
 
     @Override
     public Page<UserRankListVO> fetchRankList(Pageable pageable) {
         //TODO init rank list from db
-        long total = cache().count(KeyPrefix.USERS_RANK_LIST_DTO.toString());
-        List<UserRankListDTO> list = new LinkedList<>();
-        cache().fetchRanksByPage(KeyPrefix.USERS_RANK_LIST_DTO.toString(), pageable, false)
+        long                  total = cache().count(KeyPrefixConstant.USERS_RANK_LIST_DTO);
+        List<UserRankListDTO> list  = new LinkedList<>();
+        cache().fetchRanksByPage(KeyPrefixConstant.USERS_RANK_LIST_DTO, pageable, false)
             .forEach(i -> list.add(UserRankListDTO.converByTuple(i)));
 
         Map<Long, UserEntity> userEntities = getByIds(list.stream()
@@ -187,10 +187,10 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public UserEntity getByUsername(String username) {
-        String user = cache().get(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefix.USER_NAME));
+        String user = cache().get(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefixConstant.USERNAME));
         if (user == null) {
-            UserEntity userEntity = userRepository.getByUsernameAndDeleteAt(username, Const.TIME_ZERO);
-            cache().put(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefix.USER_NAME), JSON.toJSONString(userEntity));
+            UserEntity userEntity = userRepository.getByUsernameAndDeleteAt(username, OnlineJudgeConstant.TIME_ZERO);
+            cache().put(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefixConstant.USERNAME), JSON.toJSONString(userEntity));
             if (userEntity == null) {
                 throw new NotFoundException("not found user : username is " + username);
             }
@@ -209,7 +209,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     @Override
     public void changePassword(UserEntity entity, String oldPassword, String newPassword) {
         if (entity == null) {
-            throw new ForbiddenException("who you are?");
+            throw ExceptionConstant.FORBIDDEN;
         }
         if (!BCrypt.checkpw(oldPassword, entity.getPassword())) {
             throw new ForbiddenException("old password error");
@@ -224,13 +224,13 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public List<UserEntity> getAllByUsername(Collection<String> usernames) {
-        return userRepository.findAllByUsernameInAndDeleteAt(usernames, Const.TIME_ZERO);
+        return userRepository.findAllByUsernameInAndDeleteAt(usernames, OnlineJudgeConstant.TIME_ZERO);
     }
 
     @Override
     public Page<UserSimpleInfoVO> listUserByRole(UserRole role, Pageable pageable) {
-        Page<UserEntity> entities = userRepository.getAllByRoleAndAndDeleteAt(role, Const.TIME_ZERO, pageable);
-        List<UserSimpleInfoVO> list = new LinkedList<>();
+        Page<UserEntity>       entities = userRepository.getAllByRoleAndAndDeleteAt(role, OnlineJudgeConstant.TIME_ZERO, pageable);
+        List<UserSimpleInfoVO> list     = new LinkedList<>();
         entities.getContent().forEach(item -> {
             UserSimpleInfoVO simpleInfoVO = new UserSimpleInfoVO();
             SpringUtil.cloneWithoutNullVal(item, simpleInfoVO);
@@ -239,15 +239,15 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         return new PageImpl<>(list, pageable, entities.getTotalElements());
     }
 
-    private Long fetchCount(Long userId, KeyPrefix prefix) {
+    private Long fetchCount(Long userId, String prefix) {
         String key = CacheUtil.defaultKey(UserEntity.class, userId, prefix);
         String res = cache().get(key);
         return StringUtils.isEmpty(res) ? countService.fetchCount(key) : Long.parseLong(res);
     }
 
     private Timestamp lastLogin(Long userId) {
-        Pageable pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createAt");
-        Page<LoginLogEntity> page = loginLogRepository.findAllByUserId(userId,pageable);
+        Pageable             pageable = PageRequest.of(0, 1, Sort.Direction.DESC, "createAt");
+        Page<LoginLogEntity> page     = loginLogRepository.findAllByUserId(userId, pageable);
         return page.hasContent() ? page.getContent().get(0).getCreateAt() : null;
     }
 

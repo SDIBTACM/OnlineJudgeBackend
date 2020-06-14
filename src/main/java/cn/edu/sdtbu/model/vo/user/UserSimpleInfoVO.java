@@ -13,8 +13,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserSimpleInfoVO extends BaseUserVO {
-    String school;
-    String email;
+    String   school;
+    String   email;
     UserRole role;
-    Long rank;
+    Long     rank;
 }

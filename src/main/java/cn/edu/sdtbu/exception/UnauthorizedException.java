@@ -17,8 +17,9 @@ public class UnauthorizedException extends BaseException {
     }
 
     public UnauthorizedException() {
-        super("Unauthorized");
+        super(HttpStatus.UNAUTHORIZED.getReasonPhrase());
     }
+
     @Override
     public HttpStatus getStatus() {
         return HttpStatus.UNAUTHORIZED;

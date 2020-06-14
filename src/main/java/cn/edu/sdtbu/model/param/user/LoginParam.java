@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class LoginParam {
-    private String identify;
-    private String password;
+    private String  identify;
+    private String  password;
     private Boolean remember = true;
 }

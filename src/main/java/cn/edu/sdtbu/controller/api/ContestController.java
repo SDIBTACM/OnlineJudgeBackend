@@ -1,9 +1,9 @@
 package cn.edu.sdtbu.controller.api;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.contest.ContestDetailVO;
 import cn.edu.sdtbu.model.vo.contest.ContestsVO;
@@ -40,7 +40,7 @@ public class ContestController {
     public ResponseEntity<Page<ContestsVO>> listContestByPage(
         @PageableDefault(size = 15, direction = Sort.Direction.ASC, sort = "startAt") Pageable page,
         @ApiIgnore HttpSession session) {
-        UserEntity userEntity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserEntity userEntity = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
         return ResponseEntity.ok(service.fetchContests(userEntity, page));
     }
 
@@ -59,10 +59,11 @@ public class ContestController {
     public ResponseEntity<ProblemDescVO> getProblemDesc(Long contestId,
                                                         Integer order,
                                                         @ApiIgnore HttpSession session) {
-        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
-        ProblemDescVO vo = service.getContestProblemDesc(contestId, order, userEntity == null ? null : userEntity.getId());
+        UserEntity    userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
+        ProblemDescVO vo         = service.getContestProblemDesc(contestId, order, userEntity == null ? null : userEntity.getId());
         return ResponseEntity.ok(vo);
     }
+
     @GetMapping("/standing/{contestId}")
     @ApiOperation("根据contestId获取当场比赛排行榜")
     public ResponseEntity<Page<StandingNodeVO>> getStandings(@PathVariable Long contestId) {

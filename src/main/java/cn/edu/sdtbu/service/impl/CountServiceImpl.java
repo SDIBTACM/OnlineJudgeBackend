@@ -32,25 +32,31 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CountServiceImpl implements CountService {
-    private final CacheHandler cacheHandler;
+    private final CacheHandler    cacheHandler;
     private final CountRepository repository;
     @Resource
     SolutionRepository solutionRepository;
     @Resource
-    UserRepository userRepository;
+    UserRepository     userRepository;
+
+    public CountServiceImpl(CountRepository repository, CacheHandler cacheHandler) {
+        this.repository = repository;
+        this.cacheHandler = cacheHandler;
+    }
 
     @Override
     public Map<String, Long> fetchByKeyLike(String key) {
         return repository.findAllByCountKeyLike(key).stream().collect(
             Collectors.toMap(CountEntity::getCountKey, CountEntity::getTotal));
     }
+
     @Override
     public boolean refreshJudgeResultByUserId(Long userId, boolean needReturnBiggerThanMaxId) {
-        List<SolutionEntity> list = solutionRepository.findAllByOwnerId(userId);
-        Map<JudgeResult, Long> map = new HashMap<>(JudgeResult.values().length);
-        list.forEach(i -> map.put(i.getResult(), 1L + map.getOrDefault(i.getResult(),0L)));
+        List<SolutionEntity>   list = solutionRepository.findAllByOwnerId(userId);
+        Map<JudgeResult, Long> map  = new HashMap<>(JudgeResult.values().length);
+        list.forEach(i -> map.put(i.getResult(), 1L + map.getOrDefault(i.getResult(), 0L)));
 
-        AtomicReference<Long> total = new AtomicReference<>(0L);
+        AtomicReference<Long> total    = new AtomicReference<>(0L);
         AtomicReference<Long> accepted = new AtomicReference<>(0L);
         map.forEach((f, r) -> {
             setCount(CacheUtil.judgeResultCountKey(f, userId, false), r);
@@ -62,15 +68,6 @@ public class CountServiceImpl implements CountService {
 
         log.info("user's solution refresh completed, id is [{}], solution count is: {}", userId, JSON.toJSONString(map));
         return needReturnBiggerThanMaxId && (userId > userRepository.count());
-    }
-
-    public CountServiceImpl(CountRepository repository, CacheHandler cacheHandler) {
-        this.repository = repository;
-        this.cacheHandler = cacheHandler;
-    }
-    public void flushCountFromDb() {
-        Map<String, String> map = cache().fetchAll(CacheUtil.COUNT_PREFIX + CacheUtil.SEPARATOR);
-        //TODO parse
     }
 
     @Override
@@ -91,7 +88,7 @@ public class CountServiceImpl implements CountService {
     }
 
     @Override
-    public void  incCount(String key, int step) {
+    public void incCount(String key, int step) {
         cache().inc(key, step);
         repository.incByStep(key, (long) step);
     }
@@ -122,6 +119,7 @@ public class CountServiceImpl implements CountService {
     private void save(CountEntity entity) {
         repository.saveAndFlush(entity);
     }
+
     private CacheStore<String, String> cache() {
         return cacheHandler.fetchCacheStore();
     }

@@ -16,12 +16,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface CacheDelete {
     /**
      * key witch need to be delete/refresh, support SpEL
+     *
      * @return key
      */
     String deleteKey();
 
     /**
      * refresh value or not
+     *
      * @return is or not
      */
     boolean refresh() default false;
@@ -29,12 +31,14 @@ public @interface CacheDelete {
     /**
      * target class, used to fetch prefix
      * specify a concrete class rather than an interface or abstract class
+     *
      * @return class
      */
     Class<?> targetClass();
 
     /**
      * method name
+     *
      * @return name
      */
     String method();

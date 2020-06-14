@@ -34,6 +34,7 @@ public class FlushCount {
      * </ul>
      */
     AtomicLong atomicLong = new AtomicLong(1);
+
     @Scheduled(cron = "0 */10 * * * ?")
     public void refreshResultCount() {
         //every 3 minutes flush user's solution count info and id ++

@@ -14,15 +14,17 @@ import org.springframework.scheduling.annotation.Async;
 public interface LoginLogService extends BaseService<LoginLogEntity, Long> {
     /**
      * record login ip
+     *
      * @param userId user
-     * @param ip login ip
+     * @param ip     login ip
      */
     void login(Long userId, String ip);
 
     /**
      * select login info by pageable
-     * @param userId    user
-     * @param pageable  page limit
+     *
+     * @param userId   user
+     * @param pageable page limit
      * @return result
      */
     Page<LoginLogEntity> select(Long userId, Pageable pageable);

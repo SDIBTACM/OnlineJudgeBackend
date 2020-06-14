@@ -8,11 +8,16 @@ import org.springframework.http.HttpStatus;
  * @date 2020-05-19 21:49
  */
 public class BadRequestException extends BaseException {
+    public BadRequestException(String message) {
+        super(message);
+    }
+
+    public BadRequestException() {
+        super(HttpStatus.BAD_REQUEST.getReasonPhrase());
+    }
+
     @Override
     public HttpStatus getStatus() {
         return HttpStatus.BAD_REQUEST;
-    }
-    public BadRequestException(String message) {
-        super(message);
     }
 }

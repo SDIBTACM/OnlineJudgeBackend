@@ -28,8 +28,8 @@ public class WebSocketEndPoint {
     /**
      * 建立连接的回调方法
      *
-     * @param session  与客户端的WebSocket连接会话
-     * @param userId 用户名，WebSocket支持路径参数
+     * @param session 与客户端的WebSocket连接会话
+     * @param userId  用户名，WebSocket支持路径参数
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") Long userId) {

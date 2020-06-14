@@ -12,7 +12,9 @@ import org.springframework.lang.NonNull;
  */
 public class TeapotException extends BaseException {
 
-    public TeapotException() { super(HttpStatus.I_AM_A_TEAPOT.getReasonPhrase()); }
+    public TeapotException() {
+        super(HttpStatus.I_AM_A_TEAPOT.getReasonPhrase());
+    }
 
     public TeapotException(String message) {
         super(message);

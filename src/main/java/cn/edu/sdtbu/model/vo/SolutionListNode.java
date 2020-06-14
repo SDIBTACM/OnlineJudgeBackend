@@ -14,15 +14,15 @@ import java.sql.Timestamp;
  */
 @Data
 public class SolutionListNode {
-    Long id;
-    Long problemId;
-    LangType lang;
-    Integer memoryUsed;
-    Integer timeUsed;
+    Long        id;
+    Long        problemId;
+    LangType    lang;
+    Integer     memoryUsed;
+    Integer     timeUsed;
     JudgeResult result;
-    Long similarAt;
-    Long similarPercent;
-    Integer codeLength;
-    BaseUserVO userInfo;
-    Timestamp createAt;
+    Long        similarAt;
+    Long        similarPercent;
+    Integer     codeLength;
+    BaseUserVO  userInfo;
+    Timestamp   createAt;
 }

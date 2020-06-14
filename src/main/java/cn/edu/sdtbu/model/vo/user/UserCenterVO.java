@@ -2,7 +2,7 @@ package cn.edu.sdtbu.model.vo.user;
 
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
 
 import java.sql.Timestamp;
 import java.util.Collection;

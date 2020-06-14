@@ -44,7 +44,7 @@ public class SolutionController {
     public ResponseEntity<Page<SolutionListNode>> listSubmitByPage(SolutionQuery query,
                                                                    @PageableDefault(size = 30) Pageable pageable,
                                                                    @ApiIgnore HttpSession session) {
-        UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(true, session);
+        UserEntity     userEntity  = RequestUtil.fetchUserEntityFromSession(true, session);
         SolutionEntity queryEntity = new SolutionEntity();
         SpringUtil.cloneWithoutNullVal(query, queryEntity);
         return ResponseEntity.ok(solutionService

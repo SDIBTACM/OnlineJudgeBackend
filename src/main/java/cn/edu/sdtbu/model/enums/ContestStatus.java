@@ -5,7 +5,7 @@ package cn.edu.sdtbu.model.enums;
  * @version 1.0
  * @date 2020-05-15 14:37
  */
-public enum  ContestStatus {
+public enum ContestStatus {
     /**
      * 赛前
      */
@@ -29,5 +29,5 @@ public enum  ContestStatus {
     /**
      * 已注册
      */
-    REGISTERED;
+    REGISTERED
 }

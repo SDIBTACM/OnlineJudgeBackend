@@ -22,7 +22,7 @@ public class OnlineJudgeProperties {
     private CacheProperties cache = new CacheProperties();
 
     @NestedConfigurationProperty
-    private MailProperties mail = new MailProperties();
+    private MailProperties  mail  = new MailProperties();
     @NestedConfigurationProperty
     private DebugProperties debug = new DebugProperties();
 }

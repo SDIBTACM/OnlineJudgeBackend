@@ -18,6 +18,7 @@ import java.util.List;
 public interface CountRepository extends BaseRepository<CountEntity, Long> {
     /**
      * fetch by count key
+     *
      * @param countKey must be not null
      * @return res
      */
@@ -25,7 +26,8 @@ public interface CountRepository extends BaseRepository<CountEntity, Long> {
 
     /**
      * inc by step.
-     * @param key key
+     *
+     * @param key  key
      * @param step must not be null
      */
     @Transactional

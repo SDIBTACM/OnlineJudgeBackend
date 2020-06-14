@@ -25,10 +25,12 @@ import java.util.List;
  */
 public interface UserService extends BaseService<UserEntity, Long> {
     UserCenterVO generatorUserCenterVO(UserCenterVO centerVO, Long userId);
+
     /**
      * insert user info
-     * @param userRegisterParam    user entity info
-     * @return          is inserted
+     *
+     * @param userRegisterParam user entity info
+     * @return is inserted
      */
     boolean addUser(UserParam userRegisterParam);
 
@@ -36,30 +38,34 @@ public interface UserService extends BaseService<UserEntity, Long> {
 
     /**
      * use email or username as identify and login with password
-     * @param identify username or email
-     * @param password string
+     *
+     * @param identify  username or email
+     * @param password  string
      * @param requestIp where user login from
-     * @return  user info
+     * @return user info
      */
     UserEntity login(String identify, String password, String requestIp);
 
     /**
      * login by remember token
+     *
      * @param rememberToken a jwt string to verify user identify
-     * @param requestIp where user login from
-     * @throws ForbiddenException it mean someone try to act as a user
-     * @throws NotFoundException user not found
+     * @param requestIp     where user login from
      * @return user info
+     * @throws ForbiddenException it mean someone try to act as a user
+     * @throws NotFoundException  user not found
      */
     UserEntity login(String rememberToken, String requestIp) throws ForbiddenException, NotFoundException;
 
     /**
      * login by remember token
-     * @param entity user info
+     *
+     * @param entity    user info
      * @param requestIp where user login from
      * @return jwt type string
      */
     String generateRememberToken(UserEntity entity, String requestIp);
+
     @Async
     void appendLoginLog(UserEntity entity, String ip, Timestamp logoutTime);
 
@@ -78,5 +84,6 @@ public interface UserService extends BaseService<UserEntity, Long> {
     void changePassword(UserEntity entity, String oldPassword, String newPassword);
 
     List<UserEntity> getAllByUsername(Collection<String> usernames);
+
     Page<UserSimpleInfoVO> listUserByRole(UserRole role, Pageable pageable);
 }

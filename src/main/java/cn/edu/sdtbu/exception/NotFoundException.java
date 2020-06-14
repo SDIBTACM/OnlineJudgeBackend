@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 
 /**
  * something not found
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 20:54

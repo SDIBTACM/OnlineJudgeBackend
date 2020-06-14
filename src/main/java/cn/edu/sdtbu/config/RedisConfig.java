@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 public class RedisConfig {
     @Resource
     RedisProperties properties;
+
     @Bean
     public JedisPool redisPoolFactory() {
         JedisPoolConfig config = new JedisPoolConfig();

@@ -12,5 +12,6 @@ import java.util.List;
  */
 public interface ContestProblemRepository extends BaseRepository<ContestProblemEntity, Long> {
     ContestProblemEntity findByContestIdAndProblemOrder(long contestId, int order);
+
     List<ContestProblemEntity> findAllByContestId(long contestId);
 }

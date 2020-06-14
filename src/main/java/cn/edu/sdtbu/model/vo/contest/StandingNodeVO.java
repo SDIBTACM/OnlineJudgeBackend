@@ -12,11 +12,11 @@ import java.util.List;
  */
 @Data
 public class StandingNodeVO {
-    Long userId;
-    Integer rank;
-    String username;
-    String nickname;
-    Integer solved;
+    Long                        userId;
+    Integer                     rank;
+    String                      username;
+    String                      nickname;
+    Integer                     solved;
     List<StandingProblemNodeVO> problemResults;
     @ApiModelProperty(notes = "mills")
     Long penalty;

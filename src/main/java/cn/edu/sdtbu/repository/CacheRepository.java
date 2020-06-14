@@ -14,7 +14,10 @@ import java.util.Optional;
  */
 public interface CacheRepository extends BaseRepository<CacheEntity, Long> {
     void removeByKey(String key);
+
     void removeByKeyIn(Collection<String> keys);
+
     List<CacheEntity> findAllByKeyLike(String keys);
+
     Optional<CacheEntity> findByKey(String key);
 }

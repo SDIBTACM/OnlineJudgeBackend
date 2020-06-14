@@ -1,14 +1,14 @@
 package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
-import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserOnlineInfoVO;
 import cn.edu.sdtbu.model.vo.user.UserSimpleInfoVO;
 import cn.edu.sdtbu.service.LoginLogService;
@@ -46,25 +46,25 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserAdminController {
     @Resource
-    UserService userService;
+    UserService     userService;
     @Resource
     LoginLogService logService;
     @Resource
-    ServletContext context;
+    ServletContext  context;
 
     @PostMapping("/lockUser")
     @SuppressWarnings("unchecked")
     @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
     public ResponseEntity<Void> lockUser(@RequestBody Long userId, HttpServletRequest request) {
-        UserEntity admin = (UserEntity)request.getSession().getAttribute(Const.USER_SESSION_INFO);
+        UserEntity admin = (UserEntity) request.getSession().getAttribute(WebContextConstant.USER_SESSION_INFO);
         if (admin == null || admin.getRole() != UserRole.ADMIN) {
             log.warn("some user try across the permissions, id is {}", RequestUtil.getClientIp(request));
-            throw new ForbiddenException("who you are?");
+            throw ExceptionConstant.UNAUTHORIZED;
         }
         userService.lockUser(userId);
-        Set<HttpSession> sessions = (Set<HttpSession>) context.getAttribute(Const.SESSION_SET);
+        Set<HttpSession> sessions = (Set<HttpSession>) context.getAttribute(WebContextConstant.SESSION_SET);
         sessions.forEach(session -> {
-            UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+            UserEntity entity = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
             if (entity != null && entity.getId().equals(userId)) {
                 session.invalidate();
             }
@@ -85,13 +85,13 @@ public class UserAdminController {
     @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
     public ResponseEntity<List<UserOnlineInfoVO>> onlinePeople() {
         List<UserOnlineInfoVO> onlineUsers = new LinkedList<>();
-        Set<HttpSession> sessions = (Set<HttpSession>) context.getAttribute(Const.SESSION_SET);
+        Set<HttpSession>       sessions    = (Set<HttpSession>) context.getAttribute(WebContextConstant.SESSION_SET);
         sessions.forEach(item -> {
-            UserEntity entity = (UserEntity) item.getAttribute(Const.USER_SESSION_INFO);
+            UserEntity entity = (UserEntity) item.getAttribute(WebContextConstant.USER_SESSION_INFO);
             if (entity != null) {
                 UserOnlineInfoVO onlineInfoVO = new UserOnlineInfoVO();
                 onlineInfoVO.setId(entity.getId());
-                onlineInfoVO.setIp(item.getAttribute(Const.USER_IP).toString());
+                onlineInfoVO.setIp(item.getAttribute(WebContextConstant.USER_IP).toString());
                 onlineInfoVO.setLoginTime(new Timestamp(item.getCreationTime()));
                 onlineInfoVO.setUsername(entity.getUsername());
                 onlineInfoVO.setEmail(entity.getEmail());

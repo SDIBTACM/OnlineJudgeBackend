@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 
 /**
  * something exist
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-10 19:16
@@ -12,6 +13,10 @@ import org.springframework.lang.NonNull;
 public class ExistException extends BaseException {
     public ExistException(String message) {
         super(message);
+    }
+
+    public ExistException() {
+        super(HttpStatus.CONFLICT.getReasonPhrase());
     }
 
     public ExistException(String message, Throwable cause) {

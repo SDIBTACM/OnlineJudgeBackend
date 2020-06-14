@@ -16,11 +16,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
 public class RedisProperties {
-    private Integer port = null;
-    private String host = null;
-    private Integer maxTotal = Runtime.getRuntime().availableProcessors() * 2;
-    private Integer maxIdle = Runtime.getRuntime().availableProcessors() * 2;
-    private Integer minIdle = 4;
+    private Integer port          = null;
+    private String  host          = null;
+    private Integer maxTotal      = Runtime.getRuntime().availableProcessors() * 2;
+    private Integer maxIdle       = Runtime.getRuntime().availableProcessors() * 2;
+    private Integer minIdle       = 4;
     private Integer maxWaitMillis = 1000;
-    private String password = null;
+    private String  password      = null;
 }

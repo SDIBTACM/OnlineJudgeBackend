@@ -1,9 +1,9 @@
 package cn.edu.sdtbu.controller.api;
 
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.ProblemSubmitParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.service.CountService;
@@ -34,11 +34,11 @@ import javax.servlet.http.HttpSession;
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProblemController {
     @Resource
-    private ProblemService problemService;
+    private ProblemService     problemService;
     @Resource
     private ProblemDescService descService;
     @Resource
-    private CountService countService;
+    private CountService       countService;
 
     @GetMapping("/problems")
     public ResponseEntity<Page<ProblemSimpleListVO>> listProblems(@PageableDefault Pageable pageable,
@@ -50,14 +50,13 @@ public class ProblemController {
     @GetMapping("/problem/{id}")
     public ResponseEntity<ProblemDescVO> getProblemDesc(@PathVariable Long id,
                                                         @ApiIgnore HttpSession session) {
-        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserEntity        entity     = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
         ProblemDescEntity descEntity = descService.getById(id);
-        ProblemDescVO vo = new ProblemDescVO();
+        ProblemDescVO     vo         = new ProblemDescVO();
         SpringUtil.cloneWithoutNullVal(descEntity, vo);
         vo = problemService.getProblemDescVoById(vo, id, null, entity == null ? null : entity.getId());
         return ResponseEntity.ok(vo);
     }
-
 
 
     @PostMapping("/problem/{id}/submit")

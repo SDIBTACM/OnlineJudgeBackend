@@ -10,6 +10,7 @@ public interface MailManager {
 
     /**
      * send email
+     *
      * @param sendTo send to email
      */
     void sendSignUpMail(String token, String username, String sendTo);

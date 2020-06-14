@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.entity.contest.ContestProblemEntity;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.repository.contest.ContestProblemRepository;
 import cn.edu.sdtbu.service.ContestProblemService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
@@ -21,12 +21,19 @@ import java.util.List;
 @Service
 public class ContestProblemServiceImpl extends AbstractBaseService<ContestProblemEntity, Long> implements ContestProblemService {
 
+    @Resource
+    ContestProblemRepository repository;
+
+    protected ContestProblemServiceImpl(ContestProblemRepository repository) {
+        super(repository);
+    }
+
     @Override
     public ContestProblemEntity getContestProblem(long contestId, int order) {
         String key = CacheUtil.defaultKey(
             Pair.of(Long.class, contestId + ""),
             Pair.of(Integer.class, order + ""),
-            KeyPrefix.CONTEST_PROBLEM
+            KeyPrefixConstant.CONTEST_PROBLEM
         );
         String res;
         if ((res = cache().get(key)) != null) {
@@ -41,12 +48,5 @@ public class ContestProblemServiceImpl extends AbstractBaseService<ContestProble
     @Override
     public List<ContestProblemEntity> listAllContestProblems(long contestId) {
         return repository.findAllByContestId(contestId);
-    }
-
-    @Resource
-    ContestProblemRepository repository;
-
-    protected ContestProblemServiceImpl(ContestProblemRepository repository) {
-        super(repository);
     }
 }

@@ -33,21 +33,22 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 @Component
 public class CacheAspect {
-    private static final String CACHE_HIT = "cache_hit";
+    private static final String CACHE_HIT  = "cache_hit";
     private static final String CACHE_MISS = "cache_miss";
-    private static final String SEPARATOR = "$";
-    private static final String VOID = "void";
+    private static final String SEPARATOR  = "$";
+    private static final String VOID       = "void";
     @Resource
     CacheHandler handler;
 
     Random random = new Random();
+
     @Around("@annotation(cn.edu.sdtbu.aop.annotation.CacheDelete)")
     public Object aroundCacheDelete(ProceedingJoinPoint point) throws Throwable {
         CacheDelete cacheDelete = fetchAnnotation(point, CacheDelete.class);
-        String key = fetchKey(point, cacheDelete.deleteKey(), cacheDelete.targetClass(), fetchMethod(point), cacheDelete.method());
+        String      key         = fetchKey(point, cacheDelete.deleteKey(), cacheDelete.targetClass(), fetchMethod(point), cacheDelete.method());
         service().delete(key);
         Object object = point.proceed();
-        Type type = fetchReturnType(point);
+        Type   type   = fetchReturnType(point);
         if (!VOID.equals(type.getTypeName())) {
             return JSON.parseObject(object.toString(), type);
         }
@@ -92,29 +93,31 @@ public class CacheAspect {
 
     /**
      * fetch return type(used to JSON's parse)
+     *
      * @param point join point
-     * @return  return type
+     * @return return type
      */
     private Type fetchReturnType(ProceedingJoinPoint point) {
-        Type returnType = ((MethodSignature)point.getSignature()).getReturnType();
+        Type returnType = ((MethodSignature) point.getSignature()).getReturnType();
         //if is abstract class implements method, need fetch actual type arguments(xxxEntity).
         return Modifier.isAbstract(point.getSignature().getDeclaringType().getModifiers()) &&
             //or return generic
             returnType.getTypeName().equals(Object.class.getName()) ?
             // true
-            ((ParameterizedType)(point.getTarget().getClass().getGenericSuperclass())).getActualTypeArguments()[0] :
+            ((ParameterizedType) (point.getTarget().getClass().getGenericSuperclass())).getActualTypeArguments()[0] :
             // false
             returnType;
     }
 
     /**
      * fetch real impl method, not in abstract class
+     *
      * @param point joint point
-     * @return  real method
+     * @return real method
      * @throws NoSuchMethodException not found such method in class impl
      */
     private Method fetchMethod(ProceedingJoinPoint point) throws NoSuchMethodException {
-        Signature signature = point.getSignature();
+        Signature       signature = point.getSignature();
         MethodSignature methodSignature;
         if (!(signature instanceof MethodSignature)) {
             throw new IllegalArgumentException("this annotation just used to method");
@@ -130,9 +133,10 @@ public class CacheAspect {
 
     /**
      * generator key(parsing SpEL and add prefix)。 eg.{Class}${Method}${args}
-     * @param point join point
+     *
+     * @param point      join point
      * @param expression SpEL
-     * @return  key
+     * @return key
      * @throws NoSuchMethodException not found method
      */
     private String fetchKey(ProceedingJoinPoint point, String expression) throws NoSuchMethodException {
@@ -149,7 +153,7 @@ public class CacheAspect {
     }
 
     private <T extends Annotation> T fetchAnnotation(ProceedingJoinPoint point, Class<T> annotationClass) {
-        return ((MethodSignature)point.getSignature())
+        return ((MethodSignature) point.getSignature())
             .getMethod()
             .getAnnotation(annotationClass);
     }

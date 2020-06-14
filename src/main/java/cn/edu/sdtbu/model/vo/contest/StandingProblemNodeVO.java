@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class StandingProblemNodeVO {
     Integer order;
-    Long submitCount;
+    Long    submitCount;
 
     @ApiModelProperty(notes = "mills")
     Long acAt;

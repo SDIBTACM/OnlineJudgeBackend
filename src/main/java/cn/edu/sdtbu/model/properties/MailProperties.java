@@ -9,6 +9,6 @@ import lombok.Data;
  */
 @Data
 public class MailProperties {
-    private String title = "Online Judge";
+    private String title  = "Online Judge";
     private String sendBy = "ACM Group";
 }

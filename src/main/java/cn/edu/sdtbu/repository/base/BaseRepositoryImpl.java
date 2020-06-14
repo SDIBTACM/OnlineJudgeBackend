@@ -51,7 +51,7 @@ public class BaseRepositoryImpl<DOMAIN, ID> extends SimpleJpaRepository<DOMAIN, 
         Assert.notNull(query, "TypedQuery must not be null!");
 
         List<Long> totals = query.getResultList();
-        long total = 0L;
+        long       total  = 0L;
 
         for (Long element : totals) {
             total += element == null ? 0 : element;
@@ -85,7 +85,7 @@ public class BaseRepositoryImpl<DOMAIN, ID> extends SimpleJpaRepository<DOMAIN, 
         }
 
         ByIdsSpecification<DOMAIN> specification = new ByIdsSpecification<>(entityInformation);
-        TypedQuery<DOMAIN> query = super.getQuery(specification, sort);
+        TypedQuery<DOMAIN>         query         = super.getQuery(specification, sort);
         return query.setParameter(specification.parameter, ids).getResultList();
     }
 
@@ -103,8 +103,8 @@ public class BaseRepositoryImpl<DOMAIN, ID> extends SimpleJpaRepository<DOMAIN, 
         }
 
         ByIdsSpecification<DOMAIN> specification = new ByIdsSpecification<>(entityInformation);
-        TypedQuery<DOMAIN> query = super.getQuery(specification, pageable).setParameter(specification.parameter, ids);
-        TypedQuery<Long> countQuery = getCountQuery(specification, getDomainClass()).setParameter(specification.parameter, ids);
+        TypedQuery<DOMAIN>         query         = super.getQuery(specification, pageable).setParameter(specification.parameter, ids);
+        TypedQuery<Long>           countQuery    = getCountQuery(specification, getDomainClass()).setParameter(specification.parameter, ids);
 
         return pageable.isUnpaged() ?
             new PageImpl<>(query.getResultList())
@@ -144,8 +144,8 @@ public class BaseRepositoryImpl<DOMAIN, ID> extends SimpleJpaRepository<DOMAIN, 
     }
 
     private static final class ByIdsSpecification<T> implements Specification<T> {
-        private static final long serialVersionUID = 1L;
-        private final JpaEntityInformation<T, ?> entityInformation;
+        private static final long                       serialVersionUID = 1L;
+        private final        JpaEntityInformation<T, ?> entityInformation;
         @Nullable
         ParameterExpression<Collection> parameter;
 

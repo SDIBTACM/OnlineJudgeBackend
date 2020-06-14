@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Spring Boot Stater
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 20:17

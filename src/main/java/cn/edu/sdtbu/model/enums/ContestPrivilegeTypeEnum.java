@@ -16,9 +16,11 @@ public enum ContestPrivilegeTypeEnum implements IntValueEnum {
 
 
     private final int value;
+
     ContestPrivilegeTypeEnum(int value) {
         this.value = value;
     }
+
     @Override
     public int getValue() {
         return value;

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseUserVO {
-    Long id;
+    Long   id;
     String username;
     String nickname;
 

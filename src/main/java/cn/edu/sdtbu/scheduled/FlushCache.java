@@ -31,7 +31,7 @@ public class FlushCache {
     }
 
     @Scheduled(cron = "0 30 3 * * *")
-    public void  reloadDailyRankList() {
+    public void reloadDailyRankList() {
 
     }
 }

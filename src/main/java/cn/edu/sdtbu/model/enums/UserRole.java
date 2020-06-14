@@ -20,11 +20,13 @@ public enum UserRole implements IntValueEnum {
     ADMIN(3);
 
     private final int value;
+
+    UserRole(int value) {
+        this.value = value;
+    }
+
     @Override
     public int getValue() {
         return value;
-    }
-    UserRole(int value) {
-        this.value = value;
     }
 }

@@ -30,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("classpath:/static/")
             .addResourceLocations("classpath:/public/");
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         List<String> exclude = new ArrayList<>(8);

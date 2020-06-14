@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * include some default method(curd and etc...)
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 20:49
@@ -192,6 +193,7 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
 
     /**
      * save
+     *
      * @param domain must be not null
      * @return
      */
@@ -199,11 +201,14 @@ public interface BaseService<DOMAIN extends BaseEntity, ID> {
 
     /**
      * save all
+     *
      * @param set data
      */
     void saveAll(Iterable<DOMAIN> set);
+
     /**
      * get class impl' supported type
+     *
      * @return clazz
      */
     Class<?> getTemplateType();

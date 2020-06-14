@@ -12,5 +12,6 @@ import java.util.List;
  */
 public interface ContestProblemService extends BaseService<ContestProblemEntity, Long> {
     ContestProblemEntity getContestProblem(long contestId, int order);
+
     List<ContestProblemEntity> listAllContestProblems(long contestId);
 }

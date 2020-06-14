@@ -3,11 +3,11 @@ package cn.edu.sdtbu.controller.api;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.manager.MailManager;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
 import cn.edu.sdtbu.model.param.user.ChangePasswordParam;
 import cn.edu.sdtbu.model.param.user.UserParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
 import cn.edu.sdtbu.model.vo.user.UserRankListVO;
 import cn.edu.sdtbu.service.ProblemService;
@@ -33,6 +33,7 @@ import java.util.UUID;
 
 /**
  * register | update | list login log
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-07 16:06
@@ -43,34 +44,34 @@ import java.util.UUID;
 @RequestMapping(value = "/api/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
     @Resource
-    UserService userService;
+    UserService    userService;
     @Resource
     ProblemService problemService;
     @Resource
-    MailManager mailManager;
+    MailManager    mailManager;
     @Resource
-    CacheHandler handler;
+    CacheHandler   handler;
     @Resource
     ServletContext context;
 
     @GetMapping("/onlinePeople")
     public ResponseEntity<Integer> onlinePeopleCount() {
-        return ResponseEntity.ok(((Set) context.getAttribute(Const.SESSION_SET)).size());
+        return ResponseEntity.ok(((Set) context.getAttribute(WebContextConstant.SESSION_SET)).size());
     }
 
     @PutMapping
     public ResponseEntity<String> register(@RequestBody @Validated(UserParam.Resister.class) UserParam registerAo) {
         userService.userMustNotExist(registerAo);
         String token = UUID.randomUUID().toString();
-        String json = JSON.toJSONString(registerAo);
+        String json  = JSON.toJSONString(registerAo);
         log.debug("user register {}", json);
         handler.fetchCacheStore().put(
-            CacheUtil.defaultKey(String.class, registerAo.getEmail(), KeyPrefix.REGISTERED_EMAIL), "true");
+            CacheUtil.defaultKey(String.class, registerAo.getEmail(), KeyPrefixConstant.REGISTERED_EMAIL), "true");
         handler.fetchCacheStore().put(
-            CacheUtil.defaultKey(String.class, registerAo.getUsername(), KeyPrefix.REGISTERED_USERNAME), "true");
+            CacheUtil.defaultKey(String.class, registerAo.getUsername(), KeyPrefixConstant.REGISTERED_USERNAME), "true");
 
         handler.fetchCacheStore().put(
-            CacheUtil.defaultKey(UserParam.class, token, KeyPrefix.REGISTER_USER), json);
+            CacheUtil.defaultKey(UserParam.class, token, KeyPrefixConstant.REGISTER_USER), json);
         mailManager.sendSignUpMail(token, registerAo.getUsername(), registerAo.getEmail());
         return ResponseEntity.ok("激活邮件已发送至您的邮箱, 链接有效期30分钟. 请注意查收. 若未收到, 请查看是否被归类至垃圾邮件");
     }
@@ -78,7 +79,7 @@ public class UserController {
     @GetMapping("/activate")
     public ResponseEntity<Void> activeRegisteredUser(String token) {
         String json;
-        String key = CacheUtil.defaultKey(UserParam.class, token, KeyPrefix.REGISTER_USER);
+        String key = CacheUtil.defaultKey(UserParam.class, token, KeyPrefixConstant.REGISTER_USER);
         if ((json = handler.fetchCacheStore().get(key)) != null) {
             userService.addUser(JSON.parseObject(json, UserParam.class));
         } else {
@@ -86,11 +87,12 @@ public class UserController {
         }
         return ResponseEntity.ok().build();
     }
+
     @GetMapping("/center")
     public ResponseEntity<UserCenterVO> userCenter(@ApiParam("用户唯一标识, id 或 username") @RequestParam String user,
                                                    @RequestParam(defaultValue = "true") Boolean isUserId,
                                                    @ApiIgnore HttpSession session) {
-        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserEntity entity     = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
         UserEntity userEntity = isUserId ? userService.getById(Long.parseLong(user)) : userService.getByUsername(user);
         UserCenterVO vo = userService.generatorUserCenterVO(
             problemService.fetchAllUserSubmitStatus(userEntity.getId()),
@@ -103,10 +105,11 @@ public class UserController {
     public ResponseEntity<Page<UserRankListVO>> rankList(@PageableDefault(size = 50) Pageable pageable) {
         return ResponseEntity.ok(userService.fetchRankList(pageable));
     }
+
     @PatchMapping("/password")
     public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordParam param,
                                                @ApiIgnore HttpSession session) {
-        UserEntity entity = (UserEntity) session.getAttribute(Const.USER_SESSION_INFO);
+        UserEntity entity = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
         userService.changePassword(entity, param.getOldPassword(), param.getNewPassword());
         return ResponseEntity.ok(null);
     }

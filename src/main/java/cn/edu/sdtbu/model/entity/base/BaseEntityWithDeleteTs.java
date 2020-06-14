@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.entity.base;
 
-import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 
 /**
  * default filed
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 20:26
@@ -28,7 +29,7 @@ public class BaseEntityWithDeleteTs extends BaseEntity {
     @PrePersist
     protected void prePersistDelete() {
         if (deleteAt == null) {
-            deleteAt = Const.TIME_ZERO;
+            deleteAt = OnlineJudgeConstant.TIME_ZERO;
         }
     }
 }

@@ -24,9 +24,9 @@ import java.util.Objects;
 @Service
 public class MailManagerImpl implements MailManager {
     @Resource
-    private JavaMailSender javaMailSender;
+    private JavaMailSender        javaMailSender;
     @Resource
-    private TemplateEngine templateEngine;
+    private TemplateEngine        templateEngine;
     @Resource
     private OnlineJudgeProperties properties;
 
@@ -34,12 +34,12 @@ public class MailManagerImpl implements MailManager {
     //@Async
     public void sendSignUpMail(String token, String username, String sendTo) {
         try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            MimeMessage       mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper      = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             helper.setFrom(Objects.requireNonNull(((JavaMailSenderImpl) javaMailSender).getUsername()));
             helper.setTo(sendTo);
             helper.setSubject("OnlineJudge-用户注册激活邮件");
-            helper.setText(generatorSignUpMail(token,username), true);
+            helper.setText(generatorSignUpMail(token, username), true);
             javaMailSender.send(mimeMessage);
             log.info("sign up mail send success. to {}", username);
         } catch (Throwable e) {
@@ -48,7 +48,7 @@ public class MailManagerImpl implements MailManager {
         }
     }
 
-    public String generatorSignUpMail(String token,String account) {
+    public String generatorSignUpMail(String token, String account) {
         Context context = new Context();
         String activeUrl = properties.getUrl() +
             "/api/user/activate?" +

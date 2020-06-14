@@ -1,12 +1,12 @@
 package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.user.ClassEntity;
 import cn.edu.sdtbu.model.entity.user.UserClassEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserClassParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.base.BaseUserVO;
 import cn.edu.sdtbu.model.vo.user.UserClassListNode;
 import cn.edu.sdtbu.model.vo.user.UserClassesVO;
@@ -37,10 +37,21 @@ import java.util.stream.Collectors;
 @Service
 public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> implements ClassService {
 
+    @Resource
+    UserService         userService;
+    @Resource
+    UserClassRepository userClassRepository;
+    @Resource
+    ClassRepository     classRepository;
+
+    protected ClassServiceImpl(ClassRepository repository) {
+        super(repository);
+    }
+
     @Override
     public UserClassesVO createClass(UserClassParam param, UserEntity manager) {
-        ClassEntity entity = new ClassEntity();
-        UserClassesVO vo = new UserClassesVO();
+        ClassEntity   entity = new ClassEntity();
+        UserClassesVO vo     = new UserClassesVO();
         vo.setUsersInfo(new LinkedList<>());
 
         entity.setName(param.getName());
@@ -52,13 +63,13 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
 
         Set<UserClassEntity> userClassEntities = new HashSet<>();
         if (CollectionUtils.isNotEmpty(param.getUsernames())) {
-            List<UserEntity> userEntities = userService.getAllByUsername(param.getUsernames());
-            final ClassEntity finalEntity = entity;
+            List<UserEntity>  userEntities = userService.getAllByUsername(param.getUsernames());
+            final ClassEntity finalEntity  = entity;
             userEntities.forEach(i -> {
                 UserClassEntity obj = new UserClassEntity();
                 obj.setClassId(finalEntity.getId());
                 obj.setUserId(i.getId());
-                obj.setDeleteAt(Const.TIME_ZERO);
+                obj.setDeleteAt(OnlineJudgeConstant.TIME_ZERO);
                 vo.getUsersInfo().add(new BaseUserVO(i.getId(), i.getUsername(), i.getNickname()));
                 userClassEntities.add(obj);
             });
@@ -72,10 +83,10 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
     @Override
     public List<UserClassListNode> fetchAllByManagerId(Long managerId) {
         // classes
-        List<ClassEntity> list = classRepository.findAllByOwnerIdAndDeleteAt(managerId, Const.TIME_ZERO);
+        List<ClassEntity>       list               = classRepository.findAllByOwnerIdAndDeleteAt(managerId, OnlineJudgeConstant.TIME_ZERO);
         List<UserClassListNode> userClassListNodes = new LinkedList<>();
-        UserClassEntity exampleCase = new UserClassEntity();
-        exampleCase.setDeleteAt(Const.TIME_ZERO);
+        UserClassEntity         exampleCase        = new UserClassEntity();
+        exampleCase.setDeleteAt(OnlineJudgeConstant.TIME_ZERO);
         list.forEach(i -> {
             exampleCase.setClassId(i.getId());
             UserClassListNode buffer = new UserClassListNode();
@@ -89,7 +100,7 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
     @Override
     public void deleteClass(Collection<Long> classIds) {
         List<ClassEntity> classEntities = classRepository.findAllById(classIds);
-        Timestamp now = TimeUtil.now();
+        Timestamp         now           = TimeUtil.now();
         classEntities.forEach(i -> i.setDeleteAt(now));
         classRepository.saveAll(classEntities);
     }
@@ -97,7 +108,7 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
     @Override
     public void appendUser(List<Long> userIds, Long classId, UserEntity userEntity) {
         isClassManager(classId, userEntity, true);
-        Set<Long> existIds = userClassRepository.findAllByClassIdAndDeleteAt(classId, Const.TIME_ZERO)
+        Set<Long> existIds = userClassRepository.findAllByClassIdAndDeleteAt(classId, OnlineJudgeConstant.TIME_ZERO)
             .stream().map(UserClassEntity::getUserId).collect(Collectors.toSet());
 
         List<UserClassEntity> list = new LinkedList<>();
@@ -112,7 +123,7 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
 
     @Override
     public UserClassesVO fetchUsersByClassId(Long classId, UserEntity user) {
-        Set<Long> users = userClassRepository.findAllByClassIdAndDeleteAt(classId, Const.TIME_ZERO).stream()
+        Set<Long> users = userClassRepository.findAllByClassIdAndDeleteAt(classId, OnlineJudgeConstant.TIME_ZERO).stream()
             .map(UserClassEntity::getUserId).collect(Collectors.toSet());
         UserClassesVO vo = new UserClassesVO();
         vo.setIsOwner(isClassManager(classId, user, false));
@@ -128,8 +139,8 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
     @Override
     public void removeUser(List<Long> userIds, Long classId, UserEntity userEntity) {
         isClassManager(classId, userEntity, true);
-        Timestamp now = TimeUtil.now();
-        List<UserClassEntity> users = userClassRepository.findAllByClassIdAndDeleteAt(classId, Const.TIME_ZERO);
+        Timestamp             now   = TimeUtil.now();
+        List<UserClassEntity> users = userClassRepository.findAllByClassIdAndDeleteAt(classId, OnlineJudgeConstant.TIME_ZERO);
         users.stream().filter(item -> userIds.contains(item.getUserId())).collect(Collectors.toList())
             .forEach(i -> i.setDeleteAt(now));
         userClassRepository.saveAll(users);
@@ -141,15 +152,5 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
             throw new UnauthorizedException();
         }
         return res;
-    }
-
-    @Resource
-    UserService userService;
-    @Resource
-    UserClassRepository userClassRepository;
-    @Resource
-    ClassRepository classRepository;
-    protected ClassServiceImpl(ClassRepository repository) {
-        super(repository);
     }
 }

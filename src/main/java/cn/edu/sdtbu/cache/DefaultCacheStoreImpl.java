@@ -26,6 +26,7 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
 
     @Resource
     CacheService service;
+
     @Override
     public Optional<String> getInternal(String key) {
         return Optional.ofNullable(service.get(key));

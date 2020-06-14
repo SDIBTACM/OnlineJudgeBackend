@@ -15,6 +15,8 @@ import java.util.Optional;
  */
 public interface ContestPrivilegeRepository extends BaseRepository<ContestPrivilegeEntity, Long> {
     List<ContestPrivilegeEntity> findAllByContestIdAndDeleteAt(Long contestId, Timestamp deleteAt);
+
     Optional<ContestPrivilegeEntity> findByContestIdAndUserIdAndDeleteAt(Long contestId, Long userId, Timestamp deleteAt);
+
     List<ContestPrivilegeEntity> findAllByContestIdInAndUserIdAndDeleteAt(Collection<Long> contestIds, Long userId, Timestamp deleteAt);
 }

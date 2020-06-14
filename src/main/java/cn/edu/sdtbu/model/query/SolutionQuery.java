@@ -11,13 +11,13 @@ import lombok.Data;
  */
 @Data
 public class SolutionQuery {
-    Long ownerId;
-    Long problemId;
-    Long contestId;
-    LangType lang;
+    Long        ownerId;
+    Long        problemId;
+    Long        contestId;
+    LangType    lang;
     JudgeResult result;
-    Integer timeUsed;
-    Integer memoryUsed;
-    Long similarAt;
-    Long similarPercent;
+    Integer     timeUsed;
+    Integer     memoryUsed;
+    Long        similarAt;
+    Long        similarPercent;
 }

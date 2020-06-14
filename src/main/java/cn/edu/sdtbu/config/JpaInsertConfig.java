@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * used to generator primary key
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-29 19:35

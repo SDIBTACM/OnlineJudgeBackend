@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
 
 /**
  * default exception template
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-4-6 20:53
@@ -43,6 +44,4 @@ public abstract class BaseException extends RuntimeException {
         this.errorData = errorData;
         return this;
     }
-
-
 }

@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.model.enums;
 
-public enum  ProblemType {
+public enum ProblemType {
     /**
      * normal
      */

@@ -1,10 +1,10 @@
 package cn.edu.sdtbu.model.param;
 
-import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.problem.ProblemDescEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.enums.ProblemType;
 import cn.edu.sdtbu.util.SpringUtil;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,18 +36,20 @@ public class ProblemParam {
 
     //TODO max or min value
     @ApiModelProperty(notes = "micro seconds")
-    Integer timeLimit = 1000;
+    Integer timeLimit   = 1000;
     //TODO max or min value
     @ApiModelProperty(notes = "kbytes")
     Integer memoryLimit = 1 << 9;
-    Boolean specialJudge = false;
-    ProblemType type = ProblemType.NORMAL;
-    Boolean hide = false;
+    Boolean     specialJudge = false;
+    ProblemType type         = ProblemType.NORMAL;
+    Boolean     hide         = false;
+
     public ProblemEntity transformToEntity() {
         ProblemEntity entity = new ProblemEntity();
         SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
     }
+
     public ProblemDescEntity transFormToDescEntity() {
         ProblemDescEntity entity = new ProblemDescEntity();
         SpringUtil.cloneWithoutNullVal(this, entity);

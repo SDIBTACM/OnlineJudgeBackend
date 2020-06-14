@@ -1,10 +1,10 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.model.enums.UserRole;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.SolutionListNode;
 import cn.edu.sdtbu.model.vo.base.BaseUserVO;
 import cn.edu.sdtbu.repository.SolutionRepository;
@@ -19,7 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -29,23 +31,22 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SolutionServiceImpl extends AbstractBaseService<SolutionEntity, Long> implements SolutionService {
+    @Resource
+    SolutionRepository solutionRepository;
+    @Resource
+    UserRepository     userRepository;
     protected SolutionServiceImpl(SolutionRepository repository) {
         super(repository);
     }
 
-    @Resource
-    SolutionRepository solutionRepository;
-    @Resource
-    UserRepository userRepository;
-
     @Override
     public Page<SolutionListNode> listSubmit(SolutionEntity query, UserRole role, Pageable pageable) {
-        Page<SolutionEntity> page = solutionRepository.findAll(Example.of(query), pageable);
+        Page<SolutionEntity>   page = solutionRepository.findAll(Example.of(query), pageable);
         List<SolutionListNode> list = new LinkedList<>();
 
         Map<Long, UserEntity> idEntityMap = userRepository.findAllByIdInAndDeleteAt(
             page.getContent().stream().map(SolutionEntity::getOwnerId).collect(Collectors.toSet()),
-            Const.TIME_ZERO)
+            OnlineJudgeConstant.TIME_ZERO)
             .stream().collect(Collectors.toMap(UserEntity::getId, u -> u));
 
         page.getContent().forEach(i -> {

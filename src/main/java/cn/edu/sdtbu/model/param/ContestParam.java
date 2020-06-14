@@ -1,16 +1,19 @@
 package cn.edu.sdtbu.model.param;
 
-import cn.edu.sdtbu.validator.annotation.FutureMills;
-import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.enums.ContestPrivilege;
 import cn.edu.sdtbu.model.enums.ContestRule;
 import cn.edu.sdtbu.model.enums.LangType;
+import cn.edu.sdtbu.validator.annotation.FutureMills;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.validator.annotation.NullableFutureMills;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.GroupSequence;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -72,11 +75,11 @@ public class ContestParam {
     @ApiModelProperty(notes = "非必须,允许使用的语言类型, 为空可使用所有")
     List<LangType> allowLang;
     @ApiModelProperty(notes = "非必须,允许访问比赛的ip地址")
-    List<String> allowIps;
+    List<String>   allowIps;
     @ApiModelProperty(notes = "非必须,禁止访问比赛的ip地址")
-    List<String> denyIps;
+    List<String>   denyIps;
     @ApiModelProperty(notes = "非必须,禁止访问比赛的用户(此list优先级最高)")
-    List<String> denyUsernames;
+    List<String>   denyUsernames;
 
     @NotEmpty(groups = BeforeCreate.class)
     @ApiModelProperty(notes = "必须,比赛中的题目ID")
@@ -96,8 +99,10 @@ public class ContestParam {
     public interface Default {
 
     }
+
     public interface BeforeCreate {
     }
+
     public interface BeforeUpdate {
 
     }

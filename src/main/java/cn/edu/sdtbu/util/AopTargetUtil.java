@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 
 /**
  * I don't know why, but it worked
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-28 12:28
@@ -16,6 +17,7 @@ public class AopTargetUtil {
 
     /**
      * get target object
+     *
      * @param proxy proxy object
      * @return target object
      * @throws Exception exception
@@ -41,7 +43,7 @@ public class AopTargetUtil {
         Field advised = dynamicAdvisedInterceptor.getClass().getDeclaredField("advised");
         advised.setAccessible(true);
 
-        return ((AdvisedSupport)advised.get(dynamicAdvisedInterceptor)).getTargetSource().getTarget();
+        return ((AdvisedSupport) advised.get(dynamicAdvisedInterceptor)).getTargetSource().getTarget();
     }
 
 
@@ -53,6 +55,6 @@ public class AopTargetUtil {
         Field advised = aopProxy.getClass().getDeclaredField("advised");
         advised.setAccessible(true);
 
-        return ((AdvisedSupport)advised.get(aopProxy)).getTargetSource().getTarget();
+        return ((AdvisedSupport) advised.get(aopProxy)).getTargetSource().getTarget();
     }
 }

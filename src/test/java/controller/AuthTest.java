@@ -2,7 +2,7 @@ package controller;
 
 import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.handler.CacheHandler;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.param.user.LoginParam;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
@@ -60,9 +60,9 @@ public class AuthTest {
         userRegisterParam.setUsername("usernameTest");
         userRegisterParam.setSchool("school");
         handler.fetchCacheStore().delete(
-            CacheUtil.defaultKey(String.class, userRegisterParam.getEmail(), KeyPrefix.REGISTERED_EMAIL));
+            CacheUtil.defaultKey(String.class, userRegisterParam.getEmail(), KeyPrefixConstant.REGISTERED_EMAIL));
         handler.fetchCacheStore().delete(
-            CacheUtil.defaultKey(String.class, userRegisterParam.getUsername(), KeyPrefix.REGISTERED_USERNAME));
+            CacheUtil.defaultKey(String.class, userRegisterParam.getUsername(), KeyPrefixConstant.REGISTERED_USERNAME));
 
         MvcResult result = mvc.perform(
                 // build request

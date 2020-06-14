@@ -1,5 +1,6 @@
 package cn.edu.sdtbu.filter;
 
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -16,9 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static cn.edu.sdtbu.model.properties.Const.ADMIN_TOKEN_HEADER_NAME;
-import static cn.edu.sdtbu.model.properties.Const.API_ACCESS_KEY_HEADER_NAME;
-
 /**
  * @author bestsort
  * @version 1.0
@@ -30,12 +28,12 @@ public class CorsFilter extends GenericFilterBean {
 
     private final static String ALLOW_HEADERS = StringUtils.joinWith(",",
         HttpHeaders.CONTENT_TYPE,
-        ADMIN_TOKEN_HEADER_NAME,
-        API_ACCESS_KEY_HEADER_NAME);
+        WebContextConstant.ADMIN_TOKEN_HEADER_NAME,
+        WebContextConstant.API_ACCESS_KEY_HEADER_NAME);
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletRequest  httpServletRequest  = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         // Set customized header

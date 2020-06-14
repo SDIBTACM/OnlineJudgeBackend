@@ -18,6 +18,7 @@ public class UserLoginInfoVO extends BaseUserVO {
     String token;
     @ApiModelProperty(notes = "标注用户身份:student(default)/teacher/admin")
     UserRole role;
+
     public static UserLoginInfoVO fetchByUserEntity(UserEntity entity) {
         UserLoginInfoVO loginInfo = new UserLoginInfoVO();
         loginInfo.setId(entity.getId());

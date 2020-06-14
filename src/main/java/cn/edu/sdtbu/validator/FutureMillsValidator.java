@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.validator;
 
-import cn.edu.sdtbu.validator.annotation.FutureMills;
 import cn.edu.sdtbu.util.TimeUtil;
+import cn.edu.sdtbu.validator.annotation.FutureMills;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

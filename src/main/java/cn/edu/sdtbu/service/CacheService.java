@@ -13,9 +13,14 @@ import java.util.Map;
  */
 public interface CacheService extends BaseService<CacheEntity, Long> {
     void removeByKey(String key);
+
     void put(String key, String value);
+
     String get(String key);
+
     Map<String, String> fetchAllByPrefix(String prefix);
+
     void inc(String key, int stepLength);
+
     void removeByKeysIn(Collection<String> collection);
 }

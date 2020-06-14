@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class DebugProperties {
-    private Boolean generatorData = false;
+    private Boolean generatorData                  = false;
     private Boolean refreshAllProblemSolutionCount = false;
-    private Boolean refreshRankList = false;
+    private Boolean refreshRankList                = false;
 }

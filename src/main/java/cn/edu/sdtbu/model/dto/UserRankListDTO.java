@@ -17,8 +17,8 @@ public class UserRankListDTO {
     Integer submitCount;
 
     public static UserRankListDTO converByTuple(Tuple tuple) {
-        UserRankListDTO dto = new UserRankListDTO();
-        double score = tuple.getScore();
+        UserRankListDTO dto   = new UserRankListDTO();
+        double          score = tuple.getScore();
         dto.setAcceptedCount((int) score);
         dto.setId(Long.parseLong(tuple.getElement()));
         dto.setSubmitCount((int) ((score - (int) score) * 1e6));

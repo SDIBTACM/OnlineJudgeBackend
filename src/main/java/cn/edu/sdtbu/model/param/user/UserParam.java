@@ -1,9 +1,9 @@
 package cn.edu.sdtbu.model.param.user;
 
-import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.util.SpringUtil;
+import cn.edu.sdtbu.validator.annotation.NullOrNotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,6 +54,7 @@ public class UserParam {
     public UserEntity transformToEntity() {
         return transformToEntity(new UserEntity());
     }
+
     public UserEntity transformToEntity(UserEntity entity) {
         SpringUtil.cloneWithoutNullVal(this, entity);
         return entity;
@@ -70,12 +71,13 @@ public class UserParam {
     }
 
 
-
     public interface Default {
 
     }
+
     public interface BeforeResister {
     }
+
     public interface BeforeUpdate {
 
     }

@@ -12,6 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * default k-v cache
+ *
  * @author bestsort
  */
 @Target({ElementType.METHOD})
@@ -20,24 +21,28 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Cache {
     /**
      * default expire
+     *
      * @return 30 minutes
      */
     long expire() default 30;
 
     /**
      * time unit
+     *
      * @return default
      */
     TimeUnit timeUnit() default TimeUnit.MINUTES;
 
     /**
      * add or subtract random number on {@link #expire()} to prevent cache avalanche
+     *
      * @return default true
      */
     boolean random() default true;
 
     /**
      * random interval, just valid with {@link #random()} is true
+     *
      * @return default
      */
     int randomInterval() default 3;
@@ -45,6 +50,7 @@ public @interface Cache {
     /**
      * support spring expression language
      * {@see <a href="https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html">SpEL</a>}
+     *
      * @return key
      */
     @AliasFor("value")

@@ -9,7 +9,7 @@ import com.alibaba.fastjson.annotation.JSONType;
  * @date 2020-04-21 15:31
  */
 @JSONType(deserializer = IntEnumValueDeserializer.class)
-public enum  LangType implements IntValueEnum {
+public enum LangType implements IntValueEnum {
     //format: LANG_VERSION
     /**
      * c11
@@ -33,9 +33,11 @@ public enum  LangType implements IntValueEnum {
     PYTHON_2(4);
 
     private final int value;
+
     LangType(int value) {
         this.value = value;
     }
+
     @Override
     public int getValue() {
         return value;

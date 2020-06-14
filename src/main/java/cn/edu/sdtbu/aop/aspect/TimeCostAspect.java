@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.aop.aspect;
 
-import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.constant.WebContextConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,10 +27,10 @@ public class TimeCostAspect {
             return;
         }
         HttpServletResponse response = ((ServletRequestAttributes) requestAttributes).getResponse();
-        Long before = (Long)requestAttributes.getAttribute(Const.REQUEST_START_TIMESTAMP,0);
+        Long                before   = (Long) requestAttributes.getAttribute(WebContextConstant.REQUEST_START_TIMESTAMP, 0);
         if (before != null && response != null) {
             long costTime = System.nanoTime() - before;
-            response.setHeader(Const.REQUEST_COST_TIME, String.format("%.3f ms", 1.0 * costTime / 1e6));
+            response.setHeader(WebContextConstant.REQUEST_COST_TIME, String.format("%.3f ms", 1.0 * costTime / 1e6));
         }
     }
     //@annotation(cn.edu.sdtbu.aop.annotation.Debug)

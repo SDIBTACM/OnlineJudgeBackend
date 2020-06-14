@@ -72,8 +72,8 @@ public class RedisManagerImpl implements RedisManager {
     @Override
     public Map<String, String> fetchAll(String prefix) {
         try (Jedis jedis = pool.getResource()) {
-            Set<String> strings = jedis.keys(prefix + "*");
-            HashMap<String, String> map = new HashMap<>(strings.size());
+            Set<String>             strings = jedis.keys(prefix + "*");
+            HashMap<String, String> map     = new HashMap<>(strings.size());
             strings.forEach(i -> map.put(i, get(i)));
             return map;
         }
@@ -83,7 +83,7 @@ public class RedisManagerImpl implements RedisManager {
     public Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean less) {
         try (Jedis jedis = pool.getResource()) {
             long start = pageable.getOffset();
-            long stop = start + pageable.getPageSize() - 1;
+            long stop  = start + pageable.getPageSize() - 1;
             return less ?
                 jedis.zrangeWithScores(listName, start, stop) :
                 jedis.zrevrangeWithScores(listName, start, stop);

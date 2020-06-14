@@ -3,7 +3,7 @@ package cn.edu.sdtbu.listener;
 import cn.edu.sdtbu.debug.DebugUtil;
 import cn.edu.sdtbu.debug.GeneratorFakeData;
 import cn.edu.sdtbu.handler.CacheHandler;
-import cn.edu.sdtbu.model.properties.Const;
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.service.RefreshService;
 import cn.edu.sdtbu.service.base.BaseService;
@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * after application start need to do
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-11 08:45
@@ -36,25 +37,25 @@ import java.util.List;
 @Configuration
 public class StartedListener implements ApplicationListener<ApplicationStartedEvent> {
     @Resource
-    CacheHandler handler;
+    CacheHandler          handler;
     @Resource
-    RefreshService refreshService;
+    RefreshService        refreshService;
     @Resource
     OnlineJudgeProperties properties;
     @Resource
-    ApplicationContext context;
+    ApplicationContext    context;
     @Resource
-    GeneratorFakeData generatorFakeData;
+    GeneratorFakeData     generatorFakeData;
 
     @Override
     public void onApplicationEvent(@NonNull ApplicationStartedEvent event) {
         init();
         log.info("Online Judge V{} start success, click url to view [ swagger ] document {}",
-                Const.ONLINE_JUDGE_VERSION,
-                AnsiOutput.toString(AnsiColor.BLUE, "http://localhost:8080/swagger-ui.html"));
+            OnlineJudgeConstant.ONLINE_JUDGE_VERSION,
+            AnsiOutput.toString(AnsiColor.BLUE, "http://localhost:8080/swagger-ui.html"));
 
         log.info("Online Judge V{} start success, click url to view [ knife4j ] document {}",
-            Const.ONLINE_JUDGE_VERSION,
+            OnlineJudgeConstant.ONLINE_JUDGE_VERSION,
             AnsiOutput.toString(AnsiColor.BLUE, "http://localhost:8080/doc.html"));
     }
 
@@ -70,7 +71,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             context.getBeansOfType(BaseService.class).values().forEach(o -> map.put(o.getTemplateType(), o));
             try {
                 generatorDebugData(map);
-            } catch (IOException ignore) { }
+            } catch (IOException ignore) {
+            }
         }
         if (properties.getDebug().getRefreshAllProblemSolutionCount()) {
             refreshService.refreshSolutionCount(null);
@@ -89,10 +91,10 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         /**************************************** virtual rank list generator finished **********************************************/
         // parse JSON string and save to database
         JSONArray array = JSON.parseObject(json).getJSONArray(DebugUtil.ALL_DATA);
-        for (int i = 0;i < array.size(); i++) {
+        for (int i = 0; i < array.size(); i++) {
             JSONObject object = array.getJSONObject(i);
-            List lst;
-            Class<?> clazz;
+            List       lst;
+            Class<?>   clazz;
             // try parse
             try {
                 clazz = Class.forName(object.getString(DebugUtil.ALL_CLASS_NAME));

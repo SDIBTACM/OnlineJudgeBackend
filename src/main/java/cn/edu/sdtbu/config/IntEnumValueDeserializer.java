@@ -19,10 +19,10 @@ public class IntEnumValueDeserializer implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
-        final JSONLexer lexer = parser.lexer;
-        final int token = lexer.token();
-        Class cls = (Class) type;
-        Object[] enumConstants = cls.getEnumConstants();
+        final JSONLexer lexer         = parser.lexer;
+        final int       token         = lexer.token();
+        Class           cls           = (Class) type;
+        Object[]        enumConstants = cls.getEnumConstants();
         if (IntValueEnum.class.isAssignableFrom(cls)) {
             for (Object enumConstant : enumConstants) {
                 if (lexer.stringVal().equals(((IntValueEnum) enumConstant).getValue() + "")) {

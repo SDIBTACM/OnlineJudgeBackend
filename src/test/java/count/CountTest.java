@@ -2,7 +2,7 @@ package count;
 
 import cn.edu.sdtbu.Application;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.KeyPrefix;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.service.CountService;
 import cn.edu.sdtbu.service.ProblemService;
 import cn.edu.sdtbu.service.UserService;
@@ -37,7 +37,7 @@ public class CountTest {
     @Test
     public void test() throws InterruptedException, TimeoutException {
         Long userId = 1L;
-        String key = CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefix.USER_ACCEPTED_COUNT);
+        String key = CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefixConstant.USER_ACCEPTED_COUNT);
         problemService.fetchAllUserSubmitStatus(userId);
         // wait count submit( async )
         Thread.sleep(200);

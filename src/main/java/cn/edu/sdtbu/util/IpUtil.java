@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.util;
 
 import org.apache.commons.validator.routines.InetAddressValidator;
+
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 
@@ -15,11 +16,13 @@ import java.net.Inet6Address;
 
 public class IpUtil {
 
-    static final String IP_CUT = "/";
-    static final int BYTE_SIZE = 8;
+    static final String IP_CUT    = "/";
+    static final int    BYTE_SIZE = 8;
+
     /**
      * Checks if an IPv4 or IPv6 address is contained in the list of given IPs or subnets.
-     * @param ip string
+     *
+     * @param ip      string
      * @param subnets ips
      * @return bool
      */
@@ -34,7 +37,8 @@ public class IpUtil {
 
     /**
      * CChecks if an IPv4 or IPv6 address is contained in the list of given IP or subnet.
-     * @param ip string
+     *
+     * @param ip     string
      * @param subnet string
      * @return bool
      */
@@ -44,7 +48,7 @@ public class IpUtil {
         }
 
         String address;
-        int netmask;
+        int    netmask;
         if (subnet.contains(IP_CUT)) {
             address = subnet.split(IP_CUT, 2)[0];
             try {
@@ -62,6 +66,7 @@ public class IpUtil {
 
     /**
      * Check if the ip is of IP
+     *
      * @param ip string
      * @return bool
      */
@@ -71,6 +76,7 @@ public class IpUtil {
 
     /**
      * Check if the ip is of IPv4 type
+     *
      * @param ip string
      * @return bool
      */
@@ -80,6 +86,7 @@ public class IpUtil {
 
     /**
      * Check if the ip is of IPv6 type
+     *
      * @param ip string
      * @return bool
      */
@@ -113,11 +120,11 @@ public class IpUtil {
     }
 
     static private boolean isBytesMatchBits(byte[] source, byte[] test, int bit) {
-        if (source.length == 0  || source.length != test.length) {
+        if (source.length == 0 || source.length != test.length) {
             return false;
         }
 
-        for (int i = 0, ceil = (int)Math.ceil(bit / (double)BYTE_SIZE); i < ceil; ++i) {
+        for (int i = 0, ceil = (int) Math.ceil(bit / (double) BYTE_SIZE); i < ceil; ++i) {
             int left = bit - BYTE_SIZE * i;
             left = Math.min(left, BYTE_SIZE);
             int mask = ~(0xff >> left) & 0xff;

@@ -2,14 +2,18 @@ package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
+import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.contest.ContestEntity;
 import cn.edu.sdtbu.model.entity.contest.ContestPrivilegeEntity;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
-import cn.edu.sdtbu.model.enums.*;
+import cn.edu.sdtbu.model.enums.ContestPrivilege;
+import cn.edu.sdtbu.model.enums.ContestPrivilegeTypeEnum;
+import cn.edu.sdtbu.model.enums.JudgeResult;
+import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.ProblemParam;
-import cn.edu.sdtbu.model.properties.Const;
 import cn.edu.sdtbu.model.vo.ProblemDescVO;
 import cn.edu.sdtbu.model.vo.ProblemSimpleListVO;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -41,17 +45,32 @@ import java.util.stream.Collectors;
 @Service
 public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long> implements ProblemService {
 
+    @Resource
+    ProblemDescService         descService;
+    @Resource
+    SolutionService            solutionService;
+    @Resource
+    ContestProblemService      contestProblemService;
+    @Resource
+    ContestPrivilegeRepository contestPrivilegeRepository;
+    @Resource
+    ContestService contestService;
+
+    protected ProblemServiceImpl(ProblemRepository repository) {
+        super(repository);
+    }
+
     @Override
     public Page<ProblemSimpleListVO> listSimpleLists(UserEntity user, Pageable pageable) {
-        Page<ProblemEntity> problemEntities = listAll(pageable);
-        List<ProblemSimpleListVO> listVOList = new LinkedList<>();
+        Page<ProblemEntity>       problemEntities = listAll(pageable);
+        List<ProblemSimpleListVO> listVOList      = new LinkedList<>();
         List<Long> problemIds = problemEntities.getContent()
             .stream().map(ProblemEntity::getId).collect(Collectors.toList());
 
         // generator all will be used keys
-        Set<String> keys = CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefix.PROBLEM_TOTAL_ACCEPT);
-        keys.addAll(CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefix.PROBLEM_TOTAL_SUBMIT));
-        keys.addAll(CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefix.PROBLEM_TOTAL_SUBMIT_PEOPLE));
+        Set<String> keys = CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefixConstant.PROBLEM_TOTAL_ACCEPT);
+        keys.addAll(CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefixConstant.PROBLEM_TOTAL_SUBMIT));
+        keys.addAll(CacheUtil.defaultKeys(ProblemEntity.class, new ArrayList<>(problemIds), KeyPrefixConstant.PROBLEM_TOTAL_SUBMIT_PEOPLE));
         Map<String, Long> allCountInfo = countService.fetchCountByKeys(keys);
 
         Set<Long> isAccepted = new HashSet<>();
@@ -63,9 +82,9 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         }
 
         for (ProblemEntity entity : problemEntities.getContent()) {
-            String acCountKey = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefix.PROBLEM_TOTAL_ACCEPT);
-            String submitCountKye = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefix.PROBLEM_TOTAL_SUBMIT);
-            String submitPeopleCountKey = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefix.PROBLEM_TOTAL_SUBMIT_PEOPLE);
+            String acCountKey           = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefixConstant.PROBLEM_TOTAL_ACCEPT);
+            String submitCountKye       = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefixConstant.PROBLEM_TOTAL_SUBMIT);
+            String submitPeopleCountKey = CacheUtil.defaultKey(ProblemEntity.class, entity.getId(), KeyPrefixConstant.PROBLEM_TOTAL_SUBMIT_PEOPLE);
 
             ProblemSimpleListVO buffer = new ProblemSimpleListVO(
                 entity.getId(),
@@ -77,7 +96,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
                 user != null && (UserRole.ADMIN.equals(user.getRole()) || user.getId().equals(entity.getOwnerId())) ? false : entity.getHide(),
                 //TODO fetch last submit
                 TimeUtil.now()
-                );
+            );
             listVOList.add(buffer);
         }
         return new PageImpl<>(listVOList, pageable, problemEntities.getTotalElements());
@@ -85,9 +104,9 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
 
     @Override
     public UserCenterVO fetchAllUserSubmitStatus(Long userId) {
-        List<SolutionEntity> list = solutionService.findAllByOwnerId(userId);
-        List<Long> accepted = new LinkedList<>();
-        List<Long> unsolved = new LinkedList<>();
+        List<SolutionEntity>   list      = solutionService.findAllByOwnerId(userId);
+        List<Long>             accepted  = new LinkedList<>();
+        List<Long>             unsolved  = new LinkedList<>();
         Map<JudgeResult, Long> resultMap = new TreeMap<>();
 
         HashMap<Long, JudgeResult> status = new HashMap<>();
@@ -98,7 +117,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
                 status.put(item.getProblemId(), item.getResult());
             }
         });
-        status.forEach((k,v) -> {
+        status.forEach((k, v) -> {
             if (v == JudgeResult.ACCEPT) {
                 accepted.add(k);
             } else {
@@ -107,14 +126,15 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         });
         // cache common fields
         countService.setCount(
-            CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefix.USER_ACCEPTED_COUNT),
+            CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefixConstant.USER_ACCEPTED_COUNT),
             (long) accepted.size());
         countService.setCount(
-            CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefix.USER_SUBMIT_COUNT),
+            CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefixConstant.USER_SUBMIT_COUNT),
             (long) list.size()
         );
         return new UserCenterVO(accepted, unsolved, resultMap);
     }
+
     @Override
     public void generatorProblem(ProblemParam param) {
         create(param.transformToEntity());
@@ -123,7 +143,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
 
     @Override
     public ProblemDescVO getProblemDescVoById(ProblemDescVO vo, Long id, Long contestId, Long userId) {
-        checkPrivilege(userId,id, contestId);
+        checkPrivilege(userId, id, contestId);
         vo = getCount(vo, id, contestId);
         if (userId == null) {
             vo.setIsAccepted(false);
@@ -137,13 +157,13 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
         return vo;
     }
 
-    private void checkPrivilege(Long userId,Long problemId, Long contestId) {
+    private void checkPrivilege(Long userId, Long problemId, Long contestId) {
         List<Pair<Class<?>, String>> list = new LinkedList<>();
         list.add(CacheUtil.pair(UserEntity.class, userId));
         list.add(CacheUtil.pair(ProblemEntity.class, problemId));
         list.add(CacheUtil.pair(ContestEntity.class, contestId));
 
-        String key = CacheUtil.defaultKey(list, KeyPrefix.CONTEST_PRIVILEGE);
+        String key = CacheUtil.defaultKey(list, KeyPrefixConstant.CONTEST_PRIVILEGE);
 
         if (Boolean.parseBoolean(cache().get(key))) {
             return;
@@ -173,7 +193,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
                 checkPrivilegePassed = false;
             } else {
                 Optional<ContestPrivilegeEntity> res = contestPrivilegeRepository
-                    .findByContestIdAndUserIdAndDeleteAt(contestId, userId, Const.TIME_ZERO);
+                    .findByContestIdAndUserIdAndDeleteAt(contestId, userId, OnlineJudgeConstant.TIME_ZERO);
                 if (res.isPresent()) {
                     if (res.get().getType().getValue() < ContestPrivilegeTypeEnum.ALLOW_TAKE_PART_IN.getValue()) {
                         checkPrivilegePassed = false;
@@ -198,45 +218,30 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
             CacheUtil.defaultKey(
                 CacheUtil.pair(ContestEntity.class, contestId),
                 CacheUtil.pair(ProblemEntity.class, id),
-                KeyPrefix.PROBLEM_CONTEST_ACCEPTED
+                KeyPrefixConstant.PROBLEM_CONTEST_ACCEPTED
             )
         ));
         vo.setSubmitCount(countService.fetchCount(
             CacheUtil.defaultKey(
                 CacheUtil.pair(ContestEntity.class, contestId),
                 CacheUtil.pair(ProblemEntity.class, id),
-                KeyPrefix.PROBLEM_CONTEST_SUBMIT_COUNT
+                KeyPrefixConstant.PROBLEM_CONTEST_SUBMIT_COUNT
             )
         ));
         return vo;
     }
+
     private ProblemDescVO getProblemCount(ProblemDescVO vo, Long id) {
         vo.setAcCount(countService.fetchCount(
             CacheUtil.defaultKey(
-                ProblemEntity.class, id, KeyPrefix.PROBLEM_TOTAL_ACCEPT
+                ProblemEntity.class, id, KeyPrefixConstant.PROBLEM_TOTAL_ACCEPT
             )
         ));
         vo.setSubmitCount(countService.fetchCount(
             CacheUtil.defaultKey(
-                ProblemEntity.class, id, KeyPrefix.PROBLEM_TOTAL_SUBMIT
+                ProblemEntity.class, id, KeyPrefixConstant.PROBLEM_TOTAL_SUBMIT
             )
         ));
         return vo;
-    }
-
-    @Resource
-    ProblemDescService descService;
-    @Resource
-    SolutionService solutionService;
-    @Resource
-    ContestProblemService contestProblemService;
-    @Resource
-    ContestPrivilegeRepository contestPrivilegeRepository;
-
-    @Resource
-    ContestService contestService;
-
-    protected ProblemServiceImpl(ProblemRepository repository) {
-        super(repository);
     }
 }

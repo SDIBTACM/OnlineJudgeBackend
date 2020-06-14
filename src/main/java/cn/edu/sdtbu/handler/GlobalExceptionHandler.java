@@ -19,6 +19,7 @@ import java.util.Objects;
 
 /**
  * global exception handler
+ *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-10 16:17
@@ -28,37 +29,38 @@ import java.util.Objects;
 public class GlobalExceptionHandler {
     /**
      * validator result handler
+     *
      * @param e result
      * @return response
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException e) {
-        List<ObjectError> errorList = e.getBindingResult().getAllErrors();
-        Map<String, String> errors = new HashMap<>(errorList.size());
+        List<ObjectError>   errorList = e.getBindingResult().getAllErrors();
+        Map<String, String> errors    = new HashMap<>(errorList.size());
         errorList.forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
         log.debug("bad request: {}", errors);
 
         return ResponseEntity.badRequest().body(
-                ErrorResponse.builder()
-                        .errors(errors)
-                        .code(HttpStatus.BAD_REQUEST.value())
-                        .message("parameter cannot pass the check")
-                        .requestId(fetchRequestId())
-                        .build()
+            ErrorResponse.builder()
+                .errors(errors)
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message("parameter cannot pass the check")
+                .requestId(fetchRequestId())
+                .build()
         );
     }
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleCustomExceptions(BaseException e) {
         log.debug("request id {}, exception type: {}, http status: {}, message: {}",
-            fetchRequestId(), e.getClass(), e.getStatus(),e.getErrorData());
+            fetchRequestId(), e.getClass(), e.getStatus(), e.getErrorData());
         return ResponseEntity.status(e.getStatus())
-                .body(ErrorResponse.builder()
-                    .errors(e.getMessage())
-                    .code(e.getStatus().value())
-                    .requestId(fetchRequestId())
-                    .build()
-        );
+            .body(ErrorResponse.builder()
+                .errors(e.getMessage())
+                .code(e.getStatus().value())
+                .requestId(fetchRequestId())
+                .build()
+            );
     }
 
     private Object fetchRequestId() {

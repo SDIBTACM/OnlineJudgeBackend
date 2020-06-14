@@ -19,6 +19,7 @@ public interface CountService {
 
     /**
      * fetch total count by key, if not found, return 0
+     *
      * @param key must be not null
      * @return total
      */
@@ -26,7 +27,7 @@ public interface CountService {
 
     @Async
     @Transactional(rollbackFor = Exception.class)
-    void  incCount(String key, int step);
+    void incCount(String key, int step);
 
     @Async
     @Transactional(rollbackFor = Exception.class)
