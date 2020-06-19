@@ -23,13 +23,6 @@ public class RefreshController {
     RefreshService refreshService;
 
     @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
-    @PostMapping("/problemSolutionCount")
-    public ResponseEntity<Void> refreshProblemSolutionCount(Long problemId) {
-        refreshService.refreshSolutionCount(problemId);
-        return ResponseEntity.ok(null);
-    }
-
-    @SourceSecurity(SecurityType.AT_LEAST_ADMIN)
     @PostMapping("/refreshRankList")
     public ResponseEntity<Void> refreshRankList(Boolean reloadCount) {
         refreshService.refreshRankList(reloadCount);

@@ -7,10 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 /**
@@ -53,8 +50,20 @@ public class ProblemEntity extends BaseEntityWithDeleteTs {
     @Column
     Boolean     hide;
     @Column
+    Long submitCount;
+    @Column
+    Long acceptedCount;
+    @Column
     Timestamp   testDataUpdatedAt;
-
+    @PrePersist
+    void preInsert() {
+        if (submitCount == null) {
+            submitCount = 0L;
+        }
+        if (acceptedCount == null) {
+            acceptedCount = 0L;
+        }
+    }
     public static ProblemEntity getDefaultValue() {
         ProblemEntity entity = new ProblemEntity();
         entity.hide = false;

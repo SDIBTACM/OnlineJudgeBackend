@@ -22,9 +22,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Parameterized.class)
 @ActiveProfiles("test")
 public class IpUnitTest {
-    private boolean result;
-    private String ip;
-    private String[] subnets;
+    private final boolean result;
+    private final String  ip;
+    private final String[] subnets;
 
     public IpUnitTest(boolean result, String ip, String subnets) {
         this.ip = ip;

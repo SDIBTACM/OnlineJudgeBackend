@@ -47,6 +47,10 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @Column(nullable = false)
     UserRole role;
 
+    @Column
+    Long acceptedCount;
+    @Column
+    Long submitCount;
     /**
      * used UUID
      */
@@ -68,5 +72,11 @@ public class UserEntity extends BaseEntityWithDeleteTs {
     @PrePersist
     protected void prePersist() {
         rememberToken = UUID.randomUUID().toString();
+        if (acceptedCount == null) {
+            acceptedCount = 0L;
+        }
+        if (submitCount == null) {
+            submitCount = 0L;
+        }
     }
 }

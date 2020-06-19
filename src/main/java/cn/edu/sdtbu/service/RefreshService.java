@@ -7,6 +7,4 @@ package cn.edu.sdtbu.service;
  */
 public interface RefreshService {
     void refreshRankList(Boolean reloadCount);
-
-    void refreshSolutionCount(Long problemId);
 }

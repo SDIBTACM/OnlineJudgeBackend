@@ -74,14 +74,10 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
             } catch (IOException ignore) {
             }
         }
-        if (properties.getDebug().getRefreshAllProblemSolutionCount()) {
-            refreshService.refreshSolutionCount(null);
-        }
-        //refresh rank list
+        //刷新排行榜
         if (properties.getDebug().getRefreshRankList()) {
-            refreshService.refreshRankList(true);
+            refreshService.refreshRankList(properties.getDebug().getRefreshAllProblemSolutionCount());
         }
-        // init rank list
 
     }
 

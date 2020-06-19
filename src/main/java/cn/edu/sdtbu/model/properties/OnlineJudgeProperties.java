@@ -21,6 +21,8 @@ public class OnlineJudgeProperties {
     @NestedConfigurationProperty
     private CacheProperties cache = new CacheProperties();
 
+    private Integer reloadPageSize = 20000;
+
     @NestedConfigurationProperty
     private MailProperties  mail  = new MailProperties();
     @NestedConfigurationProperty

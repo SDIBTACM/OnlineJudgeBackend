@@ -4,22 +4,24 @@ import cn.edu.sdtbu.cache.CacheStore;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
-import cn.edu.sdtbu.model.entity.CountEntity;
+import cn.edu.sdtbu.model.dto.LongPair;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
-import cn.edu.sdtbu.repository.CountRepository;
-import cn.edu.sdtbu.repository.user.UserRepository;
-import cn.edu.sdtbu.service.CountService;
-import cn.edu.sdtbu.service.RefreshService;
-import cn.edu.sdtbu.service.SolutionService;
+import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
+import cn.edu.sdtbu.service.*;
 import cn.edu.sdtbu.util.CacheUtil;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -32,98 +34,102 @@ import java.util.stream.Collectors;
 public class RefreshServiceImpl implements RefreshService {
 
     @Resource
-    UserRepository  userRepository;
-    @Resource
-    CountRepository countRepository;
-    @Resource
     CountService    countService;
+    @Resource
+    UserService userService;
+    @Resource
+    ProblemService problemService;
     @Resource
     SolutionService solutionService;
     @Resource
     CacheHandler    handler;
-
+    @Resource
+    OnlineJudgeProperties properties;
     @Override
     public void refreshRankList(Boolean reloadCount) {
+        Map<Long, UserEntity> userEntities = userService.listAll().stream()
+            // 过滤被删除用户
+            .filter(o -> o.getDeleteAt().equals(OnlineJudgeConstant.TIME_ZERO))
+            .collect(Collectors.toMap(UserEntity::getId, o -> o));
+        Map<Long, LongPair> userMap = userEntities.values()
+            .stream()
+            .collect(Collectors.toMap(
+                UserEntity::getId, o -> LongPair.of(o.getAcceptedCount(), o.getSubmitCount())));
+
+        // 和ProblemEntity分开处理, 减少GC压力防止OOM
         if (reloadCount) {
-            reloadUserSubmitCount();
+            userMap = reloadUserSubmitCount(userMap);
         }
 
-        Map<String, Long>   totalSubmitMap   = countService.fetchByKeyLike(CacheUtil.defaultKey(UserEntity.class, "%", KeyPrefixConstant.USER_SUBMIT_COUNT));
-        Map<String, Long>   totalAcceptCount = countService.fetchByKeyLike(CacheUtil.defaultKey(UserEntity.class, "%", KeyPrefixConstant.USER_ACCEPTED_COUNT));
-        Map<String, Double> rankMap          = new HashMap<>(totalSubmitMap.size());
+        Map<String, Double> rankMap          = Maps.newHashMap();
 
-        int       submitPrefixLength = CacheUtil.defaultKey(UserEntity.class, "", KeyPrefixConstant.USER_SUBMIT_COUNT).length();
-        Set<Long> usedId             = new HashSet<>();
-        totalSubmitMap.forEach((f, s) -> {
-            String id       = f.substring(submitPrefixLength);
-            Long   accepted = totalAcceptCount.getOrDefault(CacheUtil.defaultKey(UserEntity.class, usedId, KeyPrefixConstant.USER_ACCEPTED_COUNT), 0L);
-            rankMap.put(id, CacheUtil.rankListScore(accepted, s));
-            usedId.add(Long.parseLong(id));
-        });
-
-        // users who not submit solution
-        Double zero = 0.000000;
-        userRepository.findAllByDeleteAt(OnlineJudgeConstant.TIME_ZERO).forEach(i -> {
-            if (!usedId.contains(i.getId())) {
-                rankMap.put(i.getId() + "", zero);
-            }
+        userMap.forEach((f, r) -> {
+            rankMap.put(f.toString(), CacheUtil.rankListScore(r.getFirst(), r.getSecond()));
+            UserEntity entity = userEntities.get(f);
+            entity.setAcceptedCount(r.getFirst());
+            entity.setSubmitCount(r.getSecond());
         });
         cache().delete(KeyPrefixConstant.USERS_RANK_LIST_DTO);
         cache().sortedListAdd(KeyPrefixConstant.USERS_RANK_LIST_DTO, rankMap);
+        userService.saveAll(userEntities.values());
     }
 
-    private void reloadUserSubmitCount() {
-        Map<String, Long> map = new HashMap<>();
-        solutionService.listAll().forEach(i -> {
-            String key;
-            if (i.getResult().equals(JudgeResult.ACCEPT)) {
-                key = CacheUtil.defaultKey(UserEntity.class, i.getOwnerId(), KeyPrefixConstant.USER_ACCEPTED_COUNT);
-                map.put(key, map.getOrDefault(key, 0L) + 1);
-            }
-            key = CacheUtil.defaultKey(UserEntity.class, i.getOwnerId(), KeyPrefixConstant.USER_SUBMIT_COUNT);
-            map.put(key, map.getOrDefault(key, 0L) + 1);
-        });
-        Map<String, CountEntity> countEntities = countRepository.findAllByCountKeyIn(map.keySet())
-            .stream().collect(Collectors.toMap(CountEntity::getCountKey, i -> i));
-        map.forEach((f, s) -> {
-            CountEntity countEntity;
-            if (countEntities.containsKey(f)) {
-                countEntity = countEntities.get(f);
-            } else {
-                countEntity = new CountEntity();
-                countEntity.setCountKey(f);
-            }
-            countEntity.setTotal(s);
-            countEntities.put(countEntity.getCountKey(), countEntity);
-        });
-        countRepository.saveAll(countEntities.values());
-    }
+    private Map<Long, LongPair> reloadUserSubmitCount(Map<Long, LongPair> userMap) {
+        long total = 0L;
+        // problemId - <accepted, submitted> map
+        Map<Long, LongPair>  pairMap  = Maps.newHashMap();
+        // problemId - is init
+        Map<Long, Boolean> initMap = Maps.newHashMap();
+        // userId - <accepted, submitted> map
+        List<SolutionEntity> solutionEntities;
+        Map<Long, ProblemEntity> problemEntityMap = problemService.listAll().stream().collect(
+            Collectors.toMap(ProblemEntity::getId, o -> o));
 
-    @Override
-    public void refreshSolutionCount(Long problemId) {
-        List<SolutionEntity> solutions;
-        if (problemId == null) {
-            solutions = solutionService.listAll();
-        } else {
-            solutions = solutionService.findAllByProblemId(problemId);
-        }
-        Map<Long, Long> problemAccepted  = new HashMap<>();
-        Map<Long, Long> problemSubmitted = new HashMap<>();
-        solutions.forEach(i -> {
-            if (i.getResult().equals(JudgeResult.ACCEPT)) {
-                problemAccepted.put(i.getProblemId(), problemAccepted.getOrDefault(i.getProblemId(), 0L) + 1);
-            }
-            problemSubmitted.put(i.getProblemId(), problemSubmitted.getOrDefault(i.getProblemId(), 0L) + 1);
-        });
-        problemSubmitted.forEach((f, s) -> {
-            countService.setCount(CacheUtil.defaultKey(
-                ProblemEntity.class, f, KeyPrefixConstant.PROBLEM_TOTAL_ACCEPT), problemAccepted.getOrDefault(f, 0L));
-            countService.setCount(CacheUtil.defaultKey(
-                ProblemEntity.class, f, KeyPrefixConstant.PROBLEM_TOTAL_SUBMIT), s);
 
-        });
-        log.info("problem solution count refresh completed, problem id is {}",
-            problemId == null ? "all" : problemId);
+        int                  page     = 0;
+        log.info("开始重新统计各类提交数, 每次加载{}条数据", properties.getReloadPageSize());
+        // 按页进行处理， 防止OOM
+        do {
+            Pageable             pageable = PageRequest.of(page, properties.getReloadPageSize(), Sort.unsorted());
+
+            solutionEntities = solutionService.listAll(pageable).getContent();
+            if (solutionEntities.isEmpty()) {
+                break;
+            }
+            //统计该页所有计数情况
+            solutionEntities.forEach(i -> {
+                LongPair pair = pairMap.getOrDefault(i.getProblemId(), LongPair.of(0L, 0L));
+                LongPair userPair = userMap.getOrDefault(i.getOwnerId(), LongPair.of(0L, 0L));
+
+                if (i.getResult().equals(JudgeResult.ACCEPT)) {
+                    pair.addFirst();
+                    userPair.addFirst();
+                }
+                userPair.addSecond();
+                pair.addSecond();
+                userMap.put(i.getOwnerId(), userPair);
+                pairMap.put(i.getProblemId(), pair);
+            });
+
+            // 将统计数据更新到 ProblemEntity
+            pairMap.forEach((f, s) -> {
+                ProblemEntity entity = problemEntityMap.get(f);
+                if (initMap.containsKey(f)) {
+                    entity.setAcceptedCount(s.getFirst() + entity.getAcceptedCount());
+                    entity.setSubmitCount(s.getSecond() + entity.getSubmitCount());
+                } else {
+                    entity.setAcceptedCount(s.getFirst());
+                    entity.setSubmitCount(s.getSecond());
+                    initMap.put(f, true);
+                }
+            });
+            total += solutionEntities.size();
+            //下一页
+            log.info("第{}页已经被成功统计, 目前为止已经统计{}次提交", page, total);
+            page++;
+        } while (true);
+        problemService.saveAll(problemEntityMap.values());
+        return userMap;
     }
 
     private CacheStore<String, String> cache() {

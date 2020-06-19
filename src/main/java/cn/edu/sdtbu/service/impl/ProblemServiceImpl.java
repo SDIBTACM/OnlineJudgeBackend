@@ -50,8 +50,6 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
     @Resource
     SolutionService            solutionService;
     @Resource
-    ContestProblemService      contestProblemService;
-    @Resource
     ContestPrivilegeRepository contestPrivilegeRepository;
     @Resource
     ContestService contestService;
@@ -124,14 +122,6 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
                 unsolved.add(k);
             }
         });
-        // cache common fields
-        countService.setCount(
-            CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefixConstant.USER_ACCEPTED_COUNT),
-            (long) accepted.size());
-        countService.setCount(
-            CacheUtil.defaultKey(UserEntity.class, userId, KeyPrefixConstant.USER_SUBMIT_COUNT),
-            (long) list.size()
-        );
         return new UserCenterVO(accepted, unsolved, resultMap);
     }
 
