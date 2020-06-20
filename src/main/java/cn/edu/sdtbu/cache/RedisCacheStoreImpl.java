@@ -86,11 +86,6 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     }
 
     @Override
-    public Long count(String key) {
-        return manager.totalElementOfList(key);
-    }
-
-    @Override
     public Long ttl(String key) {
         return manager.ttl(key);
     }
@@ -98,5 +93,10 @@ public class RedisCacheStoreImpl extends AbstractCacheStore<String, String> impl
     @Override
     public Long zRank(String key, String member, boolean less) {
         return manager.zRank(key, member, less);
+    }
+
+    @Override
+    public void clearCachePool() {
+
     }
 }

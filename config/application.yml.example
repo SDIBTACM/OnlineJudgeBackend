@@ -53,5 +53,6 @@ online-judge:
 
   debug:
     generator-data: false
-    refresh-all-problem-solution-count: true
+    refresh-all-problem-solution-count: false
     refresh-rank-list: true
+    refresh-user-submit-count: false

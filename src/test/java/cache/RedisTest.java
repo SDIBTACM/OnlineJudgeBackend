@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2020-04-22 23:05
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class RedisTest {
     @Autowired

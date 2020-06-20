@@ -55,7 +55,7 @@ public interface CacheStore<K, V> {
      * @param lesserFirst lesser first if {true} or greater first
      * @return JSON string list
      */
-    Set<Tuple> fetchRanksByPage(String listName, Pageable pageable, boolean lesserFirst);
+    Set<Tuple> fetchRanksByPage(@NonNull String listName, Pageable pageable, boolean lesserFirst);
 
     /**
      * get val or return default value when val is null
@@ -125,15 +125,17 @@ public interface CacheStore<K, V> {
      */
     CacheStoreType getCacheType();
 
-    void delete(K key);
+    void delete(@NonNull K key);
 
     void delete(Collection<K> collection);
 
     Map<K, V> fetchAll(String prefix);
 
-    Long count(String key);
-
     Long ttl(String key);
 
     Long zRank(String key, String member, boolean less);
+
+    void clearCachePool();
+
+    void init();
 }

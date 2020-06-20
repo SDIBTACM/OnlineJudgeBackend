@@ -11,5 +11,6 @@ import lombok.Data;
 public class DebugProperties {
     private Boolean generatorData                  = false;
     private Boolean refreshAllProblemSolutionCount = false;
-    private Boolean refreshRankList                = false;
+    private Boolean refreshRankList                = true;
+    private Boolean refreshUserSubmitCount         = false;
 }

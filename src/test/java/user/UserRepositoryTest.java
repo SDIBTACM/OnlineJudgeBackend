@@ -6,13 +6,17 @@ import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.repository.user.UserRepository;
 import cn.edu.sdtbu.service.impl.UserServiceImpl;
 import cn.edu.sdtbu.util.TimeUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Random;
 
 import static org.junit.Assert.fail;
 
@@ -23,24 +27,19 @@ import static org.junit.Assert.fail;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class UserRepositoryTest {
     @Autowired
     UserRepository repository;
-
     @Autowired
     UserServiceImpl userService;
     @Test
     public void userEntityCrudTest(){
         UserEntity entity = insertUserEntityTest();
-        updateUserEntityTest(entity);
-        insertUserEntityTest();
         assert 1 == countUserEntityTest(entity);
-        try {
-            insertUserEntityTest();
-            fail();
-        } catch (DataIntegrityViolationException ignore){ }
+        updateUserEntityTest(entity);
+        assert 0 == countUserEntityTest(entity);
     }
 
 
@@ -61,11 +60,11 @@ public class UserRepositoryTest {
     }
     UserEntity insertUserEntityTest(){
         UserEntity userEntity = UserEntity.getDefaultValue();
-        userEntity.setEmail("email");
+        userEntity.setEmail(RandomStringUtils.randomAlphanumeric(8) + "@email.com");
         userEntity.setNickname("nickName");
         userEntity.setPassword("password");
         userEntity.setSchool("school");
-        userEntity.setUsername("name");
+        userEntity.setUsername(RandomStringUtils.randomAlphabetic(8));
         userEntity.setRememberToken("token");
         userEntity =  repository.saveAndFlush(userEntity);
         assert userEntity.getId() != null;
@@ -73,20 +72,9 @@ public class UserRepositoryTest {
     }
 
     void updateUserEntityTest(UserEntity before){
-        UserEntity after = new UserEntity();
-        after.setRememberToken("afterUpdate");
-        after.setId(before.getId());
-        after.setDeleteAt(TimeUtil.now());
-        userService.update(after, after.getId());
-        after = userService.getById(before.getId());
-        assert before.getNickname().equals(after.getNickname());
-        assert !before.getRememberToken().equals(after.getRememberToken());
-        assert after.getRememberToken().equals("afterUpdate");
+        before.setRememberToken("afterUpdate");
+        before.setDeleteAt(TimeUtil.now());
+        userService.update(before, before.getId());
     }
-
-    UserEntity queryUserEntityById(Long userId){
-        return userService.getById(userId);
-    }
-
 
 }

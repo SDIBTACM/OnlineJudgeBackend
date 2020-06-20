@@ -6,5 +6,5 @@ package cn.edu.sdtbu.service;
  * @date 2020-05-25 20:51
  */
 public interface RefreshService {
-    void refreshRankList(Boolean reloadCount);
+    void refreshRankList(Boolean reloadCount, boolean freshUserEntity);
 }

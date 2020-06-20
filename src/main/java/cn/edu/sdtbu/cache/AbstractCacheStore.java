@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.cache;
 
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
+import cn.edu.sdtbu.service.RefreshService;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
@@ -19,6 +20,8 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
 
     @Resource
     OnlineJudgeProperties properties;
+    @Resource
+    RefreshService refreshService;
     //@Resource
     //ApplicationEventPublisher applicationEventPublisher;
 
@@ -74,5 +77,10 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
         for (K k : kvMap.keySet()) {
             put(k, kvMap.get(k));
         }
+    }
+
+    @Override
+    public void init() {
+        refreshService.refreshRankList(false, false);
     }
 }

@@ -160,7 +160,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     @Override
     public Page<UserRankListVO> fetchRankList(Pageable pageable) {
         //TODO init rank list from db
-        long                  total = cache().count(KeyPrefixConstant.USERS_RANK_LIST_DTO);
+        long                  total = cache().totalElementOfList(KeyPrefixConstant.USERS_RANK_LIST_DTO);
         List<UserRankListDTO> list  = new LinkedList<>();
         cache().fetchRanksByPage(KeyPrefixConstant.USERS_RANK_LIST_DTO, pageable, false)
             .forEach(i -> list.add(UserRankListDTO.converByTuple(i)));

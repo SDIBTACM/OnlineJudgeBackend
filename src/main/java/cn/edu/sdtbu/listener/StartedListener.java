@@ -76,7 +76,8 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
         //刷新排行榜
         if (properties.getDebug().getRefreshRankList()) {
-            refreshService.refreshRankList(properties.getDebug().getRefreshAllProblemSolutionCount());
+            refreshService.refreshRankList(properties.getDebug().getRefreshAllProblemSolutionCount(),
+                properties.getDebug().getRefreshUserSubmitCount());
         }
 
     }

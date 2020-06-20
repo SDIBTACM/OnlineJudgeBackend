@@ -20,24 +20,24 @@ public class CacheHandler {
     private static CacheStoreType                                                STRATEGY = CacheStoreType.MEMORY;
     private final  ConcurrentHashMap<CacheStoreType, CacheStore<String, String>> cacheMap = new ConcurrentHashMap<>();
 
-    /**
-     * Please don't use constructor method replace {@link #init(ApplicationContext)} to init {@link #cacheMap}
-     * It will cause the missing some implement. similar problems have been found in {@link CacheStoreType#MEMORY}
-     *
-     * @param context application context to fetch {@link CacheStore} implement
-     */
     public void init(ApplicationContext context, CacheStoreType type) {
         for (CacheStore cacheStore : context.getBeansOfType(CacheStore.class).values()) {
             this.cacheMap.put(cacheStore.getCacheType(), cacheStore);
         }
+        fetchCacheStore().init();
         setStrategy(type);
     }
 
     private void setStrategy(CacheStoreType strategy, boolean isChanged) {
         Assert.notNull(strategy, "storage must be not null");
         if (isChanged) {
+            if (strategy.equals(CacheStoreType.MEMORY)) {
+                log.warn("检测到使用的缓存模式为[MEMORY], 为保证OnlineJudge的长期运行, 请使用REDIS模式(MEMORY只适用于短期运行)");
+            }
             log.info("cache middleware was changed to {}", strategy);
+            fetchCacheStore().clearCachePool();
             STRATEGY = strategy;
+            fetchCacheStore().init();
         }
     }
 

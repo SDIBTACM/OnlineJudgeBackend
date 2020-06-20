@@ -1,14 +1,19 @@
 package controller;
 
 import cn.edu.sdtbu.Application;
+import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
+import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.param.user.LoginParam;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.vo.user.UserLoginInfoVO;
+import cn.edu.sdtbu.repository.user.UserRepository;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.CacheUtil;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,23 +31,24 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
+import java.util.Random;
 
 /**
- * TODO
- *
  * @author bestsort
  * @version 1.0
  * @date 2020-04-11 17:14
  */
-@SpringBootTest(classes = Application.class)
+
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
 @ActiveProfiles("test")
 public class AuthTest {
     @Resource
     public WebApplicationContext applicationContext;
     @Resource
     UserService userService;
+    @Resource
+    UserRepository userRepository;
     public MockMvc mvc;
     @Resource
     CacheHandler handler;
@@ -54,11 +60,23 @@ public class AuthTest {
     @Test
     public void registerTest() throws Exception {
         UserParam userRegisterParam = new UserParam();
-        userRegisterParam.setEmail("emaidTest@email");
+        userRegisterParam.setEmail(RandomStringUtils.randomAlphanumeric(8) + "@email");
         userRegisterParam.setNickname("nicknameTest");
         userRegisterParam.setPassword("password1");
         userRegisterParam.setUsername("usernameTest");
         userRegisterParam.setSchool("school");
+        UserEntity userEntity;
+        handler.fetchCacheStore().delete(
+            CacheUtil.defaultKey(UserEntity.class , userRegisterParam.getUsername(), KeyPrefixConstant.USERNAME));
+        handler.fetchCacheStore().delete(
+            CacheUtil.defaultKey(UserEntity.class , userRegisterParam.getUsername(), KeyPrefixConstant.REGISTERED_USERNAME));
+        handler.fetchCacheStore().delete(
+            CacheUtil.defaultKey(UserEntity.class, userRegisterParam.getEmail(), KeyPrefixConstant.REGISTERED_EMAIL));
+        try {
+            if ((userEntity = userService.getByUsername(userRegisterParam.getUsername())) != null) {
+                userRepository.deleteById(userEntity.getId());
+            }
+        } catch (NotFoundException ignore) { }
         handler.fetchCacheStore().delete(
             CacheUtil.defaultKey(String.class, userRegisterParam.getEmail(), KeyPrefixConstant.REGISTERED_EMAIL));
         handler.fetchCacheStore().delete(
@@ -79,6 +97,8 @@ public class AuthTest {
         userService.addUser(userRegisterParam);
         userRegisterParam.setPassword(password);
         loginTest(userRegisterParam);
+        handler.fetchCacheStore().delete(
+            CacheUtil.defaultKey(UserEntity.class , userRegisterParam.getUsername(), KeyPrefixConstant.USERNAME));
     }
     void loginTest(UserParam param) throws Exception {
         LoginParam loginParam = new LoginParam();

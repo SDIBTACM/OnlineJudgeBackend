@@ -18,10 +18,10 @@ import java.util.*;
 public class CacheUtil {
     public static final  String SEPARATOR          = ":";
     public static final  String NOT_DEFINED_PREFIX = "NotDefinedPrefix";
-    private static final double RATIO              = 1e-6;
+    public static final double RATIO              = 1e-6;
 
     public static Double rankListScore(Long acceptedCount, Long submitCount) {
-        return acceptedCount + (1 - submitCount * RATIO);
+        return acceptedCount - submitCount * RATIO;
     }
 
     public static String userSubmitCountKey(Long userId, Long problemId) {

@@ -46,7 +46,7 @@ public class RefreshServiceImpl implements RefreshService {
     @Resource
     OnlineJudgeProperties properties;
     @Override
-    public void refreshRankList(Boolean reloadCount) {
+    public void refreshRankList(Boolean reloadCount, boolean freshUserEntity) {
         Map<Long, UserEntity> userEntities = userService.listAll().stream()
             // 过滤被删除用户
             .filter(o -> o.getDeleteAt().equals(OnlineJudgeConstant.TIME_ZERO))
@@ -58,7 +58,7 @@ public class RefreshServiceImpl implements RefreshService {
 
         // 和ProblemEntity分开处理, 减少GC压力防止OOM
         if (reloadCount) {
-            userMap = reloadUserSubmitCount(userMap);
+            reloadUserSubmitCount(userMap);
         }
 
         Map<String, Double> rankMap          = Maps.newHashMap();
@@ -71,7 +71,9 @@ public class RefreshServiceImpl implements RefreshService {
         });
         cache().delete(KeyPrefixConstant.USERS_RANK_LIST_DTO);
         cache().sortedListAdd(KeyPrefixConstant.USERS_RANK_LIST_DTO, rankMap);
-        userService.saveAll(userEntities.values());
+        if (freshUserEntity) {
+            userService.saveAll(userEntities.values());
+        }
     }
 
     private Map<Long, LongPair> reloadUserSubmitCount(Map<Long, LongPair> userMap) {
