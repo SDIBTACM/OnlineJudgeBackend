@@ -97,56 +97,80 @@
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"0",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"2",
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"1",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"3",
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"2",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"4",
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"3",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"5",
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"4",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"6",
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"5",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"7",
                     "problemId":"1",
                     "ownerId":"1",
                     "result":"6",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 },
                 {
                     "id":"8",
                     "problemId":"2",
                     "ownerId":"1",
                     "result":"0",
-                    "lang":"0"
+                    "lang":"0",
+                    "codeLength":"200",
+                    "timeUsed":"234",
+                    "memoryUsed":"200"
                 }
             ]
         }

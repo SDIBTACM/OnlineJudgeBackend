@@ -1,9 +1,8 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.exception.ExistException;
-import cn.edu.sdtbu.exception.ForbiddenException;
 import cn.edu.sdtbu.exception.NotAcceptableException;
 import cn.edu.sdtbu.exception.NotFoundException;
+import cn.edu.sdtbu.exception.UnAuthedException;
 import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
@@ -26,6 +25,7 @@ import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -80,7 +80,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         if (cache().get(CacheUtil.defaultKey(String.class, ao.getEmail(), KeyPrefixConstant.REGISTERED_EMAIL)) != null ||
             cache().get(CacheUtil.defaultKey(String.class, ao.getUsername(), KeyPrefixConstant.REGISTERED_USERNAME)) != null ||
             countByUserNameOrEmail(ao.getUsername(), ao.getEmail()) != 0) {
-            throw new ExistException("该账户中的username/email已被使用。若此账号还未激活，请30分钟后重新注册.");
+            throw ExceptionConstant.REGISTER_ACCOUNT_EXISTED;
         }
     }
 
@@ -88,25 +88,27 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     public UserEntity login(String identify, String password, String requestIp) {
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(identify, OnlineJudgeConstant.TIME_ZERO);
         if (optional.isEmpty() || !BCrypt.checkpw(password, optional.get().getPassword())) {
-            throw new ForbiddenException("identify or password error");
+            throw new UnAuthedException("identify or password error");
         }
         return isLocked(optional.get());
     }
 
     @Override
-    public UserEntity login(String rememberToken, String requestIp) throws ForbiddenException, NotFoundException {
+    public UserEntity login(String rememberToken, String requestIp) {
         DecodedJWT jwtUnVerify = JWT.decode(rememberToken);
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
             jwtUnVerify.getClaim("username").asString(), OnlineJudgeConstant.TIME_ZERO);
-        UserEntity entity = optional.orElseThrow(() -> ExceptionConstant.UNAUTHORIZED);
-
+        if (optional.isPresent()) {
+            return null;
+        }
+        UserEntity entity = optional.get();
         Algorithm   algorithm = Algorithm.HMAC512(entity.getPassword() + entity.getRememberToken());
         JWTVerifier verifier  = JWT.require(algorithm).build();
         try {
             verifier.verify(rememberToken);
-        } catch (Exception e) {
-            log.info("well, someone try to act as " + entity.getUsername());
-            throw ExceptionConstant.UNAUTHORIZED;
+        } catch (JWTVerificationException e) {
+            log.info(String.format("well, someone try to act as %s, IP is %s", entity.getUsername(), requestIp));
+            return null;
         }
         return isLocked(entity);
     }
@@ -192,7 +194,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
             UserEntity userEntity = userRepository.getByUsernameAndDeleteAt(username, OnlineJudgeConstant.TIME_ZERO);
             cache().put(CacheUtil.defaultKey(UserEntity.class, username, KeyPrefixConstant.USERNAME), JSON.toJSONString(userEntity));
             if (userEntity == null) {
-                throw new NotFoundException("not found user : username is " + username);
+                throw new NotFoundException("未找到此用户，用户名为 " + username);
             }
             return userEntity;
         }
@@ -209,10 +211,10 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     @Override
     public void changePassword(UserEntity entity, String oldPassword, String newPassword) {
         if (entity == null) {
-            throw ExceptionConstant.FORBIDDEN;
+            throw ExceptionConstant.NO_PERMISSION;
         }
         if (!BCrypt.checkpw(oldPassword, entity.getPassword())) {
-            throw new ForbiddenException("old password error");
+            throw new UnAuthedException("old password error");
         }
         if (!(newPassword.length() >= 7 && newPassword.length() < 1 << 10)) {
             throw new NotAcceptableException("password must be longer than 7 and shorter than 20");
@@ -253,7 +255,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     private UserEntity isLocked(UserEntity entity) {
         if (entity.getRole().equals(UserRole.LOCKED)) {
-            throw new ForbiddenException("you have been locked");
+            throw new UnAuthedException("you have been locked");
         }
         return entity;
     }

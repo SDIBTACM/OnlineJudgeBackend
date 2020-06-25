@@ -237,7 +237,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
 
     private void saveContestProblem(List<ContestProblemParam> vos, Long contestId) {
         if (CollectionUtils.isEmpty(vos)) {
-            throw new BadRequestException("please chose at least a problem");
+            throw new BadRequestException("请至少选择一道问题");
         }
         List<ContestProblemEntity> list  = new LinkedList<>();
         AtomicInteger              order = new AtomicInteger(1);
@@ -249,7 +249,7 @@ public class ContestServiceImpl extends AbstractBaseService<ContestEntity, Long>
             ContestProblemEntity entity = new ContestProblemEntity();
             entity.setContestId(contestId);
             if (item.getId() == null) {
-                throw new BadRequestException("problem id must not be empty");
+                throw new BadRequestException("问题ID不可为空");
             }
             entity.setProblemId(item.getId());
             entity.setProblemOrder(order.getAndIncrement());

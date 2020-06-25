@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.service.impl;
 
 import cn.edu.sdtbu.exception.NotFoundException;
-import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.contest.ContestEntity;
@@ -173,7 +173,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
             // if contest privilege is PUBLIC
             Optional<ContestEntity> entity = Optional.of(contestService.getById(contestId));
             ContestPrivilege privilege = entity.orElseThrow(() ->
-                new NotFoundException("not found this contest, id is" + contestId))
+                new NotFoundException("未找到此比赛， id 为：" + contestId))
                 .getPrivilege();
             if (privilege.equals(ContestPrivilege.PUBLIC)) {
                 return;
@@ -194,7 +194,7 @@ public class ProblemServiceImpl extends AbstractBaseService<ProblemEntity, Long>
             }
         }
         if (!checkPrivilegePassed) {
-            throw new UnauthorizedException("You have no right to take part in the contest");
+            throw ExceptionConstant.NO_PERMISSION;
         }
     }
 

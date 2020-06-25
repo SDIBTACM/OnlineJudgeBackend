@@ -1,8 +1,8 @@
 package cn.edu.sdtbu.controller.api;
 
-import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.handler.CacheHandler;
 import cn.edu.sdtbu.manager.MailManager;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
@@ -16,6 +16,7 @@ import cn.edu.sdtbu.util.CacheUtil;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -56,7 +57,8 @@ public class UserController {
 
     @GetMapping("/onlinePeople")
     public ResponseEntity<Integer> onlinePeopleCount() {
-        return ResponseEntity.ok(((Set) context.getAttribute(WebContextConstant.SESSION_SET)).size());
+        Set set = (Set) context.getAttribute(WebContextConstant.SESSION_SET);
+        return ResponseEntity.ok(CollectionUtils.isEmpty(set) ? 0 : set.size());
     }
 
     @PutMapping
@@ -83,7 +85,7 @@ public class UserController {
         if ((json = handler.fetchCacheStore().get(key)) != null) {
             userService.addUser(JSON.parseObject(json, UserParam.class));
         } else {
-            throw new NotFoundException("Not found such user, maybe he's been activated");
+            throw ExceptionConstant.NOT_ACTIVE;
         }
         return ResponseEntity.ok().build();
     }

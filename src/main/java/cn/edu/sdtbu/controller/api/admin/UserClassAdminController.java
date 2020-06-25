@@ -1,7 +1,7 @@
 package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
-import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
@@ -43,7 +43,7 @@ public class UserClassAdminController {
         if (userEntity != null) {
             return ResponseEntity.ok(classService.createClass(param, userEntity));
         } else {
-            throw new UnauthorizedException("log in plz");
+            throw ExceptionConstant.NEED_LOGIN;
         }
     }
 
@@ -54,7 +54,7 @@ public class UserClassAdminController {
         if (userEntity != null) {
             return ResponseEntity.ok(classService.fetchAllByManagerId(userEntity.getId()));
         } else {
-            throw new UnauthorizedException("log in plz");
+            throw ExceptionConstant.NEED_LOGIN;
         }
     }
 

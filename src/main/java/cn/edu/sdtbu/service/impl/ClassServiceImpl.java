@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service.impl;
 
-import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.user.ClassEntity;
 import cn.edu.sdtbu.model.entity.user.UserClassEntity;
@@ -149,7 +149,7 @@ public class ClassServiceImpl extends AbstractBaseService<ClassEntity, Long> imp
     private boolean isClassManager(Long classId, UserEntity user, boolean throwException) {
         boolean res = user != null && (user.getRole() == UserRole.ADMIN || classId.equals(getById(classId).getOwnerId()));
         if (throwException && !res) {
-            throw new UnauthorizedException();
+            throw ExceptionConstant.UNAUTHORIZED;
         }
         return res;
     }

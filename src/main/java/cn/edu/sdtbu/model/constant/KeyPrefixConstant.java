@@ -20,6 +20,7 @@ public interface KeyPrefixConstant {
     String REGISTERED_USERNAME = "RegisteredUserName";
     String CONTEST_PROBLEM     = "ContestProblem";
     String UNDEFINED           = "Undefined";
+    String SUBMIT_CODE_MD5     = "submitCodeMD5";
 
     /**
      * 计数需要使用的前缀

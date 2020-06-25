@@ -16,6 +16,7 @@ public class SubmitCodeParam {
     LangType type;
     @ApiModelProperty(notes = "代码")
     String   code;
+    String md5;
     Long problemId;
     Long contestId;
 }

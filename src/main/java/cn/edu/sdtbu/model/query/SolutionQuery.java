@@ -16,8 +16,6 @@ public class SolutionQuery {
     Long        contestId;
     LangType    lang;
     JudgeResult result;
-    Integer     timeUsed;
-    Integer     memoryUsed;
     Long        similarAt;
     Long        similarPercent;
 }

@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.util;
 
-import cn.edu.sdtbu.exception.UnauthorizedException;
+import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ public class RequestUtil {
     public static UserEntity fetchUserEntityFromSession(boolean nullable, HttpSession session) {
         UserEntity userEntity = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
         if (!nullable && userEntity == null) {
-            throw new UnauthorizedException();
+            throw ExceptionConstant.UNAUTHORIZED;
         }
         return userEntity;
     }

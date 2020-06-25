@@ -1,7 +1,6 @@
 package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
-import cn.edu.sdtbu.exception.UnauthorizedException;
 import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
@@ -116,8 +115,8 @@ public class UserAdminController {
         @PathVariable Long userId,
         @ApiIgnore HttpSession session) {
         UserEntity entity = RequestUtil.fetchUserEntityFromSession(false, session);
-        if (entity.getRole() != UserRole.ADMIN && !entity.getId().equals(userId)) {
-            throw new UnauthorizedException();
+        if (!entity.getId().equals(userId)) {
+            throw ExceptionConstant.NO_PERMISSION;
         }
         UserEntity userEntity = userParam.transformToEntity();
         userEntity.setId(userId);

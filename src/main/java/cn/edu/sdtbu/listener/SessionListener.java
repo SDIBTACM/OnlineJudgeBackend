@@ -4,6 +4,7 @@ import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.service.UserService;
 import cn.edu.sdtbu.util.TimeUtil;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +14,7 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author bestsort
@@ -54,7 +53,7 @@ public class SessionListener implements HttpSessionListener {
         ServletContext application = session.getServletContext();
         Set            sessions    = (Set) application.getAttribute(WebContextConstant.SESSION_SET);
         if (sessions == null) {
-            sessions = Collections.newSetFromMap(new ConcurrentHashMap<>(128));
+            sessions = Sets.newConcurrentHashSet();
             application.setAttribute(WebContextConstant.SESSION_SET, sessions);
         }
         // add session to set

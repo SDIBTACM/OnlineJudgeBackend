@@ -1,6 +1,6 @@
 package cn.edu.sdtbu.service;
 
-import cn.edu.sdtbu.exception.ForbiddenException;
+import cn.edu.sdtbu.exception.UnAuthedException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
@@ -52,10 +52,10 @@ public interface UserService extends BaseService<UserEntity, Long> {
      * @param rememberToken a jwt string to verify user identify
      * @param requestIp     where user login from
      * @return user info
-     * @throws ForbiddenException it mean someone try to act as a user
+     * @throws UnAuthedException it mean someone try to act as a user
      * @throws NotFoundException  user not found
      */
-    UserEntity login(String rememberToken, String requestIp) throws ForbiddenException, NotFoundException;
+    UserEntity login(String rememberToken, String requestIp);
 
     /**
      * login by remember token

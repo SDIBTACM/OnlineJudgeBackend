@@ -147,7 +147,6 @@ public class DefaultCacheStoreImpl extends AbstractCacheStore<String, String>
         if (isInit) {
             mp = Maps.newTreeMap();
             SORTED_CACHE_POOL.put(key, mp);
-            return mp;
         }
         return mp;
     }
