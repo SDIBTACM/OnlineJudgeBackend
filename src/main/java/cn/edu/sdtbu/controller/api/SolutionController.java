@@ -45,7 +45,7 @@ public class SolutionController {
     @PutMapping("/submit")
     public ResponseEntity<TokenVO> submitCode(@RequestBody SubmitCodeParam param, HttpSession session) {
         UserEntity userEntity = RequestUtil.fetchUserEntityFromSession(false, session);
-        String md5 = DigestUtils.md5Hex(param.toString().getBytes());
+        String md5 = DigestUtils.md5Hex(param.getCode().getBytes());
         param.setMd5(md5);
         String key = CacheUtil.defaultKey(SubmitCodeParam.class, md5, KeyPrefixConstant.SUBMIT_CODE_MD5);
 

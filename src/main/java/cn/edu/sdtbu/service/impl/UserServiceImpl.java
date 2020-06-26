@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
@@ -95,7 +96,12 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
 
     @Override
     public UserEntity login(String rememberToken, String requestIp) {
-        DecodedJWT jwtUnVerify = JWT.decode(rememberToken);
+        DecodedJWT jwtUnVerify;
+        try {
+            jwtUnVerify = JWT.decode(rememberToken);
+        } catch (JWTDecodeException ignore) {
+            return null;
+        }
         Optional<UserEntity> optional = userRepository.findByUsernameAndDeleteAtEquals(
             jwtUnVerify.getClaim("username").asString(), OnlineJudgeConstant.TIME_ZERO);
         if (optional.isPresent()) {

@@ -1,13 +1,11 @@
 package cn.edu.sdtbu.controller.api.admin;
 
 import cn.edu.sdtbu.aop.annotation.SourceSecurity;
-import cn.edu.sdtbu.model.constant.ExceptionConstant;
-import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.SecurityType;
-import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.ContestParam;
 import cn.edu.sdtbu.service.ContestService;
+import cn.edu.sdtbu.util.RequestUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -35,13 +33,9 @@ public class ContestAdminController {
 
     @PutMapping
     @SourceSecurity(SecurityType.AT_LEAST_TEACHER)
-    public ResponseEntity<Void> addContest(@RequestBody @Validated(ContestParam.Create.class)
-                                               ContestParam param,
+    public ResponseEntity<Void> addContest(@RequestBody @Validated(ContestParam.Create.class) ContestParam param,
                                            @ApiIgnore HttpSession session) {
-        UserEntity entity = (UserEntity) session.getAttribute(WebContextConstant.USER_SESSION_INFO);
-        if (entity.getRole().getValue() < UserRole.TEACHER.getValue()) {
-            throw ExceptionConstant.UNAUTHORIZED;
-        }
+        UserEntity entity = RequestUtil.fetchUserEntityFromSession(true, session);
         service.createContest(param, entity);
         return ResponseEntity.ok(null);
     }

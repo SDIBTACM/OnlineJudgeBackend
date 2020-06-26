@@ -115,7 +115,7 @@ public class UserAdminController {
         @PathVariable Long userId,
         @ApiIgnore HttpSession session) {
         UserEntity entity = RequestUtil.fetchUserEntityFromSession(false, session);
-        if (!entity.getId().equals(userId)) {
+        if (!entity.getId().equals(userId) && entity.getRole().getValue() < UserRole.TEACHER.getValue()) {
             throw ExceptionConstant.NO_PERMISSION;
         }
         UserEntity userEntity = userParam.transformToEntity();
