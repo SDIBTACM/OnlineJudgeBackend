@@ -10,6 +10,7 @@ import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.dto.UserRankListDTO;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.RankType;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> implements UserService {
     private final LoginLogRepository loginLogRepository;
-    private final UserRepository     userRepository;
+    private final UserRepository               userRepository;
 
     public UserServiceImpl(LoginLogRepository loginLogRepository, UserRepository userRepository) {
         super(userRepository);
@@ -62,7 +63,9 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
         centerVO.setLastLogin(lastLogin(userId));
         UserSimpleInfoVO simpleInfoVO = new UserSimpleInfoVO();
         SpringUtil.cloneWithoutNullVal(getById(userId), simpleInfoVO);
-        simpleInfoVO.setRank(cache().zRank(KeyPrefixConstant.USERS_RANK_LIST_DTO, userId + "", false));
+        simpleInfoVO.setRank(cache().zRank(
+            KeyPrefixConstant.RANK_TYPE.get(RankType.OVERALL),
+            userId + "", false));
         centerVO.setUserInfo(simpleInfoVO);
         return centerVO;
     }
@@ -166,11 +169,10 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, Long> imple
     }
 
     @Override
-    public Page<UserRankListVO> fetchRankList(Pageable pageable) {
-        //TODO init rank list from db
-        long                  total = cache().totalElementOfList(KeyPrefixConstant.USERS_RANK_LIST_DTO);
+    public Page<UserRankListVO> fetchRankList(Pageable pageable, RankType type) {
+        long                  total = cache().totalElementOfList(KeyPrefixConstant.RANK_TYPE.get(type));
         List<UserRankListDTO> list  = new LinkedList<>();
-        cache().fetchRanksByPage(KeyPrefixConstant.USERS_RANK_LIST_DTO, pageable, false)
+        cache().fetchRanksByPage(KeyPrefixConstant.RANK_TYPE.get(type), pageable, false)
             .forEach(i -> list.add(UserRankListDTO.converByTuple(i)));
 
         Map<Long, UserEntity> userEntities = getByIds(list.stream()

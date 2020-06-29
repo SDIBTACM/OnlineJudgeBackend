@@ -34,7 +34,6 @@ public interface CacheStore<K, V> {
      * @param listName    name
      * @param scoreValMap some need to add or update
      */
-    @Async
     void sortedListAdd(String listName, Map<String, Double> scoreValMap);
 
     /**
@@ -44,7 +43,6 @@ public interface CacheStore<K, V> {
      * @param value    object's JSON value
      * @param score    score, used to sort compare
      */
-    @Async
     void sortedListAdd(String listName, String value, double score);
 
     /**

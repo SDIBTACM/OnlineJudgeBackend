@@ -3,7 +3,10 @@ package cn.edu.sdtbu.repository;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
 import cn.edu.sdtbu.repository.base.BaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,4 +29,6 @@ public interface SolutionRepository extends BaseRepository<SolutionEntity, Long>
     Boolean existsByOwnerIdAndProblemIdAndContestIdAndResult(Long userId, Long problemId, Long contestId, JudgeResult result);
 
     Boolean existsByOwnerIdAndProblemIdAndResult(Long userId, Long problemId, JudgeResult result);
+
+    Page<SolutionEntity> findAllByCreateAtBetween(Timestamp start, Timestamp end, Pageable page);
 }

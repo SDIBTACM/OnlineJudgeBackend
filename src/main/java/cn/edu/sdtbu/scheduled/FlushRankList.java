@@ -1,7 +1,11 @@
 package cn.edu.sdtbu.scheduled;
 
+import cn.edu.sdtbu.model.enums.RankType;
+import cn.edu.sdtbu.service.RefreshService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @author bestsort
@@ -9,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @date 2020-05-09 17:05
  */
 @Component
-public class FlushCache {
+public class FlushRankList {
     /**
      * A cron-like expression, extending the usual UN*X definition to include triggers
      * on the second, minute, hour, day of month, month, and day of week.
@@ -25,13 +29,14 @@ public class FlushCache {
      * <li>day of week( 1~7, 1=SUN or SUN，MON，TUE，WED，THU，FRI，SAT） )</li>
      * </ul>
      */
-    @Scheduled(cron = "0 0 3 ? * SUN")
-    public void reloadWeeklyRankList() {
-        //TODO
-    }
-
+    @Resource
+    RefreshService refreshService;
     @Scheduled(cron = "0 30 3 * * *")
     public void reloadDailyRankList() {
-
+        for (RankType type : RankType.values()) {
+            if (type != RankType.OVERALL) {
+                refreshService.reloadRankList(type, false);
+            }
+        }
     }
 }

@@ -3,7 +3,9 @@ package cn.edu.sdtbu.listener;
 import cn.edu.sdtbu.debug.DebugUtil;
 import cn.edu.sdtbu.debug.GeneratorFakeData;
 import cn.edu.sdtbu.handler.CacheHandler;
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
+import cn.edu.sdtbu.model.enums.RankType;
 import cn.edu.sdtbu.model.properties.OnlineJudgeProperties;
 import cn.edu.sdtbu.service.RefreshService;
 import cn.edu.sdtbu.service.base.BaseService;
@@ -76,8 +78,16 @@ public class StartedListener implements ApplicationListener<ApplicationStartedEv
         }
         //刷新排行榜
         if (properties.getDebug().getRefreshRankList()) {
-            refreshService.refreshRankList(properties.getDebug().getRefreshAllProblemSolutionCount(),
-                properties.getDebug().getRefreshUserSubmitCount());
+            for (RankType type : RankType.values()) {
+                handler.fetchCacheStore().delete(KeyPrefixConstant.RANK_TYPE.get(type));
+                if (RankType.OVERALL.equals(type)) {
+                    refreshService.refreshOverAllRankList(properties.getDebug().getRefreshAllProblemSolutionCount(),
+                        properties.getDebug().getRefreshUserSubmitCount());
+                } else {
+                    refreshService.reloadRankList(type, true);
+                }
+            }
+
         }
 
     }

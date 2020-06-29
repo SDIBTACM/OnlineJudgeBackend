@@ -24,7 +24,7 @@ public class SystemController {
     @PostMapping("/refreshRankList")
     public ResponseEntity<Void> refreshRankList(@RequestParam(defaultValue = "false") Boolean reloadCount,
                                                 @RequestParam(defaultValue = "false") Boolean refreshUserEntities) {
-        refreshService.refreshRankList(reloadCount, refreshUserEntities);
+        refreshService.refreshOverAllRankList(reloadCount, refreshUserEntities);
         return ResponseEntity.ok(null);
     }
 }

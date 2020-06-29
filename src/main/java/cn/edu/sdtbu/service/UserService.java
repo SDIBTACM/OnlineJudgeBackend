@@ -4,6 +4,7 @@ import cn.edu.sdtbu.exception.UnAuthedException;
 import cn.edu.sdtbu.exception.NotFoundException;
 import cn.edu.sdtbu.model.entity.user.LoginLogEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.RankType;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -75,7 +76,7 @@ public interface UserService extends BaseService<UserEntity, Long> {
 
     Long fetchAcceptedCount(Long userId);
 
-    Page<UserRankListVO> fetchRankList(Pageable pageable);
+    Page<UserRankListVO> fetchRankList(Pageable pageable, RankType type);
 
     UserEntity getByUsername(String username);
 

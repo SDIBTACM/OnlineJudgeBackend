@@ -8,6 +8,7 @@ import cn.edu.sdtbu.service.base.BaseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -16,6 +17,9 @@ import java.util.List;
  * @date 2020-05-06 20:29
  */
 public interface SolutionService extends BaseService<SolutionEntity, Long> {
+
+    Page<SolutionEntity> listByTimeBetween(Timestamp start, Timestamp end, Pageable pageable);
+
     Page<SolutionListNode> listSubmit(SolutionEntity query, UserRole role, Pageable pageable);
 
     List<SolutionEntity> findAllByProblemId(Long problemId);
@@ -27,4 +31,6 @@ public interface SolutionService extends BaseService<SolutionEntity, Long> {
     List<SolutionEntity> findAllByOwnerId(Long userId);
 
     List<SolutionEntity> findAllByOwnerIdAndResultAndProblemIdIn(Long id, JudgeResult accept, List<Long> problemIds);
+
+    void incSubmitCode(long userId);
 }

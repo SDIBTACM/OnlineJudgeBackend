@@ -1,6 +1,7 @@
 package cn.edu.sdtbu.util;
 
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
+import cn.edu.sdtbu.model.dto.CountPair;
 import cn.edu.sdtbu.model.entity.problem.ProblemEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
@@ -8,6 +9,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.util.Pair;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -20,10 +23,20 @@ public class CacheUtil {
     public static final  String NOT_DEFINED_PREFIX = "NotDefinedPrefix";
     public static final double RATIO              = 1e-6;
 
-    public static Double rankListScore(Long acceptedCount, Long submitCount) {
+    public static Double parseScore(Long acceptedCount, Long submitCount) {
         return acceptedCount - submitCount * RATIO;
     }
-
+    public static CountPair parseCountPair(double score) {
+        // ac数和提交数相等时(一道题都没错)
+        if (0 == score - (int)score) {
+            return CountPair.of((int) score, (int) score);
+        } else {
+            int        accepted    = (int)score + 1;
+            BigDecimal bigDecimal  = new BigDecimal((accepted - score) / CacheUtil.RATIO);
+            int        submitCount = bigDecimal.setScale(0, RoundingMode.HALF_UP).intValue();
+            return CountPair.of(accepted, submitCount);
+        }
+    }
     public static String userSubmitCountKey(Long userId, Long problemId) {
         List<Pair<Class<?>, String>> list = new ArrayList<>(4);
         list.add(CacheUtil.pair(UserEntity.class, userId));

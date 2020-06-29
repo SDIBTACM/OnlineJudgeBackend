@@ -1,9 +1,11 @@
 package cn.edu.sdtbu.service.impl;
 
+import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.OnlineJudgeConstant;
 import cn.edu.sdtbu.model.entity.solution.SolutionEntity;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
 import cn.edu.sdtbu.model.enums.JudgeResult;
+import cn.edu.sdtbu.model.enums.RankType;
 import cn.edu.sdtbu.model.enums.UserRole;
 import cn.edu.sdtbu.model.vo.SolutionListNode;
 import cn.edu.sdtbu.model.vo.base.BaseUserVO;
@@ -11,6 +13,7 @@ import cn.edu.sdtbu.repository.SolutionRepository;
 import cn.edu.sdtbu.repository.user.UserRepository;
 import cn.edu.sdtbu.service.SolutionService;
 import cn.edu.sdtbu.service.base.AbstractBaseService;
+import cn.edu.sdtbu.util.CacheUtil;
 import cn.edu.sdtbu.util.SpringUtil;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +41,11 @@ public class SolutionServiceImpl extends AbstractBaseService<SolutionEntity, Lon
     UserRepository     userRepository;
     protected SolutionServiceImpl(SolutionRepository repository) {
         super(repository);
+    }
+
+    @Override
+    public Page<SolutionEntity> listByTimeBetween(Timestamp start, Timestamp end, Pageable pageable) {
+        return solutionRepository.findAllByCreateAtBetween(start, end, pageable);
     }
 
     @Override
@@ -85,5 +94,12 @@ public class SolutionServiceImpl extends AbstractBaseService<SolutionEntity, Lon
     @Override
     public List<SolutionEntity> findAllByOwnerIdAndResultAndProblemIdIn(Long id, JudgeResult accept, List<Long> problemIds) {
         return solutionRepository.findAllByOwnerIdAndResultAndProblemIdIn(id, accept, problemIds);
+    }
+
+    @Override
+    public void incSubmitCode(long userId) {
+        for (RankType type : RankType.values()) {
+            cache().sortedListAdd(KeyPrefixConstant.RANK_TYPE.get(type), userId + "", CacheUtil.RATIO * -1);
+        }
     }
 }

@@ -6,6 +6,7 @@ import cn.edu.sdtbu.model.constant.ExceptionConstant;
 import cn.edu.sdtbu.model.constant.KeyPrefixConstant;
 import cn.edu.sdtbu.model.constant.WebContextConstant;
 import cn.edu.sdtbu.model.entity.user.UserEntity;
+import cn.edu.sdtbu.model.enums.RankType;
 import cn.edu.sdtbu.model.param.user.ChangePasswordParam;
 import cn.edu.sdtbu.model.param.user.UserParam;
 import cn.edu.sdtbu.model.vo.user.UserCenterVO;
@@ -104,8 +105,9 @@ public class UserController {
     }
 
     @GetMapping("/rank")
-    public ResponseEntity<Page<UserRankListVO>> rankList(@PageableDefault(size = 50) Pageable pageable) {
-        return ResponseEntity.ok(userService.fetchRankList(pageable));
+    public ResponseEntity<Page<UserRankListVO>> rankList(@PageableDefault(size = 50) Pageable pageable,
+                                                         @RequestParam(defaultValue = "OVERALL")RankType type) {
+        return ResponseEntity.ok(userService.fetchRankList(pageable, type));
     }
 
     @PatchMapping("/password")

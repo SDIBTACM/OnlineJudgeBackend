@@ -1,5 +1,9 @@
 package cn.edu.sdtbu.model.constant;
 
+import cn.edu.sdtbu.model.enums.RankType;
+import cn.edu.sdtbu.util.CacheUtil;
+import com.google.common.collect.ImmutableMap;
+
 /**
  * @author bestsort
  * @version 1.0
@@ -35,7 +39,12 @@ public interface KeyPrefixConstant {
     String ALL_CONTEST_PROBLEM_SUBMIT_COUNT = "AllContestProblemSubmitCount";
 
     /**
-     * 列表
+     * Rank type 映射
      */
-    String USERS_RANK_LIST_DTO = "UsersRankListDTO";
+    ImmutableMap<RankType, String> RANK_TYPE = ImmutableMap.<RankType, String>builder()
+        .put(RankType.OVERALL, "RankList" + CacheUtil.SEPARATOR  + "OverAll")
+        .put(RankType.DAILY, "RankList" + CacheUtil.SEPARATOR  + "Daily")
+        .put(RankType.WEEKLY, "RankList" + CacheUtil.SEPARATOR  + "Weekly")
+        .put(RankType.MONTHLY, "RankList" + CacheUtil.SEPARATOR  + "Monthly")
+        .build();
 }

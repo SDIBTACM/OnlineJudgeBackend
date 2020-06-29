@@ -58,6 +58,8 @@ public class SolutionController {
         TokenVO vo = new TokenVO();
         vo.setToken(UUID.randomUUID().toString());
         handler.fetchCacheStore().put(vo.getToken(), JudgeResult.PENDING.toString());
+
+
         return ResponseEntity.ok(vo);
     }
 

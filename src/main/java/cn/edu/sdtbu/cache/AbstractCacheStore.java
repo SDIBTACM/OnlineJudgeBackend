@@ -81,6 +81,6 @@ public abstract class AbstractCacheStore<K, V> implements CacheStore<K, V> {
 
     @Override
     public void init() {
-        refreshService.refreshRankList(false, false);
+        refreshService.refreshOverAllRankList(false, false);
     }
 }
